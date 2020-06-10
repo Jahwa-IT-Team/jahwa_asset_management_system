@@ -5,13 +5,6 @@
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+이 프로젝트는 Flutter로 개발이 되었습니다. 
+Flutter를 시작하는 데 도움이 필요하면 자습서, 샘플, 모바일 개발 지침 및 전체 API 참조를 제공하는 [온라인 설명서](https://flutter-ko.dev/docs)를 참조하십시오.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
