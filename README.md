@@ -13,5 +13,5 @@ Flutter를 시작하는 데 도움이 필요하면 자습서, 샘플, 모바일 
 ## Dependencies
 ### Shark Bluetooth Protocol Plugin
 이 프로젝트는 [Shark Bluetooth Protocol Plugin](https://github.com/Jahwa-IT-Team/jahwa_asset_management_system_plugin_btprotocol)이 필요합니다.  
-Shark Bluetooth Protocol Plugin 플러그인의 위치는 모바일 프로젝트의 상대 경로 (../jahwa_plugin/rfid/btprotocol) 존재해야 합니다. 
+Shark Bluetooth Protocol Plugin 플러그인의 위치는 모바일 프로젝트의 상대 경로 (../jahwa_plugin/rfid/btprotocol) 존재해야 합니다.  
 상대경로(../jahwa_plugin/rfid/)에 github에서 내려 받은 후 폴더명을 btprotocol로 변경하십시요. 
