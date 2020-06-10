@@ -102,7 +102,7 @@ dependencies:
   #shark btprotocol
   btprotocol: 
     path: ../jahwa_plugin/rfid/btprotocol
-
+    
 dev_dependencies:
   flutter_test:
     sdk: flutter
