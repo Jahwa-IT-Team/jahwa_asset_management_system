@@ -129,7 +129,7 @@ class FacilityTradeReceiveRepository with ChangeNotifier {
     if(!_receiveDetailList.any((item) => item.assetCode == d.assetCode)){
       //Web Call
       String langCode = await getLanguageCodeWithCountryCode();
-      await getReceiveFacilityList('asset', d.assetCode, langCode).then((d) {
+      return await getReceiveFacilityList('asset', d.assetCode, langCode).then((d) {
         if(d != null){
           _receiveDetailList.add(d);
           notifyListeners();
@@ -141,7 +141,6 @@ class FacilityTradeReceiveRepository with ChangeNotifier {
     }else{
       return 0;
     }
-    return 0;
   }
   
   //RFID 스캔 초기화

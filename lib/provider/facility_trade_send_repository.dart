@@ -100,7 +100,7 @@ class FacilityTradeSendRepository with ChangeNotifier {
     if(!_sendDetailList.any((item) => item.assetCode == d.assetCode)){
       //Web Call
       String langCode = await getLanguageCodeWithCountryCode();
-      await getSendFacilityList('asset', d.assetCode, langCode).then((d) {
+      return await getSendFacilityList('asset', d.assetCode, langCode).then((d) {
         if(d != null){
           _sendDetailList.add(d);
           notifyListeners();
@@ -112,7 +112,6 @@ class FacilityTradeSendRepository with ChangeNotifier {
     }else{
       return 0;
     }
-    return 0;
   }
   
   

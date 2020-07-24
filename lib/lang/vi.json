@@ -121,6 +121,9 @@
     "facility_trade_request_detail_list":"Chi tiết yêu cầu",
     "facility_trade_request_detail_view_page":"Chi tiết yêu cầu thiết bị",
     "facility_trade_list":"설비 내역",
+    "facility_trade_list_not_found_or_fail":"대상이 아니거나 호출에 실패함.",
+    "facility_trade_list_already":"이미 목록에 추가된 설비.",
+    "facility_trade_list_ok":"추가 완료.",
     
     "facility_list_view":"View hạng mục thiết bị",
     "item_group":"Nhóm mã hàng",

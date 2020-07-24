@@ -14,6 +14,7 @@ import 'package:jahwa_asset_management_system/provider/facility_trade_send_repos
 import 'package:jahwa_asset_management_system/provider/user_repository.dart';
 import 'package:jahwa_asset_management_system/screens/facility_trade_tabs/facility_trade_bluetooth_reader.dart';
 import 'package:jahwa_asset_management_system/widgets/custom_widget.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:jahwa_asset_management_system/util/localization/language_constants.dart';
 import 'package:card_settings/card_settings.dart';
@@ -41,6 +42,9 @@ class _FacilityTradeRequestDetailViewPageState extends State<FacilityTradeReques
   FacilityTradeRequestRepository $facilityTradeRequestRepository;
   FacilityTradeSendRepository $facilityTradeSendRepository;
   FacilityTradeReceiveRepository $facilityTradeReceiveRepository;
+  ProgressDialog pr;
+  
+  final GlobalKey<ScaffoldState> scaffold1Key = GlobalKey<ScaffoldState>();
 
   get http => null;
   
@@ -97,7 +101,29 @@ class _FacilityTradeRequestDetailViewPageState extends State<FacilityTradeReques
   }
 
   Widget buildRequestPage(){
+
+    pr = ProgressDialog(
+      context,
+      type: ProgressDialogType.Normal,
+      isDismissible: false,
+    );
+    pr.style(
+      message: getTranslated(context, 'Receiving ....'),
+      borderRadius: 10.0,
+      backgroundColor: Colors.white,
+      elevation: 10.0,
+      insetAnimCurve: Curves.easeInOut,
+      progress: 0.0,
+      progressWidgetAlignment: Alignment.center,
+      maxProgress: 100.0,
+      progressTextStyle: TextStyle(
+          color: Colors.black, fontSize: 13.0, fontWeight: FontWeight.w400),
+      messageTextStyle: TextStyle(
+          color: Colors.black, fontSize: 19.0, fontWeight: FontWeight.w600),
+    );
+
     return Scaffold(
+      key: scaffold1Key,
       appBar: AppBar(
         title: Text(pageTitle),
         backgroundColor: Colors.indigo,
@@ -221,41 +247,52 @@ class _FacilityTradeRequestDetailViewPageState extends State<FacilityTradeReques
 
       var result = await BarcodeScanner.scan(options: options);
 
+      
+
       scanResult = result;
         if(scanResult.type != ResultType.Cancelled){
           //textAssetNoController.text = scanResult.rawContent ?? "";
           //validateSubmit();
           print("QR Barcode Scan Result : "+scanResult.rawContent ?? "");
           String strScanData = scanResult.rawContent ?? "";
+
+          await pr.show();
+
           int rtnValue;
           switch(widget.pageType){
             case PageType.Request:
-              rtnValue = await $facilityTradeRequestRepository.addRequestScanAssetCodeDetailList(RequestDetail(assetCode:strScanData));
+              rtnValue = await $facilityTradeRequestRepository.addRequestScanAssetCodeDetailList(RequestDetail(assetCode:strScanData)).then((value){pr.hide(); return value;});
               break;
             case PageType.Send:
-              rtnValue = await $facilityTradeSendRepository.addSendScanAssetCodeDetailList(SendDetail(assetCode:strScanData));
+              rtnValue = await $facilityTradeSendRepository.addSendScanAssetCodeDetailList(SendDetail(assetCode:strScanData)).then((value){pr.hide(); return value;});
               break;
             case PageType.Receive:
-              rtnValue = await $facilityTradeReceiveRepository.addReceiveScanAssetCodeDetailList(ReceiveDetail(assetCode:strScanData));
+              rtnValue = await $facilityTradeReceiveRepository.addReceiveScanAssetCodeDetailList(ReceiveDetail(assetCode:strScanData)).then((value){pr.hide(); return value;});
               break;
             default:
               break;
           }
+          
 
           //결과 메세지 표시
           switch(rtnValue){
             case -1:
               //설비 대상 아님
+              showSnackBar("QR Barcode["+strScanData+"]",getTranslated(context, 'facility_trade_list_not_found_or_fail'));
               break;
             case 0:
               //이미 추가된 설비
+              showSnackBar("QR Barcode["+strScanData+"]",getTranslated(context, 'facility_trade_list_already'));
               break;
             case 1:
               //추가 완료
+              showSnackBar("QR Barcode["+strScanData+"]",getTranslated(context, 'facility_trade_list_ok'));
               break;
             default:
               break;
           }
+
+          pr.hide();
         }
     } on PlatformException catch (e) {
       var result = ScanResult(
@@ -740,4 +777,13 @@ class _FacilityTradeRequestDetailViewPageState extends State<FacilityTradeReques
     );
   }
 
+  void showSnackBar(String label, dynamic value) {
+    scaffold1Key.currentState.removeCurrentSnackBar();
+    scaffold1Key.currentState.showSnackBar(
+      SnackBar(
+        duration: Duration(seconds: 3),
+        content: Text(label + ' = ' + value.toString()),
+      ),
+    );
+  }
 }
