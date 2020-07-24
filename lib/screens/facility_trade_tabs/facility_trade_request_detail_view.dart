@@ -1,7 +1,11 @@
-//import 'dart:async';
 
+
+import 'package:barcode_scan/barcode_scan.dart';
+import 'package:barcode_scan/model/scan_options.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:jahwa_asset_management_system/models/facility_trade.dart';
 import 'package:jahwa_asset_management_system/provider/facility_trade_common_repository.dart';
 import 'package:jahwa_asset_management_system/provider/facility_trade_receive_repository.dart';
@@ -26,6 +30,8 @@ class FacilityTradeRequestDetailViewPage extends StatefulWidget {
 }
 
 class _FacilityTradeRequestDetailViewPageState extends State<FacilityTradeRequestDetailViewPage>{
+  ScanResult scanResult;
+  String pageTitle = "";
   ScrollController scrollController = ScrollController();
   bool dialVisible = true;
   bool _showMaterialonIOS = true;
@@ -35,6 +41,8 @@ class _FacilityTradeRequestDetailViewPageState extends State<FacilityTradeReques
   FacilityTradeRequestRepository $facilityTradeRequestRepository;
   FacilityTradeSendRepository $facilityTradeSendRepository;
   FacilityTradeReceiveRepository $facilityTradeReceiveRepository;
+
+  get http => null;
   
 
 
@@ -70,13 +78,28 @@ class _FacilityTradeRequestDetailViewPageState extends State<FacilityTradeReques
       $facilityTradeReceiveRepository = Provider.of<FacilityTradeReceiveRepository>(context, listen: true);
     }
 
+    switch (widget.pageType) {
+      case PageType.Request :
+        pageTitle = getTranslated(context, 'facility_trade_list') +" - "+getTranslated(context, 'facility_trade_request');
+        break;
+      case PageType.Send:
+        pageTitle = getTranslated(context, 'facility_trade_list') +" - "+getTranslated(context, 'facility_trade_send');
+        break;
+      case PageType.Receive:
+        pageTitle = getTranslated(context, 'facility_trade_list') +" - "+getTranslated(context, 'facility_trade_receive');
+        break;
+      default:
+        pageTitle = getTranslated(context, 'facility_trade_list');
+        break;
+    }
+
     return buildRequestPage();
   }
 
   Widget buildRequestPage(){
     return Scaffold(
       appBar: AppBar(
-        title: Text(getTranslated(context, 'facility_trade_request_detail_view_page')),
+        title: Text(pageTitle),
         backgroundColor: Colors.indigo,
       ),
       body:Container(
@@ -108,23 +131,149 @@ class _FacilityTradeRequestDetailViewPageState extends State<FacilityTradeReques
           ],
         ),
       ),
-      floatingActionButton:FloatingActionButton.extended(
-        onPressed: () {
+      floatingActionButton: buildSpeedDial(),
+      // floatingActionButton:FloatingActionButton.extended(
+      //   onPressed: () {
 
-          if($userRepository.bluetoothDevice == null || $userRepository.bluetoothDevice.address == null || $userRepository.bluetoothDevice.address == ""){
-            customAlertOK(context,getTranslated(context, 'device_not_found'), getTranslated(context, 'device_not_found_desc'))
-              .show()
-              .then((value) => Navigator.pushNamed(context, bluetoothScanRoute));
+      //     if($userRepository.bluetoothDevice == null || $userRepository.bluetoothDevice.address == null || $userRepository.bluetoothDevice.address == ""){
+      //       customAlertOK(context,getTranslated(context, 'device_not_found'), getTranslated(context, 'device_not_found_desc'))
+      //         .show()
+      //         .then((value) => Navigator.pushNamed(context, bluetoothScanRoute));
             
-          }else{
-            Navigator.pushNamed(context, facilityTradeBluetoothReaderRoute, arguments: FacilityTradeBluetoothReaderArguments(address:$userRepository.bluetoothDevice.address,pageType: widget.pageType));
-          }
-        },
-        label: Text('Add(RFID)'),
-        icon: Icon(Icons.add),
-        backgroundColor: Colors.indigo,
-      ),
+      //     }else{
+      //       Navigator.pushNamed(context, facilityTradeBluetoothReaderRoute, arguments: FacilityTradeBluetoothReaderArguments(address:$userRepository.bluetoothDevice.address,pageType: widget.pageType));
+      //     }
+      //   },
+      //   label: Text('Add(RFID)'),
+      //   icon: Icon(Icons.add),
+      //   backgroundColor: Colors.indigo,
+      // ),
+
     );
+  }
+
+  SpeedDial buildSpeedDial() {
+    return SpeedDial(
+      //animatedIcon: AnimatedIcons.add_event,
+      animatedIconTheme: IconThemeData(size: 22.0),
+      child: Icon(Icons.add),
+      onOpen: () => print('OPENING DIAL'),
+      onClose: () => print('DIAL CLOSED'),
+      visible: dialVisible,
+      curve: Curves.bounceIn,
+      children: [
+        // SpeedDialChild(
+        //   child: Icon(Icons.exposure_neg_1, color: Colors.white),
+        //   backgroundColor: Colors.deepOrange,
+        //   onTap: () => setMinusPower(),
+        //   label: '-1',
+        //   labelStyle: TextStyle(fontWeight: FontWeight.w500),
+        //   labelBackgroundColor: Colors.deepOrangeAccent,
+        // ),
+        SpeedDialChild(
+          child: Icon(Icons.camera, color: Colors.white),
+          backgroundColor: Colors.green,
+          onTap: () => qrBarcodeScan(),
+          label: 'QR',
+          labelStyle: TextStyle(fontWeight: FontWeight.w500),
+          labelBackgroundColor: Colors.green,
+        ),
+        SpeedDialChild(
+          child: Icon(Icons.bluetooth_searching, color: Colors.white),
+          backgroundColor: Colors.blue,
+          onTap: () => {
+            if($userRepository.bluetoothDevice == null || $userRepository.bluetoothDevice.address == null || $userRepository.bluetoothDevice.address == ""){
+              customAlertOK(context,getTranslated(context, 'device_not_found'), getTranslated(context, 'device_not_found_desc'))
+                .show()
+                .then((value) => Navigator.pushNamed(context, bluetoothScanRoute))
+              
+            }else{
+              Navigator.pushNamed(context, facilityTradeBluetoothReaderRoute, arguments: FacilityTradeBluetoothReaderArguments(address:$userRepository.bluetoothDevice.address,pageType: widget.pageType))
+            }
+          } ,
+          labelWidget: Container(
+            color: Colors.blue,
+            margin: EdgeInsets.only(right: 10),
+            padding: EdgeInsets.all(6),
+            child: Text('RFID'),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future qrBarcodeScan() async {
+    try {
+      var options = ScanOptions(
+        // strings: {
+        //   "cancel": _cancelController.text,
+        //   "flash_on": _flashOnController.text,
+        //   "flash_off": _flashOffController.text,
+        // },
+        // restrictFormat: selectedFormats,
+        // useCamera: _selectedCamera,
+        // autoEnableFlash: _autoEnableFlash,
+        // android: AndroidOptions(
+        //   aspectTolerance: _aspectTolerance,
+        //   useAutoFocus: _useAutoFocus,
+        // ),
+      );
+
+      var result = await BarcodeScanner.scan(options: options);
+
+      scanResult = result;
+        if(scanResult.type != ResultType.Cancelled){
+          //textAssetNoController.text = scanResult.rawContent ?? "";
+          //validateSubmit();
+          print("QR Barcode Scan Result : "+scanResult.rawContent ?? "");
+          String strScanData = scanResult.rawContent ?? "";
+          int rtnValue;
+          switch(widget.pageType){
+            case PageType.Request:
+              rtnValue = await $facilityTradeRequestRepository.addRequestScanAssetCodeDetailList(RequestDetail(assetCode:strScanData));
+              break;
+            case PageType.Send:
+              rtnValue = await $facilityTradeSendRepository.addSendScanAssetCodeDetailList(SendDetail(assetCode:strScanData));
+              break;
+            case PageType.Receive:
+              rtnValue = await $facilityTradeReceiveRepository.addReceiveScanAssetCodeDetailList(ReceiveDetail(assetCode:strScanData));
+              break;
+            default:
+              break;
+          }
+
+          //결과 메세지 표시
+          switch(rtnValue){
+            case -1:
+              //설비 대상 아님
+              break;
+            case 0:
+              //이미 추가된 설비
+              break;
+            case 1:
+              //추가 완료
+              break;
+            default:
+              break;
+          }
+        }
+    } on PlatformException catch (e) {
+      var result = ScanResult(
+        type: ResultType.Error,
+        format: BarcodeFormat.unknown,
+      );
+
+      if (e.code == BarcodeScanner.cameraAccessDenied) {
+        setState(() {
+          result.rawContent = 'The user did not grant the camera permission!';
+        });
+      } else {
+        result.rawContent = 'Unknown error: $e';
+      }
+      setState(() {
+        scanResult = result;
+      });
+    }
   }
 
   Widget getRequestListView(){
@@ -591,5 +740,4 @@ class _FacilityTradeRequestDetailViewPageState extends State<FacilityTradeReques
     );
   }
 
-  
 }

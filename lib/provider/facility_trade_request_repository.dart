@@ -94,6 +94,29 @@ class FacilityTradeRequestRepository with ChangeNotifier {
       });
     }
   }
+
+  //자산번호 바코드 스캔 내역 추가
+  //Return 1: 추가, 0 : 이미 추가됨, -1 : 요청 불가능 자산
+  Future<int> addRequestScanAssetCodeDetailList(RequestDetail d) async{
+    if(!_requestDetailList.any((item) => item.assetCode == d.assetCode)){
+      //Web Call
+      String langCode = await getLanguageCodeWithCountryCode();
+      await getReqFacilityList('asset', d.assetCode, langCode).then((d) {
+        if(d != null){
+          //_requestDetailList.removeWhere((item) => item.assetCode == d.assetCode);
+          //_requestScanRFIDDetailList.add(d);
+          _requestDetailList.add(d);
+          notifyListeners();
+          return 1;
+        }else{
+          return -1;
+        }
+      });
+    }else{
+      return 0;
+    }
+    return 0;
+  }
   
   //RFID 스캔 초기화
   Future<void> clearRequestScanList(bool notify) async{
@@ -224,7 +247,6 @@ class FacilityTradeRequestRepository with ChangeNotifier {
   //요청 가능한 설비
   Future<RequestDetail> getReqFacilityList(String searchDiv, String tag, String langCode) async{
     try{
-      // SERVER LOGIN API URL
       notifyListeners();
       var url = 'https://japi.jahwa.co.kr/api/Facility/GetReqFacilityList?searchDiv=$searchDiv&searchText=$tag&langCode=$langCode';
 

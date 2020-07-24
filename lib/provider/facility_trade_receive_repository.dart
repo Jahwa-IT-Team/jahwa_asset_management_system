@@ -122,6 +122,27 @@ class FacilityTradeReceiveRepository with ChangeNotifier {
       });
     }
   }
+
+  //자산번호 바코드 스캔 내역 추가
+  //Return 1: 추가, 0 : 이미 추가됨, -1 : 요청 불가능 자산
+  Future<int> addReceiveScanAssetCodeDetailList(ReceiveDetail d) async{
+    if(!_receiveDetailList.any((item) => item.assetCode == d.assetCode)){
+      //Web Call
+      String langCode = await getLanguageCodeWithCountryCode();
+      await getReceiveFacilityList('asset', d.assetCode, langCode).then((d) {
+        if(d != null){
+          _receiveDetailList.add(d);
+          notifyListeners();
+          return 1;
+        }else{
+          return -1;
+        }
+      });
+    }else{
+      return 0;
+    }
+    return 0;
+  }
   
   //RFID 스캔 초기화
   Future<void> clearReceiveScanList(bool notify) async{

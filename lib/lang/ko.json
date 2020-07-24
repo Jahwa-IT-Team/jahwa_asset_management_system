@@ -120,6 +120,7 @@
     "facility_trade_request_search":"발송 요청 조회",
     "facility_trade_request_detail_list":"요청 내역",
     "facility_trade_request_detail_view_page":"설비 요청 내역",
+    "facility_trade_list":"설비 내역",
     
     "facility_list_view":"설비 목록 보기",
     "item_group":"품목그룹",
