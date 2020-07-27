@@ -111,8 +111,8 @@ class _HomePageState extends State<HomePage> {
           break;
         case 2:
           _index = 0;
-          alertComingSoon();
-          //Navigator.pushNamed(context, facilityLocationTabsRoute);
+          //alertComingSoon();
+          Navigator.pushNamed(context, facilityLocationTabsRoute);
           break;
         case 3:
           _index = 0;
