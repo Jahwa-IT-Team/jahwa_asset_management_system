@@ -6,6 +6,7 @@ import 'package:flutter_picker/Picker.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/widgets.dart';
+import 'package:jahwa_asset_management_system/models/facility_common.dart';
 import "package:jahwa_asset_management_system/models/facility_trade.dart";
 import 'package:jahwa_asset_management_system/util/localization/language_constants.dart';
 

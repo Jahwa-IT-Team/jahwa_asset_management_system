@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 //import 'package:jahwa_asset_management_system/routes.dart';
 import 'package:jahwa_asset_management_system/util/localization/language_constants.dart';
 
-import 'package:jahwa_asset_management_system/screens/asset_tabs/asset_search.dart';
+
+import 'facility_location_change.dart';
+import 'facility_location_inspaction.dart';
+import 'facility_location_search.dart';
 
 
 
@@ -33,7 +36,7 @@ class _FacilityLocationTabsState extends State<FacilityLocationTabs> with Single
     return Scaffold(
       appBar: AppBar(
         title: Text(getTranslated(context, 'facility_location_tabs_title')),
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.deepPurple,
         actions: [
           IconButton(
             icon: Icon(Icons.home), 
@@ -48,24 +51,24 @@ class _FacilityLocationTabsState extends State<FacilityLocationTabs> with Single
       ),
       
       bottomNavigationBar: Container(
-        color: Colors.green,
+        color: Colors.deepPurple,
         //height: 100,
         child: TabBar(
-          unselectedLabelColor: Colors.greenAccent,
+          unselectedLabelColor: Colors.white38,
           //labelColor: Colors.amber[300],
           controller: ctr,
           tabs: <Tab>[
             Tab(
               icon: Icon(Icons.search),
-              text: getTranslated(context, 'asset_tabs_search'),
+              text: getTranslated(context, 'facility_location_tabs_search'),
             ),
             Tab(
               icon: Icon(Icons.storage),
-              text: getTranslated(context, 'asset_tabs_inspaction'),
+              text: getTranslated(context, 'facility_location_tabs_inspaction'),
             ),
             Tab(
-              icon: Icon(Icons.equalizer),
-              text: getTranslated(context, 'asset_tabs_table_chart'),
+              icon: Icon(Icons.cached),
+              text: getTranslated(context, 'facility_location_tabs_change'),
             ),
           ],
         ),
@@ -74,9 +77,9 @@ class _FacilityLocationTabsState extends State<FacilityLocationTabs> with Single
       body: TabBarView(
         controller: ctr,
         children: <Widget>[
-          new AssetSearchPage(),
-          new AssetSearchPage(),
-          new AssetSearchPage(),
+          new FacilityLocationSearchPage(),
+          new FacilityLocationInspactionPage(),
+          new FacilityLocationChangePage(),
         ],
       ),
       // bottomNavigationBar: new BottomNavigationBar(

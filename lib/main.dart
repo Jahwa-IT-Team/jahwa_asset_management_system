@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:jahwa_asset_management_system/provider/facility_location_repository.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter/material.dart';
@@ -30,6 +31,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => FacilityTradeRequestRepository(),),
         ChangeNotifierProvider(create: (_) => FacilityTradeSendRepository(),),
         ChangeNotifierProvider(create: (_) => FacilityTradeReceiveRepository(),),
+        ChangeNotifierProvider(create: (_) => FacilityLocationRepository(),),
       ],
       child: MyApp(),
     ),

@@ -5,6 +5,8 @@ import 'package:jahwa_asset_management_system/screens/asset_tabs/asset_dashboard
 import 'package:jahwa_asset_management_system/screens/asset_tabs/asset_dashboard_dept_detail.dart';
 import 'package:jahwa_asset_management_system/screens/bluetooth/bluetooth_reader.dart';
 import 'package:jahwa_asset_management_system/screens/bluetooth/bluetooth_scan.dart';
+import 'package:jahwa_asset_management_system/screens/facility_location_tabs/facility_location_inspaction_setting.dart';
+import 'package:jahwa_asset_management_system/screens/facility_location_tabs/facility_location_search_filter.dart';
 import 'package:jahwa_asset_management_system/screens/facility_trade_tabs/facility_trade_bluetooth_reader.dart';
 import 'package:jahwa_asset_management_system/screens/facility_trade_tabs/facility_trade_request_detail_view.dart';
 import 'package:jahwa_asset_management_system/screens/login/login.dart';
@@ -27,12 +29,15 @@ const String assetInspectionQRScanRoute = "assetInspectionQRScan";
 const String assetDashboardDeptRoute = "assetDashboardDept";
 const String assetDashboardDeptDetailRoute = "assetDashboardDeptDetail";
 const String facilityLocationTabsRoute = "facilityLocationTabs";
+const String facilityLocationSearchFilterRoute = "facilityLoationSearchFilterRoute";
+const String facilityLocationInspactionSettingRoute = "facilityLocationInspactionSettingRoute";
 const String facilityTradeTabsRoute = "facilityTradeTabsRoute";
 const String facilityTradeRequestDetailViewRoute = "facilityTradeRequestDetailViewRoute";
 const String facilityTradeBluetoothReaderRoute = "facilityTradeBluetoothReaderRoute";
 const String bluetoothScanRoute = "bluetoothScanRoute";
 const String bluetoothScan2Route = "bluetoothScan2Route";
 const String bluetoothReaderRoute = "bluetoothReaderRoute";
+
 
 
 class CustomRouter {
@@ -56,6 +61,10 @@ class CustomRouter {
         return MaterialPageRoute(builder: (_) => AssetDashbaordDeptDetailPage(args:settings.arguments)); 
       case facilityLocationTabsRoute:
         return MaterialPageRoute(builder: (_) => FacilityLocationTabs());
+      case facilityLocationSearchFilterRoute:
+        return MaterialPageRoute(builder: (_) => FacilityLocationSearchFilterPage());
+      case facilityLocationInspactionSettingRoute:
+        return MaterialPageRoute(builder: (_) => FacilityLocationInspactionSettingPage());
       case facilityTradeTabsRoute:
         return MaterialPageRoute(builder: (_) => FacilityTradTabs());
       case facilityTradeRequestDetailViewRoute:

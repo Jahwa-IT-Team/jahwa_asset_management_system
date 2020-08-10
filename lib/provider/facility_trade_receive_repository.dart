@@ -226,15 +226,15 @@ class FacilityTradeReceiveRepository with ChangeNotifier {
     try{
       /*
       {
-  "facility": "string",
-  "recNo": "string",
-  "entCode": "string",
-  "recInvNo": "string",
-  "receiver": "string",
-  "receiveDate": "string",
-  "comment": "string",
-  "empCode": "string"
-}
+        "facility": "string",
+        "recNo": "string",
+        "entCode": "string",
+        "recInvNo": "string",
+        "receiver": "string",
+        "receiveDate": "string",
+        "comment": "string",
+        "empCode": "string"
+      }
 
       test1234♬JH-2003-0002♬Good♬JV101A♬[JV101] A CleanRoom (OIS)♬14♬11♪
       */
