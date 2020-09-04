@@ -11,21 +11,19 @@ import 'package:jahwa_asset_management_system/widgets/card_settings_custom_text.
 import 'package:jahwa_asset_management_system/widgets/custom_widget.dart';
 import 'package:provider/provider.dart';
 
-
-
-class FacilityLocationSearchFilterPage extends StatefulWidget{
-
+class FacilityLocationSearchFilterPage extends StatefulWidget {
   @override
-  _FacilityLocationSearchFilterPageState createState() => _FacilityLocationSearchFilterPageState();
-
+  _FacilityLocationSearchFilterPageState createState() =>
+      _FacilityLocationSearchFilterPageState();
 }
 
-class _FacilityLocationSearchFilterPageState extends State<FacilityLocationSearchFilterPage>{
+class _FacilityLocationSearchFilterPageState
+    extends State<FacilityLocationSearchFilterPage> {
   bool _showMaterialonIOS = true;
-  
+
   final GlobalKey<ScaffoldState> scaffold1Key = GlobalKey<ScaffoldState>();
 
-  UserRepository $userRepository; 
+  UserRepository $userRepository;
   FacilityLocationRepository $facilityLocationRepository;
   FacilityTradeCommonRepository $facilityTradeCommonRepository;
 
@@ -34,27 +32,80 @@ class _FacilityLocationSearchFilterPageState extends State<FacilityLocationSearc
   final GlobalKey<FormState> _facilityCodeKey = GlobalKey<FormState>();
   final GlobalKey<FormState> _assetCodeKey = GlobalKey<FormState>();
 
-  @override
-  Widget build(BuildContext context){
+  SearchCondtion searchCondtion;
 
-    if($userRepository == null){
+  @override
+  void initState() {
+    //부모 initState() 호출
+    super.initState();
+
+    searchCondtion = new SearchCondtion(
+      assetCode: '',
+      facilityCode: '',
+      setupLocationCode: '',
+      display: SearchResultDisplay.all,
+      hideAllDisplayInLocation: true,
+      listViewDisplayType: ListViewDisplayType.table,
+    );
+  }
+
+  @override
+  void didChangeDependencies() {
+    $userRepository = Provider.of<UserRepository>(context, listen: true);
+    $facilityTradeCommonRepository =
+        Provider.of<FacilityTradeCommonRepository>(context, listen: true);
+
+    if ($facilityLocationRepository == null) {
+      $facilityLocationRepository =
+          Provider.of<FacilityLocationRepository>(context, listen: true);
+      $facilityLocationRepository.init();
+
+      //조건 세팅
+      searchCondtion.facilityCode =
+          $facilityLocationRepository.searchCondtion.facilityCode;
+      searchCondtion.assetCode =
+          $facilityLocationRepository.searchCondtion.assetCode;
+      searchCondtion.setupLocationCode =
+          $facilityLocationRepository.searchCondtion.setupLocationCode;
+      searchCondtion.display =
+          $facilityLocationRepository.searchCondtion.display;
+      searchCondtion.hideAllDisplayInLocation =
+          $facilityLocationRepository.searchCondtion.hideAllDisplayInLocation;
+      searchCondtion.listViewDisplayType =
+          $facilityLocationRepository.searchCondtion.listViewDisplayType;
+    }
+
+    super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() async {
+    debugPrint('filter page dispose');
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if ($userRepository == null) {
       $userRepository = Provider.of<UserRepository>(context, listen: true);
     }
 
-    if($facilityTradeCommonRepository == null){
-      $facilityTradeCommonRepository = Provider.of<FacilityTradeCommonRepository>(context, listen: true);
+    if ($facilityTradeCommonRepository == null) {
+      $facilityTradeCommonRepository =
+          Provider.of<FacilityTradeCommonRepository>(context, listen: true);
     }
 
-    if($facilityLocationRepository == null){
-      $facilityLocationRepository = Provider.of<FacilityLocationRepository>(context, listen: true);
-      //$facilityLocationRepository.searchCondtion.display = SearchResultDisplay.all;
+    if ($facilityLocationRepository == null) {
+      $facilityLocationRepository =
+          Provider.of<FacilityLocationRepository>(context, listen: true);
+      //searchCondtion.display = SearchResultDisplay.all;
     }
 
-    _facilityCodeController.text = $facilityLocationRepository.searchCondtion.facilityCode;
-    _assetCodeController.text = $facilityLocationRepository.searchCondtion.assetCode;
-    
+    _facilityCodeController.text = searchCondtion.facilityCode;
+    _assetCodeController.text = searchCondtion.assetCode;
+
     return Scaffold(
-      key:scaffold1Key,
+      key: scaffold1Key,
       appBar: AppBar(
         title: Text(getTranslated(context, 'search_condition')),
         backgroundColor: Colors.deepPurple,
@@ -64,58 +115,55 @@ class _FacilityLocationSearchFilterPageState extends State<FacilityLocationSearc
           //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Expanded(child: searchConditionBox(),),
-            Padding(
-              padding: const EdgeInsets.all(0.0),
-              child: Column()
+            Expanded(
+              child: searchConditionBox(),
             ),
-            
+            Padding(padding: const EdgeInsets.all(0.0), child: Column()),
+
             //SizedBox(height: 70,),
           ],
         ),
       ),
-    
     );
   }
 
-
   //조건 박스
-  Widget searchConditionBox(){
+  Widget searchConditionBox() {
     return CardSettings.sectioned(
-      showMaterialonIOS: _showMaterialonIOS,
-      labelWidth: 120,
-      children: <CardSettingsSection>[
-        CardSettingsSection(
-          showMaterialonIOS: _showMaterialonIOS,
-          header: CardSettingsHeader(
-            label: getTranslated(context, 'search_condition'),
+        showMaterialonIOS: _showMaterialonIOS,
+        labelWidth: 120,
+        children: <CardSettingsSection>[
+          CardSettingsSection(
             showMaterialonIOS: _showMaterialonIOS,
-            labelAlign: TextAlign.center,
-            color: Colors.deepPurple,
-          ),
-          children: <Widget>[
-            buildCardSettingsTextFacilityCode(),
-            buildCardSettingsTextAssetCode(),
-            buildCardSettingsPickerLocation(),
-            buildCardSettingsSelectView(),
-            Column(
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    buildCardSettingsButtonReset(),
-                    buildCardSettingsButtonApply(),
-                  ],
-                )
-              ],
+            header: CardSettingsHeader(
+              label: getTranslated(context, 'search_condition'),
+              showMaterialonIOS: _showMaterialonIOS,
+              labelAlign: TextAlign.center,
+              color: Colors.deepPurple,
             ),
-            //testSearch(),
-            SizedBox(height: 5,),
-            
-          ],
-        ),
-      ]
-    );
+            children: <Widget>[
+              buildCardSettingsTextFacilityCode(),
+              buildCardSettingsTextAssetCode(),
+              buildCardSettingsPickerLocation(),
+              buildCardSettingsSelectView(),
+              Column(
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      buildCardSettingsButtonReset(),
+                      buildCardSettingsButtonApply(),
+                    ],
+                  )
+                ],
+              ),
+              //testSearch(),
+              SizedBox(
+                height: 5,
+              ),
+            ],
+          ),
+        ]);
   }
 
   CardSettingsCustomText buildCardSettingsTextFacilityCode() {
@@ -125,19 +173,18 @@ class _FacilityLocationSearchFilterPageState extends State<FacilityLocationSearc
       key: _facilityCodeKey,
       label: getTranslated(context, 'facility_code'),
       hintText: getTranslated(context, 'facility_code_hint'),
-      initialValue: $facilityLocationRepository.searchCondtion==null?'':$facilityLocationRepository.searchCondtion.facilityCode,
+      initialValue: searchCondtion == null ? '' : searchCondtion.facilityCode,
       //requiredIndicator: Text('*', style: TextStyle(color: Colors.red)),
       validator: (value) {
         return null;
       },
-      onSaved: (value) => $facilityLocationRepository.searchCondtion.facilityCode = value,
+      onSaved: (value) => searchCondtion.facilityCode = value,
       onChanged: (value) {
-        debugPrint("onChanged ReqNo(Provider)");
-        debugPrint("onChanged ReqNo(Provider):${$facilityLocationRepository.searchCondtion.facilityCode}");
-        $facilityLocationRepository.searchCondtion.facilityCode = value;
+        searchCondtion.facilityCode = value;
       },
     );
   }
+
   CardSettingsCustomText buildCardSettingsTextAssetCode() {
     return CardSettingsCustomText(
       showMaterialonIOS: _showMaterialonIOS,
@@ -145,47 +192,49 @@ class _FacilityLocationSearchFilterPageState extends State<FacilityLocationSearc
       key: _assetCodeKey,
       label: getTranslated(context, 'input_asset_no'),
       hintText: getTranslated(context, 'input_asset_no_hint'),
-      initialValue: $facilityLocationRepository.searchCondtion==null?'':$facilityLocationRepository.searchCondtion.assetCode,
+      initialValue: searchCondtion == null ? '' : searchCondtion.assetCode,
       //requiredIndicator: Text('*', style: TextStyle(color: Colors.red)),
       validator: (value) {
         return null;
       },
-      onSaved: (value) => $facilityLocationRepository.searchCondtion.assetCode = value,
+      onSaved: (value) => searchCondtion.assetCode = value,
       onChanged: (value) {
-        debugPrint("onChanged ReqNo(Provider)");
-        debugPrint("onChanged ReqNo(Provider):${$facilityLocationRepository.searchCondtion.assetCode}");
-        $facilityLocationRepository.searchCondtion.assetCode = value;
+        searchCondtion.assetCode = value;
       },
     );
   }
 
-  Widget buildCardSettingsPickerLocation(){
+  Widget buildCardSettingsPickerLocation() {
     return customCardField(
       label: getTranslated(context, 'asset_info_label_setarea'),
       content: customDropdown(
-        data: $facilityTradeCommonRepository.getSetupLocationData($userRepository.connectionInfo==null?'':$userRepository.connectionInfo.company),
-        value: $facilityLocationRepository.searchCondtion==null?'':$facilityLocationRepository.searchCondtion.setupLocationCode,
-        onTap: (){
-          debugPrint("Grade onTap:");
-          Picker(
-            adapter: PickerDataAdapter(data: $facilityTradeCommonRepository.getSetupLocationData($userRepository.connectionInfo==null?'':$userRepository.connectionInfo.company)),
-            hideHeader: true,
-            textAlign: TextAlign.left,
-            title: new Text("Please Select"),
-            onConfirm: (Picker picker, List value) {
-              print(picker.getSelectedValues()[0].toString());
-              $facilityLocationRepository.searchCondtion.setupLocationCode = picker.getSelectedValues()[0];
-              //$facilityLocationRepository.searchCondtion.setupLocation = $facilityTradeCommonRepository.getSetupLocationName($facilityTradeReceiveRepository.receiveDetailList[index].entCode, picker.getSelectedValues()[0]);
-              setState(() {
-              });
-            }
-          ).showDialog(context);
-        }
-      ),
+          data: $facilityTradeCommonRepository.getSetupLocationData(
+              $userRepository.connectionInfo == null
+                  ? ''
+                  : $userRepository.connectionInfo.company),
+          value: searchCondtion == null ? '' : searchCondtion.setupLocationCode,
+          onTap: () {
+            debugPrint("Grade onTap:");
+            Picker(
+                adapter: PickerDataAdapter(
+                    data: $facilityTradeCommonRepository.getSetupLocationData(
+                        $userRepository.connectionInfo == null
+                            ? ''
+                            : $userRepository.connectionInfo.company)),
+                hideHeader: true,
+                textAlign: TextAlign.left,
+                title: new Text("Please Select"),
+                onConfirm: (Picker picker, List value) {
+                  print(picker.getSelectedValues()[0].toString());
+                  searchCondtion.setupLocationCode =
+                      picker.getSelectedValues()[0];
+                  setState(() {});
+                }).showDialog(context);
+          }),
     );
   }
 
-  Widget buildCardSettingsSelectView(){
+  Widget buildCardSettingsOptionView() {
     return customCardField(
       label: getTranslated(context, 'search_result_display'),
       content: Column(
@@ -193,13 +242,18 @@ class _FacilityLocationSearchFilterPageState extends State<FacilityLocationSearc
           ListTile(
             contentPadding: EdgeInsets.all(0),
             title: Text(getTranslated(context, 'all_display')),
-            subtitle: Text(getTranslated(context, 'all_display_desc'),style: TextStyle(color:Colors.red),),
+            subtitle: Text(
+              getTranslated(context, 'all_display_desc'),
+              style: TextStyle(color: Colors.red),
+            ),
             leading: Radio(
               value: SearchResultDisplay.all,
-              groupValue: $facilityLocationRepository.searchCondtion==null?SearchResultDisplay.all:$facilityLocationRepository.searchCondtion.display,
+              groupValue: searchCondtion == null
+                  ? SearchResultDisplay.all
+                  : searchCondtion.display,
               onChanged: (SearchResultDisplay value) {
                 setState(() {
-                  $facilityLocationRepository.searchCondtion.display = value;
+                  searchCondtion.display = value;
                 });
               },
             ),
@@ -209,14 +263,115 @@ class _FacilityLocationSearchFilterPageState extends State<FacilityLocationSearc
             title: Text(getTranslated(context, 'filter_only')),
             leading: Radio(
               value: SearchResultDisplay.filter_only,
-              groupValue: $facilityLocationRepository.searchCondtion==null?SearchResultDisplay.all:$facilityLocationRepository.searchCondtion.display,
+              groupValue: searchCondtion == null
+                  ? SearchResultDisplay.all
+                  : searchCondtion.display,
               onChanged: (SearchResultDisplay value) {
                 setState(() {
-                  $facilityLocationRepository.searchCondtion.display = value;
+                  searchCondtion.display = value;
                 });
               },
             ),
           ),
+          ListTile(
+            contentPadding: EdgeInsets.all(0),
+            title: Text(getTranslated(context, 'all_display_in_location')),
+            subtitle: Text(
+              getTranslated(context, 'all_display_in_location_desc'),
+              style: TextStyle(color: Colors.red),
+            ),
+            leading: Radio(
+              value: SearchResultDisplay.location,
+              groupValue: searchCondtion == null
+                  ? SearchResultDisplay.all
+                  : searchCondtion.display,
+              onChanged: (SearchResultDisplay value) {
+                setState(() {
+                  searchCondtion.display = value;
+                });
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildCardSettingsSelectView() {
+    return customCardField(
+      label: getTranslated(context, 'search_result_display'),
+      content: Column(
+        children: <Widget>[
+          ListTile(
+            contentPadding: EdgeInsets.all(0),
+            title: Text(getTranslated(context, 'all_display')),
+            subtitle: Text(
+              getTranslated(context, 'all_display_desc'),
+              style: TextStyle(color: Colors.red),
+            ),
+            leading: Radio(
+              value: SearchResultDisplay.all,
+              groupValue: searchCondtion == null
+                  ? SearchResultDisplay.all
+                  : searchCondtion.display,
+              onChanged: (SearchResultDisplay value) {
+                setState(() {
+                  searchCondtion.display = value;
+                });
+              },
+            ),
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.all(0),
+            title: Text(getTranslated(context, 'filter_only')),
+            leading: Radio(
+              value: SearchResultDisplay.filter_only,
+              groupValue: searchCondtion == null
+                  ? SearchResultDisplay.all
+                  : searchCondtion.display,
+              onChanged: (SearchResultDisplay value) {
+                setState(() {
+                  searchCondtion.display = value;
+                });
+              },
+            ),
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.all(0),
+            title: Text(getTranslated(context, 'all_display_in_location')),
+            subtitle: Text(
+              getTranslated(context, 'all_display_in_location_desc'),
+              style: TextStyle(color: Colors.red),
+            ),
+            leading: Radio(
+              value: SearchResultDisplay.location,
+              groupValue: searchCondtion == null
+                  ? SearchResultDisplay.all
+                  : searchCondtion.display,
+              onChanged: (SearchResultDisplay value) {
+                setState(() {
+                  searchCondtion.display = value;
+                });
+              },
+            ),
+          ),
+          if (searchCondtion.display == SearchResultDisplay.location)
+            ListTile(
+              contentPadding: EdgeInsets.all(0),
+              title: Text(getTranslated(context, 'all_display_in_location1')),
+              subtitle: Text(
+                getTranslated(context, 'all_display_in_location_desc1'),
+                style: TextStyle(color: Colors.red),
+              ),
+              leading: Checkbox(
+                value: searchCondtion.hideAllDisplayInLocation,
+                onChanged: (bool value) {
+                  setState(() {
+                    searchCondtion.hideAllDisplayInLocation = value;
+                  });
+                },
+              ),
+            ),
         ],
       ),
     );
@@ -242,12 +397,25 @@ class _FacilityLocationSearchFilterPageState extends State<FacilityLocationSearc
     );
   }
 
-  Future applyPressed() async{
+  Future applyPressed() async {
+    $facilityLocationRepository.searchCondtion = searchCondtion;
+    $facilityLocationRepository.getAllFacilityListInLocation();
     Navigator.pop(context);
   }
 
-  Future resetPressed() async{
+  Future resetPressed() async {
     $facilityLocationRepository.resetSearchCondition(true);
+    //조건 세팅
+    searchCondtion.facilityCode =
+        $facilityLocationRepository.searchCondtion.facilityCode;
+    searchCondtion.assetCode =
+        $facilityLocationRepository.searchCondtion.assetCode;
+    searchCondtion.setupLocationCode =
+        $facilityLocationRepository.searchCondtion.setupLocationCode;
+    searchCondtion.display = $facilityLocationRepository.searchCondtion.display;
+    searchCondtion.hideAllDisplayInLocation =
+        $facilityLocationRepository.searchCondtion.hideAllDisplayInLocation;
+    searchCondtion.listViewDisplayType =
+        $facilityLocationRepository.searchCondtion.listViewDisplayType;
   }
-
 }

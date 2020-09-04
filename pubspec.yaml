@@ -34,6 +34,8 @@ dependencies:
     sdk: flutter
   flutter_cupertino_localizations: ^1.0.1
 
+  flutter_cupertino_settings: ^0.3.1
+
   # 다음은 앱에 Cupertino 아이콘 폰트를 추가합니다.
   # iOS 스타일 아이콘으로 CupertinoIcons 클래스를 이용해서 사용하세요.
   # The following adds the Cupertino Icons font to your application.

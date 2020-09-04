@@ -1,5 +1,3 @@
-
-
 import 'dart:async';
 
 import 'package:btprotocol/btprotocol.dart';
@@ -22,13 +20,14 @@ import '../../routes.dart';
 //card_settings 예제
 //https://pub.dev/packages/card_settings#-example-tab-
 
-class FacilityTradeRFIDRegistrationPage extends StatefulWidget{
+class FacilityTradeRFIDRegistrationPage extends StatefulWidget {
   @override
-  _FacilityTradeRFIDRegistrationPageState createState() => _FacilityTradeRFIDRegistrationPageState();
-
+  _FacilityTradeRFIDRegistrationPageState createState() =>
+      _FacilityTradeRFIDRegistrationPageState();
 }
 
-class _FacilityTradeRFIDRegistrationPageState extends State<FacilityTradeRFIDRegistrationPage>{
+class _FacilityTradeRFIDRegistrationPageState
+    extends State<FacilityTradeRFIDRegistrationPage> {
   bool _showMaterialonIOS = true;
   bool _autoValidate = false;
   bool _isStreamAction = false;
@@ -38,7 +37,7 @@ class _FacilityTradeRFIDRegistrationPageState extends State<FacilityTradeRFIDReg
   Stream<dynamic> bluetoothStream = Btprotocol.instance.onChangeState;
   StreamSubscription bluetoothSubscription;
 
-  UserRepository $userRepository; 
+  UserRepository $userRepository;
   FacilityTradeCommonRepository $facilityTradeCommonRepository;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -48,21 +47,46 @@ class _FacilityTradeRFIDRegistrationPageState extends State<FacilityTradeRFIDReg
   final GlobalKey<FormState> _assetCodeKey = GlobalKey<FormState>();
   final GlobalKey<FormState> _facilityNameKey = GlobalKey<FormState>();
   final GlobalKey<FormState> _autosaveKey = GlobalKey<FormState>();
-  
+
   final _tagControll = TextEditingController();
   final _assetCodeControll = TextEditingController();
   final _facilityNameControll = TextEditingController();
   final _facilityCodeControll = TextEditingController();
-  
+
   @override
-  Widget build(BuildContext context){
-    
-    if($userRepository == null){
+  void initState() {
+    super.initState();
+
+    // new Future.delayed(Duration.zero, () {
+    //   _actionBluetoothStream();
+    // });
+
+    bluetoothSubscription = bluetoothStream.listen((event) {
+      dataRead();
+    });
+  }
+
+  @override
+  void dispose() {
+    Btprotocol.instance.clearData();
+    //Btprotocol.instance.disconnectDevice();
+
+    if (bluetoothSubscription != null) {
+      bluetoothSubscription.cancel();
+    }
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if ($userRepository == null) {
       $userRepository = Provider.of<UserRepository>(context, listen: true);
     }
 
-    if($facilityTradeCommonRepository == null){
-      $facilityTradeCommonRepository = Provider.of<FacilityTradeCommonRepository>(context, listen: true);
+    if ($facilityTradeCommonRepository == null) {
+      $facilityTradeCommonRepository =
+          Provider.of<FacilityTradeCommonRepository>(context, listen: true);
     }
 
     return Scaffold(
@@ -76,7 +100,7 @@ class _FacilityTradeRFIDRegistrationPageState extends State<FacilityTradeRFIDReg
       ),
       floatingActionButton: buildSpeedDial(),
     );
-  } 
+  }
 
   SpeedDial buildSpeedDial() {
     return SpeedDial(
@@ -96,66 +120,74 @@ class _FacilityTradeRFIDRegistrationPageState extends State<FacilityTradeRFIDReg
         //   labelStyle: TextStyle(fontWeight: FontWeight.w500),
         //   labelBackgroundColor: Colors.deepOrangeAccent,
         // ),
-        if(!_isStreamAction) SpeedDialChild(
-          child: Icon(Icons.bluetooth_searching, color: Colors.white),
-          backgroundColor: Colors.green,
-          onTap: () => _actionBluetoothStream(),
-          label: 'Connect',
-          labelStyle: TextStyle(fontWeight: FontWeight.w500, color: Colors.white70),
-          labelBackgroundColor: Colors.blue,
-        ),
-        if(_isStreamAction) SpeedDialChild(
-          child: Icon(Icons.bluetooth_disabled, color: Colors.white),
-          backgroundColor: Colors.red,
-          onTap: () => _actionBluetoothStream(),
-          label: 'Disconnect',
-          labelStyle: TextStyle(fontWeight: FontWeight.w500, color: Colors.white70),
-          labelBackgroundColor: Colors.red,
-        ),
+        if (!_isStreamAction)
+          SpeedDialChild(
+            child: Icon(Icons.bluetooth_searching, color: Colors.white),
+            backgroundColor: Colors.green,
+            onTap: () => _actionBluetoothStream(),
+            label: 'Connect',
+            labelStyle:
+                TextStyle(fontWeight: FontWeight.w500, color: Colors.white70),
+            labelBackgroundColor: Colors.blue,
+          ),
+        if (_isStreamAction)
+          SpeedDialChild(
+            child: Icon(Icons.bluetooth_disabled, color: Colors.white),
+            backgroundColor: Colors.red,
+            onTap: () => _actionBluetoothStream(),
+            label: 'Disconnect',
+            labelStyle:
+                TextStyle(fontWeight: FontWeight.w500, color: Colors.white70),
+            labelBackgroundColor: Colors.red,
+          ),
         SpeedDialChild(
           child: Icon(Icons.clear_all, color: Colors.white),
           backgroundColor: Colors.blue,
-          onTap: () => clearData() ,
+          onTap: () => clearData(),
           labelWidget: Container(
             color: Colors.blue,
             margin: EdgeInsets.only(right: 10),
             padding: EdgeInsets.all(6),
-            child: Text('Clear All', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white70),),
+            child: Text(
+              'Clear All',
+              style:
+                  TextStyle(fontWeight: FontWeight.w500, color: Colors.white70),
+            ),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildPortraitLayout(){
+  Widget _buildPortraitLayout() {
     return CardSettings.sectioned(
-      showMaterialonIOS: _showMaterialonIOS,
-      labelWidth: 100,
-      children: <CardSettingsSection>[
-        CardSettingsSection(
-          showMaterialonIOS: _showMaterialonIOS,
-          header: CardSettingsHeader(
-            label: getTranslated(context, 'facility_info'),
+        showMaterialonIOS: _showMaterialonIOS,
+        labelWidth: 100,
+        children: <CardSettingsSection>[
+          CardSettingsSection(
             showMaterialonIOS: _showMaterialonIOS,
-            color: Colors.indigo,
-            labelAlign: TextAlign.center,
-          ),
-          children: <Widget>[
-            
-            _buildCardSettingsTextFacilityCode(),
-            _buildCardSettingsTextAssetCode() ,
-            _buildCardSettingsTextFacilityName(),
-            CardSettingsHeader(
-              label: getTranslated(context, 'facility_trade_rfid_registration'),
+            header: CardSettingsHeader(
+              label: getTranslated(context, 'facility_info'),
               showMaterialonIOS: _showMaterialonIOS,
               color: Colors.indigo,
               labelAlign: TextAlign.center,
             ),
-            _buildCardSettingsSwitchAutoSave(),
-            customCardField(
-              label: getTranslated(context, 'bluetooth'),
-              content: Container(
-                child: Row(
+            children: <Widget>[
+              _buildCardSettingsTextFacilityCode(),
+              _buildCardSettingsTextAssetCode(),
+              _buildCardSettingsTextFacilityName(),
+              CardSettingsHeader(
+                label:
+                    getTranslated(context, 'facility_trade_rfid_registration'),
+                showMaterialonIOS: _showMaterialonIOS,
+                color: Colors.indigo,
+                labelAlign: TextAlign.center,
+              ),
+              _buildCardSettingsSwitchAutoSave(),
+              customCardField(
+                label: getTranslated(context, 'bluetooth'),
+                content: Container(
+                    child: Row(
                   //verticalDirection:  direction,
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -163,45 +195,45 @@ class _FacilityTradeRFIDRegistrationPageState extends State<FacilityTradeRFIDReg
                     Expanded(
                       flex: 9,
                       child: Container(
-                        
                         padding: EdgeInsets.fromLTRB(0.0, 3.0, 10.0, 0.0),
                         //child: label,
                         child: Text(
-                          $userRepository.bluetoothDevice==null?'None':$userRepository.bluetoothDevice.address??'None', 
-                          softWrap: true, 
+                          $userRepository.bluetoothDevice == null
+                              ? 'None'
+                              : $userRepository.bluetoothDevice.address ??
+                                  'None',
+                          softWrap: true,
                           textAlign: TextAlign.right,
-                          style: TextStyle(color: Colors.grey, fontSize: 16, fontWeight: FontWeight.normal),
-                        ),//Expanded(child: displayText) ,
+                          style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 16,
+                              fontWeight: FontWeight.normal),
+                        ), //Expanded(child: displayText) ,
                       ),
                     ),
                     Expanded(
                       flex: 1,
                       child: Container(
                         padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
-                        child: Container(
-                          child: Icon(Icons.arrow_drop_down)
-                        ),
+                        child: Container(child: Icon(Icons.arrow_drop_down)),
                       ),
                     ),
-                ],)
-                
+                  ],
+                )),
               ),
-            ),
-            _buildCardSettingsParagraphRFIDTag(2),
-            _buildCardSettingsButtonSave(),
-            //_buildCardSettingsButtonConnectBluetooth(),
-            SizedBox(height: 5,),
-          ],
-        ),
-        
-      ]
-    );
-
+              _buildCardSettingsParagraphRFIDTag(2),
+              _buildCardSettingsButtonSave(),
+              //_buildCardSettingsButtonConnectBluetooth(),
+              SizedBox(
+                height: 5,
+              ),
+            ],
+          ),
+        ]);
   }
 
-
   /* BUILDERS FOR EACH FIELD */
-  
+
   CardSettingsParagraph _buildCardSettingsParagraphRFIDTag(int lines) {
     return CardSettingsParagraph(
       showMaterialonIOS: _showMaterialonIOS,
@@ -212,14 +244,13 @@ class _FacilityTradeRFIDRegistrationPageState extends State<FacilityTradeRFIDReg
       numberOfLines: lines,
       autovalidate: _autoValidate,
       validator: (value) {
-        if (value == null || value.isEmpty) return getTranslated(context, 'facility_trade_rfid_tag_hint');
+        if (value == null || value.isEmpty)
+          return getTranslated(context, 'facility_trade_rfid_tag_hint');
         return null;
       },
       onSaved: (value) => {},
       onChanged: (value) {
-        setState(() {
-          
-        });
+        setState(() {});
         //_showSnackBar('Description', value);
       },
     );
@@ -236,10 +267,11 @@ class _FacilityTradeRFIDRegistrationPageState extends State<FacilityTradeRFIDReg
       //requiredIndicator: Text('*', style: TextStyle(color: Colors.red)),
       autovalidate: _autoValidate,
       validator: (value) {
-        if (value == null || value.isEmpty) return getTranslated(context, 'facility_code_hint');
+        if (value == null || value.isEmpty)
+          return getTranslated(context, 'facility_code_hint');
         return null;
       },
-      onSaved: (_){},
+      onSaved: (_) {},
       onChanged: (value) {
         setState(() {
           //_receiveModel.receiveNum = value;
@@ -262,7 +294,7 @@ class _FacilityTradeRFIDRegistrationPageState extends State<FacilityTradeRFIDReg
         //if (value == null || value.isEmpty) return getTranslated(context, 'facility_trade_receive_number_hint');
         return null;
       },
-      onSaved: (_){},
+      onSaved: (_) {},
       onChanged: (value) {
         setState(() {
           //_receiveModel.receiveNum = value;
@@ -286,7 +318,7 @@ class _FacilityTradeRFIDRegistrationPageState extends State<FacilityTradeRFIDReg
         //if (value == null || value.isEmpty) return getTranslated(context, 'facility_trade_receive_number_hint');
         return null;
       },
-      onSaved: (_){},
+      onSaved: (_) {},
       onChanged: (value) {
         setState(() {
           //_receiveModel.receiveNum = value;
@@ -331,212 +363,215 @@ class _FacilityTradeRFIDRegistrationPageState extends State<FacilityTradeRFIDReg
   //   );
   // }
 
-  Future _autoSave() async{
-    if(_autoSaveSwitch && _facilityCodeControll.text != '' && _tagControll.text != '')
-    {
+  Future _autoSave() async {
+    if (_autoSaveSwitch &&
+        _facilityCodeControll.text != '' &&
+        _tagControll.text != '') {
       bool result = await _savePressed();
 
       await Future.delayed((Duration(seconds: 3)));
-      
-      if(result) await Btprotocol.instance.barcodeStartDecode.then((value) {debugPrint('barcode Start!');});
-      setState(() {
-        
-      });
+
+      if (result)
+        await Btprotocol.instance.barcodeStartDecode.then((value) {
+          debugPrint('barcode Start!');
+        });
+      setState(() {});
     }
   }
 
   Future<bool> _savePressed() async {
     final form = _formKey.currentState;
 
-
     if (form.validate()) {
       //form.save();
       //showResults(context, _ponyModel);
       //버튼 활성화
-      
-      bool result = await $facilityTradeCommonRepository.setFacilityRFIDTag(_facilityCodeControll.text, _tagControll.text, $userRepository.user.empNo);
 
-      if(result){
-        _showSnackBar("Save", getTranslated(context,"save_successfully"));
+      bool result = await $facilityTradeCommonRepository.setFacilityRFIDTag(
+          _facilityCodeControll.text,
+          _tagControll.text,
+          $userRepository.user.empNo);
+
+      if (result) {
+        _showSnackBar("Save", getTranslated(context, "save_successfully"));
         clearData();
-        
+
         setState(() {
           _autoValidate = false;
         });
-      }else{
-        customAlertOK(context,getTranslated(context, 'save_faild'), getTranslated(context, 'error_validation')).show();
+      } else {
+        customAlertOK(context, getTranslated(context, 'save_faild'),
+                getTranslated(context, 'error_validation'))
+            .show();
       }
       return result;
-
     } else {
-      customAlertOK(context,getTranslated(context, 'save_faild'), getTranslated(context, 'error_validation')).show();
+      customAlertOK(context, getTranslated(context, 'save_faild'),
+              getTranslated(context, 'error_validation'))
+          .show();
       setState(() => _autoValidate = true);
     }
-    
+
     return false;
-    
   }
 
-  void _actionBluetoothStream() async{
-    try{
+  void _actionBluetoothStream() async {
+    try {
       bool deviceConnected = await Btprotocol.instance.isConnected;
 
-      if(!_isStreamAction){
-         
+      if (!_isStreamAction) {
         //Address 체크
-        if($userRepository.bluetoothDevice == null || $userRepository.bluetoothDevice.address == null || $userRepository.bluetoothDevice.address == '')
-        {
-          customAlertOK(context,getTranslated(context, 'device_not_found'), getTranslated(context, 'device_not_found_desc'))
-            .show()
-            .then((value) => Navigator.pushNamed(context, bluetoothScanRoute));
+        if ($userRepository.bluetoothDevice == null ||
+            $userRepository.bluetoothDevice.address == null ||
+            $userRepository.bluetoothDevice.address == '') {
+          customAlertOK(context, getTranslated(context, 'device_not_found'),
+                  getTranslated(context, 'device_not_found_desc'))
+              .show()
+              .then(
+                  (value) => Navigator.pushNamed(context, bluetoothScanRoute));
           return;
         }
-        
+
         int isConnected = -1;
 
-        if(!deviceConnected){
+        if (!deviceConnected) {
           //블루투스 연결
           isConnected = await Btprotocol.instance
-            .connectDevice($userRepository.bluetoothDevice.address);
-        }else{
+              .connectDevice($userRepository.bluetoothDevice.address);
+        } else {
           isConnected = 0;
         }
-        
+
         debugPrint(isConnected.toString());
-        if(isConnected > -9){
+        if (isConnected > -9) {
           _isStreamAction = true;
 
           _showSnackBar('Bluetooth', 'Connect successfully.');
 
           //파워 최소로 변경
-          await Btprotocol.instance.setPower(50).then((_) => _showSnackBar('Power','Minimum size(50)'));
+          await Btprotocol.instance
+              .setPower(50)
+              .then((_) => _showSnackBar('Power', 'Minimum size(50)'));
 
           //메모리 초기화
           //Btprotocol.instance.clearData();
 
           //정상 연결
-          if(bluetoothSubscription == null || bluetoothSubscription.isPaused){
+          if (bluetoothSubscription == null || bluetoothSubscription.isPaused) {
             debugPrint("bluetoothSubscription == null");
-            bluetoothSubscription = bluetoothStream.listen((event) { dataRead();});
-            
-          }else{
+            // bluetoothSubscription = bluetoothStream.listen((event) {
+            //   dataRead();
+            // });
+          } else {
             debugPrint("bluetoothSubscription not null");
           }
-          
-        }else{
+        } else {
           //연결 실패
           _showSnackBar('Bluetooth', 'Connection failure.');
         }
-      }else{
+      } else {
         await Btprotocol.instance.disconnectDevice();
         bluetoothSubscription.pause();
         _showSnackBar('Bluetooth', 'Disconnect.');
         debugPrint(bluetoothSubscription.toString());
         _isStreamAction = false;
       }
-
-    } catch(ex){
+    } catch (ex) {
       debugPrint("Error : _actionBluetoothStream()");
     }
-    
-    setState(() {
-      
-    });
-    
+
+    setState(() {});
   }
-  
+
   Future<bool> dataRead() async {
     List<SharkDataInfo> tagList = await Btprotocol.instance.getListTag;
 
     debugPrint("tagList length : ${tagList.length.toString()}");
-    if(tagList.length > 0){
+    if (tagList.length > 0) {
       //for(SharkDataInfo data in tagList)
       SharkDataInfo data = tagList.last;
-      if(tagLastValue==data.tagData){
-        debugPrint("Same Tag Data  : Last Data $tagLastValue , Current Data ${data.type}, ${data.tagData}");
+      if (tagLastValue == data.tagData) {
+        debugPrint(
+            "Same Tag Data  : Last Data $tagLastValue , Current Data ${data.type}, ${data.tagData}");
         return true;
-      }else{
+      } else {
         tagLastValue = data.tagData;
       }
 
       debugPrint("Tag Id(device) : ${data.type}, ${data.tagData}");
-      if(data.type.toUpperCase() == "B")
-      {
-        debugPrint("Check => _assetCodeControll.text :"+_assetCodeControll.text);
-        if(_assetCodeControll.text == ""){
+      if (data.type.toUpperCase() == "B") {
+        debugPrint(
+            "Check => _assetCodeControll.text :" + _assetCodeControll.text);
+        if (_assetCodeControll.text == "") {
           _assetCodeControll.text = data.tagData;
-          debugPrint("In => _assetCodeControll.text :"+_assetCodeControll.text);
+          debugPrint(
+              "In => _assetCodeControll.text :" + _assetCodeControll.text);
           bool result = await getFacilityInfo('asset', data.tagData);
-          if(result){
+          if (result) {
             _showSnackBar('Facility Info', 'The call was successful.');
             //await _autoSave();
-          }else{
+          } else {
             _showSnackBar('Facility Info', 'The call failed.');
           }
-          
         }
-        
       }
-      if(data.type.toUpperCase() == "R"){
-        debugPrint("Check => _tagControll.text :"+_tagControll.text);
-        if(_tagControll.text == ""){
+      if (data.type.toUpperCase() == "R") {
+        debugPrint("Check => _tagControll.text :" + _tagControll.text);
+        if (_tagControll.text == "") {
           _tagControll.text = data.tagData;
-          debugPrint("In => _tagControll.text :"+_tagControll.text);
+          debugPrint("In => _tagControll.text :" + _tagControll.text);
           await _autoSave();
-          
-        }else if(_tagControll.text.toLowerCase() != data.tagData.toLowerCase()){
-          customAlertOK(context,getTranslated(context, 'check_error_rfid_tag_exists'),'')
-            .show();
-        }else if(_tagControll.text.toLowerCase() == data.tagData.toLowerCase()){
+        } else if (_tagControll.text.toLowerCase() !=
+            data.tagData.toLowerCase()) {
+          customAlertOK(context,
+                  getTranslated(context, 'check_error_rfid_tag_exists'), '')
+              .show();
+        } else if (_tagControll.text.toLowerCase() ==
+            data.tagData.toLowerCase()) {
           await _autoSave();
-          
         }
       }
     }
-    
+
     return true;
   }
 
-  Future<bool> getFacilityInfo(String searchDiv, String value) async{
-    return await $facilityTradeCommonRepository.getRFIDFacility(searchDiv, value)
-      .then<bool>((info){
-        if(info != null){
-          debugPrint("assetCode : ${info.assetCode}, code: ${info.facilityCode}, name: ${info.facilityName}, rfid: ${info.rfid}");
-          _assetCodeControll.text = info.assetCode;
-          _facilityCodeControll.text = info.facilityCode;
-          _facilityNameControll.text = info.facilityName??'';
-          _tagControll.text = info.rfid??'';
+  Future<bool> getFacilityInfo(String searchDiv, String value) async {
+    return await $facilityTradeCommonRepository
+        .getRFIDFacility(searchDiv, value)
+        .then<bool>((info) {
+      if (info != null) {
+        debugPrint(
+            "assetCode : ${info.assetCode}, code: ${info.facilityCode}, name: ${info.facilityName}, rfid: ${info.rfid}");
+        _assetCodeControll.text = info.assetCode;
+        _facilityCodeControll.text = info.facilityCode;
+        _facilityNameControll.text = info.facilityName ?? '';
+        _tagControll.text = info.rfid ?? '';
 
-          setState(() {
-          
-          });
-          return true;
-        }else{
-          setState(() {
-          
-          });
-          return false;
-        }
-      });
+        setState(() {});
+        return true;
+      } else {
+        setState(() {});
+        return false;
+      }
+    });
   }
 
-  Future clearData() async{
-
+  Future clearData() async {
     _tagControll.text = '';
     _facilityNameControll.text = '';
     _facilityCodeControll.text = '';
     _assetCodeControll.text = '';
-    tagLastValue='';
+    tagLastValue = '';
 
-    if(_isStreamAction) {
-      await Btprotocol.instance.clearData().then((value){ debugPrint('Reader Tag Data Clear!');});
+    if (_isStreamAction) {
+      await Btprotocol.instance.clearData().then((value) {
+        debugPrint('Reader Tag Data Clear!');
+      });
     }
     //_formKey.currentState.reset();
-    
-    setState(() {
-      
-    });    
-    
+
+    setState(() {});
   }
 
   void _showSnackBar(String label, dynamic value) {

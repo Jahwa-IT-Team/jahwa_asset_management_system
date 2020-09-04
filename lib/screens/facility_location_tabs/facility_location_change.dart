@@ -15,8 +15,6 @@ import 'package:jahwa_asset_management_system/util/localization/language_constan
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
 
-
-
 /*
 Flutter StatefulWidget Page Example
 StatefulWidget Lifecycle
@@ -34,17 +32,18 @@ StatefulWidget Lifecycle
 
 */
 
-class FacilityLocationChangePage extends StatefulWidget{
+class FacilityLocationChangePage extends StatefulWidget {
   //1. createState()
   //StatefulWidget이 빌드 되도록 createState() 호출
   //반드시 호출해야하며 아래 코드보다 더 복잡하거나 추가될 것이 없음
   //정상적으로 createState()호출되면 buildContext가 할당되면서 this.mounted 속성 true를 리턴(2. mounted == true)
   @override
-  _FacilityLocationChangePageState createState() => _FacilityLocationChangePageState();
-
+  _FacilityLocationChangePageState createState() =>
+      _FacilityLocationChangePageState();
 }
 
-class _FacilityLocationChangePageState extends State<FacilityLocationChangePage>{
+class _FacilityLocationChangePageState
+    extends State<FacilityLocationChangePage> {
   final GlobalKey<ScaffoldState> scaffold1Key = GlobalKey<ScaffoldState>();
   bool _isStreamAction = false;
   bool dialVisible = true;
@@ -53,8 +52,8 @@ class _FacilityLocationChangePageState extends State<FacilityLocationChangePage>
 
   ScanResult scanResult;
   ProgressDialog pr;
-  
-  UserRepository $userRepository; 
+
+  UserRepository $userRepository;
   FacilityTradeCommonRepository $facilityTradeCommonRepository;
   FacilityLocationRepository $facilityLocationRepository;
 
@@ -62,7 +61,7 @@ class _FacilityLocationChangePageState extends State<FacilityLocationChangePage>
   StreamSubscription bluetoothSubscription;
 
   //3. initState()
-  //위젯이 생성될때 처음 한번 호출되는 메서드 
+  //위젯이 생성될때 처음 한번 호출되는 메서드
   //initState에서 실행되면 좋은 것들
   //-.생성된 위젯 인스턴스의 BuildContext에 의존적인 것들의 데이터 초기화
   //-.동일 위젯트리내에 부모위젯에 의존하는 속성 초기화
@@ -73,7 +72,7 @@ class _FacilityLocationChangePageState extends State<FacilityLocationChangePage>
     super.initState();
 
     //Future 사용이 필요한 경우
-    new Future.delayed(Duration.zero,(){
+    new Future.delayed(Duration.zero, () {
       _actionBluetoothStream();
     });
 
@@ -82,7 +81,9 @@ class _FacilityLocationChangePageState extends State<FacilityLocationChangePage>
     //  _updateWidget(data);
     //});
 
-    bluetoothSubscription = bluetoothStream.listen((event) { dataRead();});
+    bluetoothSubscription = bluetoothStream.listen((event) {
+      dataRead();
+    });
 
     pr = ProgressDialog(
       context,
@@ -110,12 +111,14 @@ class _FacilityLocationChangePageState extends State<FacilityLocationChangePage>
   //위젯이 의존하는 데이터의 객체가 호출될때마다 호출된다. 예를 들면 업데이트되는 위젯을 상속한 경우.
   //공식문서 또한 상속한 위젯이 업데이트 될때 네트워크 호출(API 호출이 필요한 경우 유용)
   @override
-  void didChangeDependencies() {  
+  void didChangeDependencies() {
     $userRepository = Provider.of<UserRepository>(context, listen: true);
-    $facilityTradeCommonRepository = Provider.of<FacilityTradeCommonRepository>(context, listen: true);
-    
-    if($facilityLocationRepository == null){
-      $facilityLocationRepository = Provider.of<FacilityLocationRepository>(context, listen: true);
+    $facilityTradeCommonRepository =
+        Provider.of<FacilityTradeCommonRepository>(context, listen: true);
+
+    if ($facilityLocationRepository == null) {
+      $facilityLocationRepository =
+          Provider.of<FacilityLocationRepository>(context, listen: true);
       $facilityLocationRepository.init();
     }
 
@@ -139,9 +142,9 @@ class _FacilityLocationChangePageState extends State<FacilityLocationChangePage>
   //이 메서드는 자주 호출된다(fps + render라고 생각하면 됨)
   //반드시 Widget을 리턴해야 함
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Scaffold(
-      key:scaffold1Key,
+      key: scaffold1Key,
       // appBar: AppBar(
       //   title: Text(pageTitle),
       //   backgroundColor: Colors.deepPurple,
@@ -153,21 +156,21 @@ class _FacilityLocationChangePageState extends State<FacilityLocationChangePage>
           children: <Widget>[
             //filterView(),
             setLocationBox(),
-            Padding(
-              padding: const EdgeInsets.all(0.0),
-              child: Column()
-            ),
-            if($facilityLocationRepository.facilityChangeList.length <= 0) introPage(),
-            if($facilityLocationRepository.facilityChangeList.length > 0) Expanded(child: getListView(),),
-            
-            
+            Padding(padding: const EdgeInsets.all(0.0), child: Column()),
+            if ($facilityLocationRepository.facilityChangeList.length <= 0)
+              introPage(),
+            if ($facilityLocationRepository.facilityChangeList.length > 0)
+              Expanded(
+                child: getListView(),
+              ),
+
             //SizedBox(height: 70,),
           ],
         ),
       ),
-    floatingActionButton: buildSpeedDial(),
+      floatingActionButton: buildSpeedDial(),
     );
-  } 
+  }
 
   //6. deactivate()
   //이 메서드는 거의 사용되지 않는다.
@@ -176,117 +179,146 @@ class _FacilityLocationChangePageState extends State<FacilityLocationChangePage>
   //7. dispose()
   //영구적인 State Object가 삭제될때 호출된다. 이 함수는 주로 Stream 이나 애니메이션 을 해제시 사용된다.
   @override
-  void dispose(){
+  void dispose() {
     Btprotocol.instance.clearData();
-    //Btprotocol.instance.disconnectDevice();  
+    //Btprotocol.instance.disconnectDevice();
 
-    if(bluetoothSubscription !=null){
+    if (bluetoothSubscription != null) {
       bluetoothSubscription.cancel();
     }
 
     super.dispose();
   }
 
-
   //8. User Defined
 
   //위치 설정 박스
-  Widget setLocationBox(){
+  Widget setLocationBox() {
     return Padding(
       padding: EdgeInsets.all(5.0),
       child: Container(
         decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              color: Colors.grey[300]
-            )
-          )
-        ),
-        child: Column(children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.fromLTRB(10, 10, 0, 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                  Text('${getTranslated(context, 'plant')} : ${$facilityLocationRepository.settingInspactionLocation.plantCode==''?getTranslated(context, 'none'):$facilityLocationRepository.settingInspactionLocation.plantName}'),
-                  Text('${getTranslated(context, 'location')} : ${$facilityLocationRepository.settingInspactionLocation.setupLocationCode==''?getTranslated(context, 'none'):$facilityLocationRepository.settingInspactionLocation.setupLocation}'),
-                  Text('${getTranslated(context, 'item_group')} : ${$facilityLocationRepository.settingInspactionLocation.itemGroupCode==''?getTranslated(context, 'none'):$facilityLocationRepository.settingInspactionLocation.itemGroupCode}'),
-                ],),
-              ),
-              
-              FlatButton(
-                child: Column(
-                  children: <Widget>[
-                    Row(children: <Widget>[
-                      Icon(Icons.location_on),
-                      Padding(padding: EdgeInsets.all(2),),
-                      Text(getTranslated(context, 'location'))
-                    ],)
-                  ],
-                ),
-                onPressed:()=>{
-                  Navigator.pushNamed(context, facilityLocationInspactionSettingRoute)
-                },
-                color: Colors.deepPurple,
-                textColor: Colors.white,
-              )
-            ],
-          ),
-          //SizedBox(height: 10,),
-          //Text('위치를 설정하면 스캔된 설비의 위치가 자동으로 변경됩니다.', style: TextStyle(color: Colors.grey[400])),
-          if($facilityLocationRepository.facilityChangeList.length > 0)
-          Padding(
-            padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
-            child: FlatButton(
-              child: Column(
-                children: <Widget>[
-                  SizedBox(height: 10,),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+            border: Border(bottom: BorderSide(color: Colors.grey[300]))),
+        child: Column(
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.fromLTRB(10, 10, 0, 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Icon(Icons.check),
-                      Padding(padding: EdgeInsets.all(2),),
-                      Text(getTranslated(context, 'apply'))
+                      Text(
+                          '${getTranslated(context, 'plant')} : ${$facilityLocationRepository.settingInspactionLocation.plantCode == '' ? getTranslated(context, 'none') : $facilityLocationRepository.settingInspactionLocation.plantName}'),
+                      Text(
+                          '${getTranslated(context, 'location')} : ${$facilityLocationRepository.settingInspactionLocation.setupLocationCode == '' ? getTranslated(context, 'none') : $facilityLocationRepository.settingInspactionLocation.setupLocation}'),
+                      Text(
+                          '${getTranslated(context, 'item_group')} : ${$facilityLocationRepository.settingInspactionLocation.itemGroupCode == '' ? getTranslated(context, 'none') : $facilityLocationRepository.settingInspactionLocation.itemGroupCode}'),
                     ],
                   ),
-                  SizedBox(height: 10,),
-                ],
-              ),
-              onPressed:()=>{
-                Navigator.pushNamed(context, facilityLocationInspactionSettingRoute)
-              },
-              color: Colors.red,
-              textColor: Colors.white,
+                ),
+                FlatButton(
+                  child: Column(
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Icon(Icons.location_on),
+                          Padding(
+                            padding: EdgeInsets.all(2),
+                          ),
+                          Text(getTranslated(context, 'location'))
+                        ],
+                      )
+                    ],
+                  ),
+                  onPressed: () => {
+                    Navigator.pushNamed(
+                        context, facilityLocationInspactionSettingRoute)
+                  },
+                  color: Colors.deepPurple,
+                  textColor: Colors.white,
+                )
+              ],
             ),
-          ),
-          SizedBox(height: 10,)
-        ],),
+            //SizedBox(height: 10,),
+            //Text('위치를 설정하면 스캔된 설비의 위치가 자동으로 변경됩니다.', style: TextStyle(color: Colors.grey[400])),
+            if ($facilityLocationRepository.facilityChangeList.length > 0)
+              Padding(
+                padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+                child: FlatButton(
+                  child: Column(
+                    children: <Widget>[
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Icon(Icons.check),
+                          Padding(
+                            padding: EdgeInsets.all(2),
+                          ),
+                          Text(getTranslated(context, 'apply'))
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                    ],
+                  ),
+                  onPressed: () => {
+                    $facilityLocationRepository.updateChangeListAll(
+                        '',
+                        $facilityLocationRepository
+                            .settingInspactionLocation.plantCode,
+                        $facilityLocationRepository
+                            .settingInspactionLocation.itemGroupCode,
+                        $facilityLocationRepository
+                            .settingInspactionLocation.setupLocationCode,
+                        '',
+                        $userRepository.user.empNo)
+                  },
+                  color: Colors.red,
+                  textColor: Colors.white,
+                ),
+              ),
+            SizedBox(
+              height: 10,
+            )
+          ],
+        ),
       ),
     );
   }
 
   //페이지 소개
-  Widget introPage(){
+  Widget introPage() {
     return Container(
-      child: Center( 
+      child: Center(
         child: Column(
           children: <Widget>[
-            SizedBox(height: 40,),
-            Icon( 
-              Icons.search, 
-              size: 200, 
-              color: Colors.grey[200], 
+            SizedBox(
+              height: 40,
+            ),
+            Icon(
+              Icons.search,
+              size: 200,
+              color: Colors.grey[200],
             ),
             Padding(
               padding: EdgeInsets.all(15.0),
-              child: Text(getTranslated(context, 'facility_location_change_desc'), style: TextStyle(color: Colors.grey[400]),),
+              child: Text(
+                getTranslated(context, 'facility_location_change_desc'),
+                style: TextStyle(color: Colors.grey[400]),
+              ),
             ),
             Padding(
               padding: EdgeInsets.all(15.0),
-              child: Text(getTranslated(context, 'facility_location_change_desc2'), style: TextStyle(color: Colors.grey[400]),),
+              child: Text(
+                getTranslated(context, 'facility_location_change_desc2'),
+                style: TextStyle(color: Colors.grey[400]),
+              ),
             ),
           ],
         ),
@@ -294,12 +326,11 @@ class _FacilityLocationChangePageState extends State<FacilityLocationChangePage>
     );
   }
 
-  void _actionBluetoothStream() async{
-    try{
+  void _actionBluetoothStream() async {
+    try {
       isBluetoothConnected = await Btprotocol.instance.isConnected;
 
-      if(!_isStreamAction){
-         
+      if (!_isStreamAction) {
         //Address 체크
         // if($userRepository.bluetoothDevice == null || $userRepository.bluetoothDevice.address == null || $userRepository.bluetoothDevice.address == '')
         // {
@@ -308,24 +339,23 @@ class _FacilityLocationChangePageState extends State<FacilityLocationChangePage>
         //     .then((value) => Navigator.pushNamed(context, bluetoothScanRoute));
         //   return;
         // }
-        
+
         int isConnected = -1;
 
-        if(!isBluetoothConnected){
+        if (!isBluetoothConnected) {
           //블루투스 연결
           await Btprotocol.instance
-            .connectDevice($userRepository.bluetoothDevice.address);
+              .connectDevice($userRepository.bluetoothDevice.address);
 
           //연결 성공 확인용 (-8이 나와야 정상)
           isConnected = await Btprotocol.instance
-            .connectDevice($userRepository.bluetoothDevice.address);
-        }else{
+              .connectDevice($userRepository.bluetoothDevice.address);
+        } else {
           isConnected = 0;
-          
         }
-        
+
         debugPrint(isConnected.toString());
-        if(isConnected != -40 && isConnected != 0){
+        if (isConnected != -40 && isConnected != 0) {
           _isStreamAction = true;
 
           showSnackBar('Bluetooth', 'Connect successfully.');
@@ -335,34 +365,29 @@ class _FacilityLocationChangePageState extends State<FacilityLocationChangePage>
           Btprotocol.instance.clearData();
 
           //정상 연결
-          if(bluetoothSubscription == null || bluetoothSubscription.isPaused){
+          if (bluetoothSubscription == null || bluetoothSubscription.isPaused) {
             debugPrint("bluetoothSubscription == null");
             //bluetoothSubscription = bluetoothStream.listen((event) { dataRead();});
-            
-          }else{
+
+          } else {
             debugPrint("bluetoothSubscription not null");
           }
-          
-        }else{
+        } else {
           //연결 실패
           showSnackBar('Bluetooth', 'Connection failure.');
         }
-      }else{
+      } else {
         await Btprotocol.instance.disconnectDevice();
         bluetoothSubscription.pause();
         showSnackBar('Bluetooth', 'Disconnect.');
         debugPrint(bluetoothSubscription.toString());
         _isStreamAction = false;
       }
-
-    } catch(ex){
+    } catch (ex) {
       debugPrint("Error : _actionBluetoothStream()");
     }
-    
-    setState(() {
-      
-    });
-    
+
+    setState(() {});
   }
 
   //Read Ble Data
@@ -373,7 +398,7 @@ class _FacilityLocationChangePageState extends State<FacilityLocationChangePage>
     debugPrint("tempTagList length : ${tempTagList.length.toString()}");
 
     tagList.forEach((element) {
-      if(tagList.length > 0){
+      if (tagList.length > 0) {
         SharkDataInfo data = element;
         String strScanData = data.tagData;
 
@@ -383,47 +408,43 @@ class _FacilityLocationChangePageState extends State<FacilityLocationChangePage>
         // }
 
         //태그 중복 호출 방지
-        if(!tempTagList.any((e) => e == data.tagData)){
+        if (!tempTagList.any((e) => e == data.tagData)) {
           tempTagList.add(data.tagData);
 
           String searchDiv = '';
 
-          if(data.type.toUpperCase() == "R")
-          {
+          if (data.type.toUpperCase() == "R") {
             searchDiv = 'rfid';
-          }else if(data.type.toUpperCase() == "B")
-          {
+          } else if (data.type.toUpperCase() == "B") {
             searchDiv = 'Asset';
           }
 
-          $facilityLocationRepository.getReceiveFacilityList(searchDiv, strScanData, "").then((value){
-            if(value != null){
+          $facilityLocationRepository
+              .getFacilityList(searchDiv, strScanData, "")
+              .then((value) {
+            if (value != null) {
               $facilityLocationRepository.addChangeList(value);
             }
           });
-
         }
       }
-     });
+    });
 
-    
     return true;
   }
 
   void showSnackBar(String label, dynamic value) {
-    try{
+    try {
       scaffold1Key.currentState.removeCurrentSnackBar();
       scaffold1Key.currentState.showSnackBar(
-      SnackBar(
-        duration: Duration(seconds: 3),
-        content: Text(label + ' = ' + value.toString()),
-      ),
-    );
-    }catch(ex){
+        SnackBar(
+          duration: Duration(seconds: 3),
+          content: Text(label + ' = ' + value.toString()),
+        ),
+      );
+    } catch (ex) {
       debugPrint("Error : showSnackBar()");
     }
-    
-    
   }
 
   SpeedDial buildSpeedDial() {
@@ -436,7 +457,6 @@ class _FacilityLocationChangePageState extends State<FacilityLocationChangePage>
       visible: dialVisible,
       curve: Curves.bounceIn,
       children: [
-        
         SpeedDialChild(
           child: Icon(Icons.camera, color: Colors.white),
           backgroundColor: Colors.green,
@@ -469,7 +489,7 @@ class _FacilityLocationChangePageState extends State<FacilityLocationChangePage>
         //       customAlertOK(context,getTranslated(context, 'device_not_found'), getTranslated(context, 'device_not_found_desc'))
         //         .show()
         //         .then((value) => Navigator.pushNamed(context, bluetoothScanRoute))
-              
+
         //     }else{
         //       Navigator.pushNamed(context, facilityTradeBluetoothReaderRoute, arguments: FacilityTradeBluetoothReaderArguments(address:$userRepository.bluetoothDevice.address,pageType: widget.pageType))
         //     }
@@ -485,9 +505,9 @@ class _FacilityLocationChangePageState extends State<FacilityLocationChangePage>
     );
   }
 
-  void clearAll(){
+  void clearAll() {
     $facilityLocationRepository.clearChahgeList(true);
-    
+
     Btprotocol.instance.clearData();
     tempTagList = [];
   }
@@ -495,47 +515,52 @@ class _FacilityLocationChangePageState extends State<FacilityLocationChangePage>
   Future qrBarcodeScan(bool repeat) async {
     try {
       var options = ScanOptions(
-        // strings: {
-        //   "cancel": _cancelController.text,
-        //   "flash_on": _flashOnController.text,
-        //   "flash_off": _flashOffController.text,
-        // },
-        // restrictFormat: selectedFormats,
-        // useCamera: _selectedCamera,
-        // autoEnableFlash: _autoEnableFlash,
-        // android: AndroidOptions(
-        //   aspectTolerance: _aspectTolerance,
-        //   useAutoFocus: _useAutoFocus,
-        // ),
-      );
+          // strings: {
+          //   "cancel": _cancelController.text,
+          //   "flash_on": _flashOnController.text,
+          //   "flash_off": _flashOffController.text,
+          // },
+          // restrictFormat: selectedFormats,
+          // useCamera: _selectedCamera,
+          // autoEnableFlash: _autoEnableFlash,
+          // android: AndroidOptions(
+          //   aspectTolerance: _aspectTolerance,
+          //   useAutoFocus: _useAutoFocus,
+          // ),
+          );
 
       var result = await BarcodeScanner.scan(options: options);
 
-      
-
       scanResult = result;
-        if(scanResult.type != ResultType.Cancelled){
-          //textAssetNoController.text = scanResult.rawContent ?? "";
-          //validateSubmit();
-          print("QR Barcode Scan Result : "+scanResult.rawContent ?? "");
-          String strScanData = scanResult.rawContent ?? "";
+      if (scanResult.type != ResultType.Cancelled) {
+        //textAssetNoController.text = scanResult.rawContent ?? "";
+        //validateSubmit();
+        print("QR Barcode Scan Result : " + scanResult.rawContent ?? "");
+        String strScanData = scanResult.rawContent ?? "";
 
-          await pr.show();
+        await pr.show();
 
-          //WebAPI Call & Add
-          FacilityInfo data = await $facilityLocationRepository.getReceiveFacilityList("Asset", strScanData, "").then((value){pr.hide(); return value;});
-          if(data != null){
-            await $facilityLocationRepository.addChangeList(data);
-            showSnackBar("QR Barcode["+strScanData+"]",getTranslated(context, 'additional_completion'));
-            if(repeat){
-              qrBarcodeScan(repeat);
-            }
-          }else{
-            showSnackBar("QR Barcode["+strScanData+"]",getTranslated(context, 'empty_value'));
-          }
-          
+        //WebAPI Call & Add
+        FacilityInfo data = await $facilityLocationRepository
+            .getFacilityList("Asset", strScanData, "")
+            .then((value) {
           pr.hide();
+          return value;
+        });
+        if (data != null) {
+          await $facilityLocationRepository.addChangeList(data);
+          showSnackBar("QR Barcode[" + strScanData + "]",
+              getTranslated(context, 'additional_completion'));
+          if (repeat) {
+            qrBarcodeScan(repeat);
+          }
+        } else {
+          showSnackBar("QR Barcode[" + strScanData + "]",
+              getTranslated(context, 'empty_value'));
         }
+
+        pr.hide();
+      }
     } on PlatformException catch (e) {
       var result = ScanResult(
         type: ResultType.Error,
@@ -556,49 +581,112 @@ class _FacilityLocationChangePageState extends State<FacilityLocationChangePage>
   }
 
   //조회 설비 리스트 뷰
-  Widget getListView(){
+  Widget getListView() {
     //Color colorDefaultTextColor = Colors.black;
     //Color colorSearchDisplayTextColro = Colors.red;
     return ListView.builder(
-      itemCount: $facilityLocationRepository.facilityChangeList.length,
-      itemBuilder: (context, index){
-        return Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(0.0),
-          ),
-          elevation: 1,
-          child: Container(
-            padding: EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    Text('[${$facilityLocationRepository.facilityChangeList[index].facilityCode}][${$facilityLocationRepository.facilityChangeList[index].assetCode}]'),
-                    Flexible(child:Text('${$facilityLocationRepository.facilityChangeList[index].facilityName}',overflow: TextOverflow.ellipsis,))
+        itemCount: $facilityLocationRepository.facilityChangeList.length,
+        itemBuilder: (context, index) {
+          return Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(0.0),
+              ),
+              elevation: 1,
+              child: Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: IconButton(
+                        icon: Icon(Icons.remove_circle),
+                        color: Colors.red,
+                        onPressed: () {
+                          $facilityLocationRepository.removeChangeList(
+                              $facilityLocationRepository
+                                  .facilityChangeList[index]);
+                        },
+                      ),
+                    ),
+                    Expanded(
+                      flex: 8,
+                      child: Column(
+                        children: [
+                          Row(
+                            children: <Widget>[
+                              Text(
+                                  '[${$facilityLocationRepository.facilityChangeList[index].facilityCode}][${$facilityLocationRepository.facilityChangeList[index].assetCode}]'),
+                              Flexible(
+                                  child: Text(
+                                '${$facilityLocationRepository.facilityChangeList[index].facilityName}',
+                                overflow: TextOverflow.ellipsis,
+                              ))
+                            ],
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Text(
+                                  '${getTranslated(context, 'plant')} : [${$facilityLocationRepository.facilityChangeList[index].plantCode}]${$facilityLocationRepository.facilityChangeList[index].plantName}')
+                            ],
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Flexible(
+                                child: Text(
+                                    '${getTranslated(context, 'location')} : [${$facilityLocationRepository.facilityChangeList[index].setupLocationCode}]${$facilityLocationRepository.facilityChangeList[index].setupLocation}'),
+                              )
+                            ],
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Flexible(
+                                child: Text(
+                                    '${getTranslated(context, 'item_group')} : ${$facilityLocationRepository.facilityChangeList[index].itemGroup}'),
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: resultIcon(index),
+                    ),
                   ],
                 ),
-                Row(
-                  children: <Widget>[
-                    Text('공장 : ')
-                  ],
-                ),
-                Row(
-                  children: <Widget>[
-                    Text('위치 : ')
-                  ],
-                ),
-                Row(
-                  children: <Widget>[
-                    Text('품목그룹 : ')
-                  ],
-                ),
-              ],
-            ),
-          ) 
-        );
-      }
-    );
+              ));
+        });
+  }
+
+  Widget resultIcon(int index) {
+    if ($facilityLocationRepository.facilityChangeList[index].sendResult ==
+        -1) {
+      return IconButton(
+        icon: Icon(Icons.refresh),
+        color: Colors.red,
+        onPressed: () {
+          $facilityLocationRepository.updateChangeFacilityInfoInLocation(
+              index,
+              '',
+              $facilityLocationRepository.settingInspactionLocation.plantCode,
+              $facilityLocationRepository
+                  .settingInspactionLocation.itemGroupCode,
+              $facilityLocationRepository
+                  .settingInspactionLocation.setupLocationCode,
+              '',
+              $userRepository.user.empNo);
+        },
+      );
+    } else if ($facilityLocationRepository
+            .facilityChangeList[index].sendResult ==
+        1) {
+      return IconButton(
+        icon: Icon(Icons.check),
+        color: Colors.green,
+        onPressed: () {},
+      );
+    } else {
+      return Container();
+    }
   }
 }

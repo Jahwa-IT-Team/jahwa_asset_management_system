@@ -103,6 +103,11 @@
     "location":"위치",
     "setting_location":"위치설정",
     "none":"없음",
+    "more_view":"더보기",
+    "all_display_in_location":"해당 위치 설비 모두 표시",
+    "all_display_in_location_desc":"설치장소에 해당하는 설비를 표시합니다. (Scan되지 않은 설비는 회색으로 표시)",
+    "all_display_in_location1":"스캔한 설비 숨김",
+    "all_display_in_location_desc1":"스캔한 설비를 목록에서 표시하지 않습니다.",
 
     "facility_location_tabs_title":"Quản lý vị trí thiết bị",
     "facility_location_tabs_search":"설비조회",
@@ -194,6 +199,7 @@
     "change_company":"Pháp nhân truy cập",
     "device":"Thiết bị",
     "find_device_page_title":"Thiết bị tìm kiếm",
-    "logout":"Thoát"
+    "logout":"Thoát",
+    "alert_please_select_location_first":"위치를 먼저 선택하세요."
 
 }

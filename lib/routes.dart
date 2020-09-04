@@ -5,6 +5,7 @@ import 'package:jahwa_asset_management_system/screens/asset_tabs/asset_dashboard
 import 'package:jahwa_asset_management_system/screens/asset_tabs/asset_dashboard_dept_detail.dart';
 import 'package:jahwa_asset_management_system/screens/bluetooth/bluetooth_reader.dart';
 import 'package:jahwa_asset_management_system/screens/bluetooth/bluetooth_scan.dart';
+import 'package:jahwa_asset_management_system/screens/facility_location_tabs/facility_location_inspacion_detail.dart';
 import 'package:jahwa_asset_management_system/screens/facility_location_tabs/facility_location_inspaction_setting.dart';
 import 'package:jahwa_asset_management_system/screens/facility_location_tabs/facility_location_search_filter.dart';
 import 'package:jahwa_asset_management_system/screens/facility_trade_tabs/facility_trade_bluetooth_reader.dart';
@@ -16,29 +17,31 @@ import 'package:jahwa_asset_management_system/screens/asset_tabs/asset_tabs.dart
 import 'package:jahwa_asset_management_system/screens/facility_location_tabs/facility_location_tabs.dart';
 import 'package:jahwa_asset_management_system/screens/facility_trade_tabs/facility_trade_tabs.dart';
 
-
-
 const String loginRoute = "login";
 const String homeRoute = "home";
 const String aboutRoute = "about";
 const String settingsRoute = "settings";
 const String errorRoute = "error";
-const String assetTabsRoute ="assetTabs";
+const String assetTabsRoute = "assetTabs";
 const String assetInfoViewRoute = "assetInfoView";
 const String assetInspectionQRScanRoute = "assetInspectionQRScan";
 const String assetDashboardDeptRoute = "assetDashboardDept";
 const String assetDashboardDeptDetailRoute = "assetDashboardDeptDetail";
 const String facilityLocationTabsRoute = "facilityLocationTabs";
-const String facilityLocationSearchFilterRoute = "facilityLoationSearchFilterRoute";
-const String facilityLocationInspactionSettingRoute = "facilityLocationInspactionSettingRoute";
+const String facilityLocationSearchFilterRoute =
+    "facilityLoationSearchFilterRoute";
+const String facilityLocationInspactionSettingRoute =
+    "facilityLocationInspactionSettingRoute";
+const String facilitylocationInspactionDetailRoute =
+    "facilitylocationInspactionDetailRoute";
 const String facilityTradeTabsRoute = "facilityTradeTabsRoute";
-const String facilityTradeRequestDetailViewRoute = "facilityTradeRequestDetailViewRoute";
-const String facilityTradeBluetoothReaderRoute = "facilityTradeBluetoothReaderRoute";
+const String facilityTradeRequestDetailViewRoute =
+    "facilityTradeRequestDetailViewRoute";
+const String facilityTradeBluetoothReaderRoute =
+    "facilityTradeBluetoothReaderRoute";
 const String bluetoothScanRoute = "bluetoothScanRoute";
 const String bluetoothScan2Route = "bluetoothScan2Route";
 const String bluetoothReaderRoute = "bluetoothReaderRoute";
-
-
 
 class CustomRouter {
   static Route<dynamic> generatedRoute(RouteSettings settings) {
@@ -52,32 +55,55 @@ class CustomRouter {
       case assetTabsRoute:
         return MaterialPageRoute(builder: (_) => AssetTabs());
       case assetInfoViewRoute:
-        return MaterialPageRoute(builder: (_) => AssetInfoViewPage(assetNo:settings.arguments.toString()));
+        return MaterialPageRoute(
+            builder: (_) =>
+                AssetInfoViewPage(assetNo: settings.arguments.toString()));
       case assetInspectionQRScanRoute:
-        return MaterialPageRoute(builder: (_) => AssetInspectionQRScanPage(masterId:settings.arguments.toString())); 
+        return MaterialPageRoute(
+            builder: (_) => AssetInspectionQRScanPage(
+                masterId: settings.arguments.toString()));
       case assetDashboardDeptRoute:
-        return MaterialPageRoute(builder: (_) => AssetDashbaordDeptPage(masterId:settings.arguments.toString())); 
+        return MaterialPageRoute(
+            builder: (_) => AssetDashbaordDeptPage(
+                masterId: settings.arguments.toString()));
       case assetDashboardDeptDetailRoute:
-        return MaterialPageRoute(builder: (_) => AssetDashbaordDeptDetailPage(args:settings.arguments)); 
+        return MaterialPageRoute(
+            builder: (_) =>
+                AssetDashbaordDeptDetailPage(args: settings.arguments));
       case facilityLocationTabsRoute:
         return MaterialPageRoute(builder: (_) => FacilityLocationTabs());
       case facilityLocationSearchFilterRoute:
-        return MaterialPageRoute(builder: (_) => FacilityLocationSearchFilterPage());
+        return MaterialPageRoute(
+            builder: (_) => FacilityLocationSearchFilterPage());
       case facilityLocationInspactionSettingRoute:
-        return MaterialPageRoute(builder: (_) => FacilityLocationInspactionSettingPage());
+        return MaterialPageRoute(
+            builder: (_) => FacilityLocationInspactionSettingPage());
+      case facilitylocationInspactionDetailRoute:
+        return MaterialPageRoute(
+            builder: (_) => FacilityLocationInspactionDetailPage(
+                  pageArguments: settings.arguments,
+                ));
       case facilityTradeTabsRoute:
         return MaterialPageRoute(builder: (_) => FacilityTradTabs());
       case facilityTradeRequestDetailViewRoute:
-        return MaterialPageRoute(builder: (_) => FacilityTradeRequestDetailViewPage(pageType: settings.arguments,));
+        return MaterialPageRoute(
+            builder: (_) => FacilityTradeRequestDetailViewPage(
+                  pageType: settings.arguments,
+                ));
       case facilityTradeBluetoothReaderRoute:
-        return MaterialPageRoute(builder: (_) => FacilityTradeBluetoothReaderPage(screenArguments: settings.arguments,));
+        return MaterialPageRoute(
+            builder: (_) => FacilityTradeBluetoothReaderPage(
+                  screenArguments: settings.arguments,
+                ));
       case bluetoothScanRoute:
         return MaterialPageRoute(builder: (_) => BluetoothScanPage());
       case bluetoothReaderRoute:
-        return MaterialPageRoute(builder: (_) => BluetoothReaderPage(address: settings.arguments.toString(),));
+        return MaterialPageRoute(
+            builder: (_) => BluetoothReaderPage(
+                  address: settings.arguments.toString(),
+                ));
       default:
         return MaterialPageRoute(builder: (_) => NotFoundPage());
     }
   }
 }
-

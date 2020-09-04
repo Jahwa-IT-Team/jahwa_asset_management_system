@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:jahwa_asset_management_system/provider/user_repository.dart';
 import 'package:jahwa_asset_management_system/routes.dart';
@@ -183,7 +185,7 @@ class _HomePageState extends State<HomePage> {
     if($userRepository == null){
       $userRepository = Provider.of<UserRepository>(context, listen: true);
 
-      if(!isCheckdVersion){
+      if(!isCheckdVersion && Platform.isAndroid){
         checkAppVersion();
       }
     }
@@ -205,10 +207,12 @@ class _HomePageState extends State<HomePage> {
             icon: Icon(Icons.storage), //storage  //find_in_page
             title: Text(getTranslated(context, 'home_page_tabs_asset_management')),
           ),
+          if(Platform.isAndroid)
           BottomNavigationBarItem(
             icon: Icon(Icons.gps_fixed),
             title: Text(getTranslated(context, 'home_page_tabs_facility_location')),
           ),
+          if(Platform.isAndroid)
           BottomNavigationBarItem(
             icon: Icon(Icons.import_export),
             title: Text(getTranslated(context, 'home_page_tabs_facility_trade')),
@@ -339,6 +343,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ],
                   ),
+                  if(Platform.isAndroid)
                   SettingsSection(
                     title: getTranslated(context, 'device'),
                     tiles: [

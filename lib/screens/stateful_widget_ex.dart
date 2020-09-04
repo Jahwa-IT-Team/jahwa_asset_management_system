@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 
-
 /*
 Flutter StatefulWidget Page Example
 StatefulWidget Lifecycle
@@ -18,20 +17,37 @@ StatefulWidget Lifecycle
 
 */
 
-class StatefulWidgetExamplePage extends StatefulWidget {
+/*
+//페이지에 Arguments 사용 할 경우
+class StatefulWidgetExamplePageArguments {
+  final String address;
+  final String pageType;
 
+  StatefulWidgetExamplePageArguments(
+      {@required this.address, @required this.pageType});  //@required 필수 전달 사항
+}
+*/
+
+//StatefulWidgetExamplePage 사용할 이름으료 변경하세요.
+class StatefulWidgetExamplePage extends StatefulWidget {
+  /*
+  //페이지에 Arguments 사용 할 경우
+  final StatefulWidgetExamplePageArguments pageArguments;
+  StatefulWidgetExamplePage({Key key, @required this.pageArguments})
+      : super(key: key);
+  */
   //1. createState()
   //StatefulWidget이 빌드 되도록 createState() 호출
   //반드시 호출해야하며 아래 코드보다 더 복잡하거나 추가될 것이 없음
   //정상적으로 createState()호출되면 buildContext가 할당되면서 this.mounted 속성 true를 리턴(2. mounted == true)
   @override
-  _StatefulWidgetExamplePageState createState() => new _StatefulWidgetExamplePageState();
+  _StatefulWidgetExamplePageState createState() =>
+      new _StatefulWidgetExamplePageState();
 }
 
-class _StatefulWidgetExamplePageState extends State<StatefulWidgetExamplePage>{
-
+class _StatefulWidgetExamplePageState extends State<StatefulWidgetExamplePage> {
   //3. initState()
-  //위젯이 생성될때 처음 한번 호출되는 메서드 
+  //위젯이 생성될때 처음 한번 호출되는 메서드
   //initState에서 실행되면 좋은 것들
   //-.생성된 위젯 인스턴스의 BuildContext에 의존적인 것들의 데이터 초기화
   //-.동일 위젯트리내에 부모위젯에 의존하는 속성 초기화
@@ -42,8 +58,7 @@ class _StatefulWidgetExamplePageState extends State<StatefulWidgetExamplePage>{
     super.initState();
 
     //Future 사용이 필요한 경우
-    new Future.delayed(Duration.zero,(){
-    });
+    new Future.delayed(Duration.zero, () {});
 
     // 스트림 리스너 추가
     //cartItemStream.listen((data) {
@@ -56,7 +71,7 @@ class _StatefulWidgetExamplePageState extends State<StatefulWidgetExamplePage>{
   //위젯이 의존하는 데이터의 객체가 호출될때마다 호출된다. 예를 들면 업데이트되는 위젯을 상속한 경우.
   //공식문서 또한 상속한 위젯이 업데이트 될때 네트워크 호출(API 호출이 필요한 경우 유용)
   @override
-  void didChangeDependencies() {  
+  void didChangeDependencies() {
     super.didChangeDependencies();
   }
 
@@ -77,10 +92,9 @@ class _StatefulWidgetExamplePageState extends State<StatefulWidgetExamplePage>{
   //이 메서드는 자주 호출된다(fps + render라고 생각하면 됨)
   //반드시 Widget을 리턴해야 함
   @override
-  Widget build(BuildContext context){
-    return Container(
-    );
-  } 
+  Widget build(BuildContext context) {
+    return Container();
+  }
 
   //6. deactivate()
   //이 메서드는 거의 사용되지 않는다.
@@ -89,10 +103,9 @@ class _StatefulWidgetExamplePageState extends State<StatefulWidgetExamplePage>{
   //7. dispose()
   //영구적인 State Object가 삭제될때 호출된다. 이 함수는 주로 Stream 이나 애니메이션 을 해제시 사용된다.
   @override
-  void dispose(){
+  void dispose() {
     super.dispose();
   }
-
 
   //8. User Defined
 }

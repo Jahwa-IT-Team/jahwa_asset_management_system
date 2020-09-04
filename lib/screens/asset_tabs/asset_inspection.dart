@@ -31,20 +31,28 @@ class _AssetInspectionPageState extends State<AssetInspectionPage>{
 
 
 Future getInspectionMasterData(String company) async { 
-  String url = 'https://japi.jahwa.co.kr/api/InspectionMaster/company/'+ company;
+  String url = 'https://japi.jahwa.co.kr/api/InspectionMaster/company/assets/'+ company;
   //String url = 'https://japi.jahwa.co.kr/api/InspectionMaster';
   http.Response response = await http.get( Uri.encodeFull(url), 
   headers: {"Accept": "application/json"}); 
-
-  return jsonDecode(response.body); 
+  if(response.statusCode != 200 || response.body == null || response.body == '[]'){
+    return jsonDecode('[]');
+  }else{
+    return jsonDecode(response.body); 
+  }
+  
 }
 
 Future getInspectionMasterProgress(String id) async { 
   String url = 'https://japi.jahwa.co.kr/api/InspectionMaster/StatusByMaster/'+id;
   http.Response response = await http.get( Uri.encodeFull(url), 
   headers: {"Accept": "application/json"}); 
-
-  return jsonDecode(response.body); 
+  
+  if(response.statusCode != 200 || response.body == null || response.body == '[]'){
+    return jsonDecode('[]');
+  }else{
+    return jsonDecode(response.body); 
+  }
 }
 
 Widget getLinearProgressIndicator(String id){
