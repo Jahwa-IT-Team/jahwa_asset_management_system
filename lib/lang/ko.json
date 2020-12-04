@@ -27,6 +27,7 @@
     "asset_tabs_dashboard":"대시보드",
 
     "asset_info_empty_value":"자산 정보가 존재하지 않습니다.",
+    "asset_inspaction_info_empty_value":"재물조사 대상이 아니거나 이미 처리 된 자산입니다.",
     "asset_info_label_company":"법인코드",
     "asset_info_label_company_nm":"법인명",
     "asset_info_label_asst_no":"자산번호",

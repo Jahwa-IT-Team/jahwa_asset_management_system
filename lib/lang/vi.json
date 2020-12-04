@@ -27,6 +27,7 @@
     "asset_tabs_dashboard":"Dashboard",
 
     "asset_info_empty_value":"Không tồn tại thông tin tài sản.",
+    "asset_inspaction_info_empty_value":"재물조사 대상이 아니거나 이미 처리 된 자산입니다.",
     "asset_info_label_company":"Mã pháp nhân",
     "asset_info_label_company_nm":"Tên pháp nhân",
     "asset_info_label_asst_no":"Mã tài sản",

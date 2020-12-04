@@ -1,6 +1,5 @@
-
 import 'dart:convert';
-import 'dart:async'; 
+import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'dart:io' show Platform;
 
@@ -20,6 +19,7 @@ const SHARED_USER_EMAIL = 'userEmail';
 const SHARED_USER_PASSWD = 'userPassword';
 const SHARED_LOGIN_CHECK = 'userLoginCheck';
 const SHARED_CONNECTING_COMPANY = 'userConnectingCompany';
+
 class UserRepository with ChangeNotifier {
   AppInfo _appInfo;
   Status _status = Status.Uninitialized;
@@ -48,73 +48,76 @@ class UserRepository with ChangeNotifier {
     await _prefs.setBool(SHARED_LOGIN_CHECK, false);
   }
 
-  Future<bool> autoLogin() async{
+  Future<bool> autoLogin() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
-    bool check = _prefs.getBool(SHARED_LOGIN_CHECK)??false;
+    bool check = _prefs.getBool(SHARED_LOGIN_CHECK) ?? false;
 
     print("Check Login Info...: $check");
 
-    if(check){
+    if (check) {
       String email = _prefs.getString(SHARED_USER_EMAIL);
       String password = _prefs.getString(SHARED_USER_PASSWD);
       return await signIn(email, password);
-    }else{
+    } else {
       return false;
     }
 
     //return false;
   }
 
-
   /// 버전 체크
   /// -1 : 서버 버전 체크 오류
   /// 0 : 설치 버전 = 최신버전
   /// 1 : 설치 버전 < 최신버전
-  Future<int> checkAppVersion() async{
+  Future<int> checkAppVersion() async {
     final PackageInfo _packageInfo = await PackageInfo.fromPlatform();
     var url = 'https://japi.jahwa.co.kr/Download/GetAppVer';
 
-    return await http.get(
-      Uri.encodeFull(url), 
-      headers: {"Content-Type": "application/json"}
-    ).timeout(
-      const Duration(seconds: 15)
-    ).then<int>((http.Response response) {
-      if(response.statusCode != 200 || response.body == null ){
-          return -1;
-        }
-        if(response.statusCode == 200){
-          Iterable responseJson = jsonDecode(response.body);
-          List<AppInfo> svrVerList = responseJson.map((e) => AppInfo.fromJson(e)).toList();
-
-          
-
-          if (Platform.isAndroid) {
-            // Android-specific code
-            var verInfo = svrVerList.firstWhere((e) => e.platform.toUpperCase() == 'ANDROID');
-            _onChangeAppInfo(verInfo);
-            debugPrint("Server Version : ${verInfo.versionName} , Install Version : ${_packageInfo.version}");
-            if(verInfo.versionName == _packageInfo.version){
-              return 0;
-            }else{
-              return 1;
+    try {
+      return await http
+          .get(Uri.encodeFull(url),
+              headers: {"Content-Type": "application/json"})
+          .timeout(const Duration(seconds: 15))
+          .then<int>((http.Response response) {
+            if (response.statusCode != 200 || response.body == null) {
+              return -1;
             }
-          } else if (Platform.isIOS) {
-            // iOS-specific code
-            var verInfo = svrVerList.firstWhere((e) => e.platform.toUpperCase() == 'IOS');
-            _onChangeAppInfo(verInfo);
-            if(verInfo.versionName == _packageInfo.version){
-              return 0;
-            }else{
-              return 1;
+            if (response.statusCode == 200) {
+              Iterable responseJson = jsonDecode(response.body);
+              List<AppInfo> svrVerList =
+                  responseJson.map((e) => AppInfo.fromJson(e)).toList();
+
+              if (Platform.isAndroid) {
+                _appInfo = svrVerList
+                    .firstWhere((e) => e.platform.toUpperCase() == 'ANDROID');
+              } else if (Platform.isIOS) {
+                _appInfo = svrVerList
+                    .firstWhere((e) => e.platform.toUpperCase() == 'IOS');
+              } else {
+                return 0;
+              }
+
+              debugPrint(
+                  "Auto Version Check : ${appInfo.isAutoVersionCheck}, Server Version : ${appInfo.versionName}, Server Build : ${appInfo.versionCode} , Install Version : ${_packageInfo.version}, Install Build : ${_packageInfo.buildNumber}");
+
+              if (!appInfo.isAutoVersionCheck) {
+                return 0;
+              }
+
+              if (appInfo.versionName == _packageInfo.version &&
+                  appInfo.versionCode.toString() == _packageInfo.buildNumber) {
+                return 0;
+              } else {
+                return 1;
+              }
+            } else {
+              return -1;
             }
-          }
-          return -1;
-        }else{
-          return -1;
-        }
+          });
+    } catch (e) {
+      print(e.toString());
+      return -1;
     }
-    );
   }
 
   Future<bool> signIn(String email, String password) async {
@@ -122,37 +125,35 @@ class UserRepository with ChangeNotifier {
       _status = Status.Authenticating;
       notifyListeners();
       //await _auth.signInWithEmailAndPassword(email: email, password: password);
-      
+
       // SERVER LOGIN API URL
       var url = 'https://japi.jahwa.co.kr/api/Auth/Login';
 
       // Store all data with Param Name.
-      var data = {'id': email, 'password' : password};
+      var data = {'id': email, 'password': password};
 
       print("SignIn Post Data  : ${json.encode(data)}");
 
-      
-      return await http.post(
-        Uri.encodeFull(url), 
-        body: json.encode(data),
-        headers: {"Content-Type": "application/json"}
-      ).timeout(
-        const Duration(seconds: 15)
-      ).then<bool>((http.Response response) {
-        print("Result SignIn : ${response.body}, (${response.statusCode})");
-        if(response.statusCode != 200 || response.body == null ){
-          return false;
-        }
-        if(response.statusCode == 200){
-          var responseJson = jsonDecode(response.body);
-          _onAuthStateChanged(User.fromJson(responseJson));
-          setLoginInfo(email, password, true);
-          _initConnectionInfo();
-          return true;
-        }else{
-          return false;
-        }
-      });
+      return await http
+          .post(Uri.encodeFull(url),
+              body: json.encode(data),
+              headers: {"Content-Type": "application/json"})
+          .timeout(const Duration(seconds: 15))
+          .then<bool>((http.Response response) {
+            print("Result SignIn : ${response.body}, (${response.statusCode})");
+            if (response.statusCode != 200 || response.body == null) {
+              return false;
+            }
+            if (response.statusCode == 200) {
+              var responseJson = jsonDecode(response.body);
+              _onAuthStateChanged(User.fromJson(responseJson));
+              setLoginInfo(email, password, true);
+              _initConnectionInfo();
+              return true;
+            } else {
+              return false;
+            }
+          });
     } catch (e) {
       print(e.toString());
       _status = Status.Unauthenticated;
@@ -185,20 +186,21 @@ class UserRepository with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> _initConnectionInfo() async{
+  Future<void> _initConnectionInfo() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
-    String company = _prefs.getString(SHARED_CONNECTING_COMPANY)??_user.company;
+    String company =
+        _prefs.getString(SHARED_CONNECTING_COMPANY) ?? _user.company;
 
-    _onChangeCompany(ConnectionInfo(company: company)); 
+    _onChangeCompany(ConnectionInfo(company: company));
   }
 
   Future<void> _onChangeCompany(ConnectionInfo connection) async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
 
-    if(connection == null){
+    if (connection == null) {
       _connectionInfo = null;
       await _prefs.remove(SHARED_CONNECTING_COMPANY);
-    }else{
+    } else {
       _connectionInfo = connection;
       await _prefs.setString(SHARED_CONNECTING_COMPANY, connection.company);
     }
@@ -211,12 +213,11 @@ class UserRepository with ChangeNotifier {
   }
 
   Future<void> _onChangeAppInfo(AppInfo info) async {
-    if(info == null){
+    if (info == null) {
       _appInfo = null;
-    }else{
+    } else {
       _appInfo = info;
     }
     notifyListeners();
   }
-
 }

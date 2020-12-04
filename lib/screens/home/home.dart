@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -24,10 +23,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _index = 0;
-  UserRepository $userRepository; 
+  UserRepository $userRepository;
   String _langCode = "";
   bool showNewstVersion = false;
   bool isCheckdVersion = false;
+  bool kDebugMode = false;
 
   PackageInfo _packageInfo = PackageInfo(
     appName: 'Unknown',
@@ -37,7 +37,9 @@ class _HomePageState extends State<HomePage> {
   );
 
   @override
-  void initState(){
+  void initState() {
+    kDebugMode = Foundation.kDebugMode;
+
     initPackageInfo();
 
     super.initState();
@@ -74,19 +76,25 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  /// App버전 체크 및 Alert 
-  Future<void> checkAppVersion() async{
-    if($userRepository != null){
+  /// App버전 체크 및 Alert
+  Future<void> checkAppVersion() async {
+    if (kDebugMode) {
+      print('버전 체크 제외 : App in debug mode');
+      //Navigator.pop(context);
+      return;
+    }
+
+    if ($userRepository != null) {
       int check = await $userRepository.checkAppVersion();
-      
-      if(check > 0){
+
+      if (check > 0) {
         //서버에 최신 버전 존재
         showNewstVersion = true;
         alertNewestVersion();
-      }else if(check < 0){
+      } else if (check < 0) {
         //서버에 연결 실패 또는 오류
         showNewstVersion = false;
-      }else{
+      } else {
         //현재 최신 버전 설치
         showNewstVersion = false;
       }
@@ -95,11 +103,10 @@ class _HomePageState extends State<HomePage> {
     }
 
     print('버전 체크');
-    
   }
 
-  void onItemTapped(int index){
-    setState((){
+  void onItemTapped(int index) {
+    setState(() {
       _index = index;
 
       switch (index) {
@@ -126,7 +133,7 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  Future<bool> alertComingSoon(){
+  Future<bool> alertComingSoon() {
     return Alert(
       context: context,
       type: AlertType.warning,
@@ -145,7 +152,7 @@ class _HomePageState extends State<HomePage> {
     ).show();
   }
 
-  Future<bool> alertNewestVersion(){
+  Future<bool> alertNewestVersion() {
     return Alert(
       context: context,
       closeFunction: () => launchDownloadURL(),
@@ -166,12 +173,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future launchDownloadURL() async {
-    if(Foundation.kDebugMode){
+    if (kDebugMode) {
       print('App in debug mode');
       Navigator.pop(context);
       return;
     }
-    const url = 'https://japi.jahwa.co.kr/Download';
+
+    //const url = 'https://japi.jahwa.co.kr/Download';
+    var url = $userRepository.appInfo.downloadUrl;
     if (await canLaunch(url)) {
       await launch(url);
     } else {
@@ -181,11 +190,10 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    
-    if($userRepository == null){
+    if ($userRepository == null) {
       $userRepository = Provider.of<UserRepository>(context, listen: true);
 
-      if(!isCheckdVersion && Platform.isAndroid){
+      if (!isCheckdVersion) {
         checkAppVersion();
       }
     }
@@ -197,26 +205,26 @@ class _HomePageState extends State<HomePage> {
       ),
       body: getView(),
       bottomNavigationBar: new BottomNavigationBar(
-        type : BottomNavigationBarType.fixed,
+        type: BottomNavigationBarType.fixed,
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
-            title: Text(getTranslated(context, 'home_page_tabs_asset_setting')),
+            label: getTranslated(context, 'home_page_tabs_asset_setting'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.storage), //storage  //find_in_page
-            title: Text(getTranslated(context, 'home_page_tabs_asset_management')),
+            label: getTranslated(context, 'home_page_tabs_asset_management'),
           ),
-          if(Platform.isAndroid)
-          BottomNavigationBarItem(
-            icon: Icon(Icons.gps_fixed),
-            title: Text(getTranslated(context, 'home_page_tabs_facility_location')),
-          ),
-          if(Platform.isAndroid)
-          BottomNavigationBarItem(
-            icon: Icon(Icons.import_export),
-            title: Text(getTranslated(context, 'home_page_tabs_facility_trade')),
-          ),
+          if (Platform.isAndroid)
+            BottomNavigationBarItem(
+              icon: Icon(Icons.gps_fixed),
+              label: getTranslated(context, 'home_page_tabs_facility_location'),
+            ),
+          if (Platform.isAndroid)
+            BottomNavigationBarItem(
+              icon: Icon(Icons.import_export),
+              label: getTranslated(context, 'home_page_tabs_facility_trade'),
+            ),
         ],
         //fixedColor: Colors.blue,
         currentIndex: _index,
@@ -228,178 +236,198 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget getView(){
+  Widget getView() {
     return LayoutBuilder(
-      builder: (context, constranints){
+      builder: (context, constranints) {
         //$userRepository = Provider.of<UserRepository>(context, listen: false);
         return SingleChildScrollView(
           child: ConstrainedBox(
             constraints: BoxConstraints(minHeight: constranints.maxHeight),
-          //   child: IntrinsicHeight(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  // SizedBox(
-                  //   height: 20,
-                  // ),
-                  // CircleAvatar(
-                  //   radius: 60,
-                  //   backgroundColor: Colors.green.shade800,
-                    
-                  //   child: ClipOval(
-                  //     child: Stack(
-                  //       children: <Widget>[
-                  //         Icon(Icons.people,size: 120,),
-                  //         //Image.network('https://via.placeholder.com/300'),
-                  //         // Positioned(
-                  //         //   bottom: 0,
-                  //         //   right: 0,
-                  //         //   left: 0,
-                  //         //   height: 33,
-                  //         //   child: GestureDetector(
-                  //         //     onTap: (){
-                  //         //       print('upload Clicked');
-                  //         //     },
-                  //         //     child: Container(
-                  //         //       height: 20,
-                  //         //       width: 30,
-                  //         //       color: Color.fromRGBO(0, 0, 0, .74),
-                  //         //       child: Center(
-                  //         //         //child: Icon(Icons.photo_camera, color: Colors.grey),
-                  //         //         //child: Text($userRepository.user.),
-                  //         //       ),
-                  //         //     ),
-                  //         //   ),
-                  //         // ),
-                  //       ],
-                  //     ),
-                  //   ),
-                  //   //backgroundImage: AssetImage('images/protocoder.png'),
-                  // ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  SettingsSection(
-                    title: getTranslated(context, 'app_info'),
-                    tiles: [
-                      SettingsTile(
-                        title: getTranslated(context, 'app_version'),
-                        subtitle: _packageInfo.version??'',
-                        leading: Icon(Icons.verified_user),
-                        onTap: () {},
-                      ),
-                      if(showNewstVersion) newestVersion(),
-                    ],
-                  ),
-                  SettingsSection(
-                    title: getTranslated(context, 'user_info'),
-                    tiles: [
-                      SettingsTile(
-                        title: getTranslated(context, 'user_company'),
-                        subtitle: $userRepository.user==null?'':$userRepository.user.company,
-                        leading: Icon(Icons.account_balance),
-                        onTap: () {},
-                      ),
-                      SettingsTile(
-                        title: getTranslated(context, 'user_name'),
-                        subtitle: $userRepository.user==null?'':$userRepository.user.name,
-                        leading: Icon(Icons.person),
-                        onTap: () {},
-                      ),
-                      SettingsTile(
-                        title: getTranslated(context, 'user_dept'),
-                        subtitle: $userRepository.user==null?'':$userRepository.user.deptName,
-                        leading: Icon(Icons.work),
-                        onTap: () {},
-                      ),
-                      SettingsTile(
-                        title: getTranslated(context, 'emp_no'),
-                        subtitle: $userRepository.user==null?'':$userRepository.user.empNo,
-                        leading: Icon(Icons.dialpad),
-                        onTap: () {},
-                      ),
-                      SettingsTile(
-                        title: getTranslated(context, 'email_addr'),
-                        subtitle: $userRepository.user==null?'':$userRepository.user.emailAddr,
-                        leading: Icon(Icons.email),
-                        onTap: () {},
-                      ),
-                    ],
-                  ),
-                  SettingsSection(
-                    title: getTranslated(context, 'config'),
-                    tiles: [
-                      SettingsTile(
-                        title: getTranslated(context, 'change_language'),
-                        subtitle: getLanguageName(_langCode),
-                        leading: Icon(Icons.language),
-                        onTap: () {showPickerLanguage(context);},
-                      ),
-                      SettingsTile(
-                        title: getTranslated(context, 'change_company'),
-                        subtitle: $userRepository.connectionInfo==null?'':$userRepository.connectionInfo.company,
-                        leading: Icon(Icons.view_comfy),
-                        onTap: () {showPickerCompany(context);},
-                      ),
-                    ],
-                  ),
-                  if(Platform.isAndroid)
+            //   child: IntrinsicHeight(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                // SizedBox(
+                //   height: 20,
+                // ),
+                // CircleAvatar(
+                //   radius: 60,
+                //   backgroundColor: Colors.green.shade800,
+
+                //   child: ClipOval(
+                //     child: Stack(
+                //       children: <Widget>[
+                //         Icon(Icons.people,size: 120,),
+                //         //Image.network('https://via.placeholder.com/300'),
+                //         // Positioned(
+                //         //   bottom: 0,
+                //         //   right: 0,
+                //         //   left: 0,
+                //         //   height: 33,
+                //         //   child: GestureDetector(
+                //         //     onTap: (){
+                //         //       print('upload Clicked');
+                //         //     },
+                //         //     child: Container(
+                //         //       height: 20,
+                //         //       width: 30,
+                //         //       color: Color.fromRGBO(0, 0, 0, .74),
+                //         //       child: Center(
+                //         //         //child: Icon(Icons.photo_camera, color: Colors.grey),
+                //         //         //child: Text($userRepository.user.),
+                //         //       ),
+                //         //     ),
+                //         //   ),
+                //         // ),
+                //       ],
+                //     ),
+                //   ),
+                //   //backgroundImage: AssetImage('images/protocoder.png'),
+                // ),
+                SizedBox(
+                  height: 10,
+                ),
+                SettingsSection(
+                  title: getTranslated(context, 'app_info'),
+                  tiles: [
+                    SettingsTile(
+                      title: getTranslated(context, 'app_version'),
+                      subtitle: (_packageInfo.version ?? '') +
+                          '+' +
+                          (_packageInfo.buildNumber ?? ''),
+                      leading: Icon(Icons.verified_user),
+                      onTap: () {},
+                    ),
+                    if (showNewstVersion) newestVersion(),
+                  ],
+                ),
+                SettingsSection(
+                  title: getTranslated(context, 'user_info'),
+                  tiles: [
+                    SettingsTile(
+                      title: getTranslated(context, 'user_company'),
+                      subtitle: $userRepository.user == null
+                          ? ''
+                          : $userRepository.user.company,
+                      leading: Icon(Icons.account_balance),
+                      onTap: () {},
+                    ),
+                    SettingsTile(
+                      title: getTranslated(context, 'user_name'),
+                      subtitle: $userRepository.user == null
+                          ? ''
+                          : $userRepository.user.name,
+                      leading: Icon(Icons.person),
+                      onTap: () {},
+                    ),
+                    SettingsTile(
+                      title: getTranslated(context, 'user_dept'),
+                      subtitle: $userRepository.user == null
+                          ? ''
+                          : $userRepository.user.deptName,
+                      leading: Icon(Icons.work),
+                      onTap: () {},
+                    ),
+                    SettingsTile(
+                      title: getTranslated(context, 'emp_no'),
+                      subtitle: $userRepository.user == null
+                          ? ''
+                          : $userRepository.user.empNo,
+                      leading: Icon(Icons.dialpad),
+                      onTap: () {},
+                    ),
+                    SettingsTile(
+                      title: getTranslated(context, 'email_addr'),
+                      subtitle: $userRepository.user == null
+                          ? ''
+                          : $userRepository.user.emailAddr,
+                      leading: Icon(Icons.email),
+                      onTap: () {},
+                    ),
+                  ],
+                ),
+                SettingsSection(
+                  title: getTranslated(context, 'config'),
+                  tiles: [
+                    SettingsTile(
+                      title: getTranslated(context, 'change_language'),
+                      subtitle: getLanguageName(_langCode),
+                      leading: Icon(Icons.language),
+                      onTap: () {
+                        showPickerLanguage(context);
+                      },
+                    ),
+                    SettingsTile(
+                      title: getTranslated(context, 'change_company'),
+                      subtitle: $userRepository.connectionInfo == null
+                          ? ''
+                          : $userRepository.connectionInfo.company,
+                      leading: Icon(Icons.view_comfy),
+                      onTap: () {
+                        showPickerCompany(context);
+                      },
+                    ),
+                  ],
+                ),
+                if (Platform.isAndroid)
                   SettingsSection(
                     title: getTranslated(context, 'device'),
                     tiles: [
                       SettingsTile(
                         title: 'Bluetooth',
-                        subtitle: $userRepository.bluetoothDevice==null? 'None':$userRepository.bluetoothDevice.name,
+                        subtitle: $userRepository.bluetoothDevice == null
+                            ? 'None'
+                            : $userRepository.bluetoothDevice.name,
                         leading: Icon(Icons.bluetooth),
-                        onTap: () { Navigator.pushNamed(context, bluetoothScanRoute); },
-                      ),
-                    ],
-                  ),
-                  SettingsSection(
-                    title: getTranslated(context, 'logout'),
-                    tiles: [
-                      SettingsTile(
-                        title: getTranslated(context, 'logout'),
-                        //subtitle: 'None',
-                        leading: Icon(Icons.exit_to_app),
                         onTap: () {
-                          $userRepository.signOut();
-                          Navigator.popAndPushNamed(context, loginRoute);
+                          Navigator.pushNamed(context, bluetoothScanRoute);
                         },
                       ),
                     ],
                   ),
-                ],
-              ),
-          //   ),
-           ),
+                SettingsSection(
+                  title: getTranslated(context, 'logout'),
+                  tiles: [
+                    SettingsTile(
+                      title: getTranslated(context, 'logout'),
+                      //subtitle: 'None',
+                      leading: Icon(Icons.exit_to_app),
+                      onTap: () {
+                        $userRepository.signOut();
+                        Navigator.popAndPushNamed(context, loginRoute);
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            //   ),
+          ),
         );
       },
     );
-    
   }
 
-  
-
   showPickerLanguage(BuildContext context) {
-    const PickerData = [["Korean","Vietnamese"]];
+    const PickerData = [
+      ["Korean", "Vietnamese"]
+    ];
     new Picker(
-        adapter: PickerDataAdapter<String>(pickerdata: PickerData, isArray: true),
+        adapter:
+            PickerDataAdapter<String>(pickerdata: PickerData, isArray: true),
         hideHeader: true,
         title: new Text("Please Select"),
         onConfirm: (Picker picker, List value) {
-          
-          if(value.toString() == "[0]"){
+          if (value.toString() == "[0]") {
             changeLanguage(KOREAN);
-          }else if(value.toString() == "[1]"){
+          } else if (value.toString() == "[1]") {
             changeLanguage(VIETNAMESE);
-          }else{
+          } else {
             changeLanguage(KOREAN);
           }
           //print(value.toString());
           // print(picker.getSelectedValues());
-        }
-    ).showDialog(context);
+        }).showDialog(context);
   }
 
   showPickerCompany(BuildContext context) {
@@ -408,40 +436,40 @@ class _HomePageState extends State<HomePage> {
     new Picker(
         //adapter: PickerDataAdapter<String>(pickerdata: PickerData, isArray: true),
         adapter: PickerDataAdapter(data: [
-          PickerItem(text: Text("자화전자주식회사"),value: "KO532"),
-          PickerItem(text: Text("JAHWA VINA CO LTD"),value: "VN532"),
-          PickerItem(text: Text("惠州纳诺泰克合金科技有限公司"),value: "HZ532"),
-          PickerItem(text: Text("天津磁化电子有限公司"),value: "TJ532"),
-          PickerItem(text: Text("JH VINA CO LTD"),value: "JV532"),
-          PickerItem(text: Text("JAHWA INDIA"),value: "IN532"),
-          PickerItem(text: Text("주식회사나노테크"),value: "KO536"),
-          PickerItem(text: Text("NT VINA CO LTD"),value: "VN536"),
-          PickerItem(text: Text("NANOTECH VINA CO LTD"),value: "VN538"),
+          PickerItem(text: Text("자화전자주식회사"), value: "KO532"),
+          PickerItem(text: Text("JAHWA VINA CO LTD"), value: "VN532"),
+          PickerItem(text: Text("惠州纳诺泰克合金科技有限公司"), value: "HZ532"),
+          PickerItem(text: Text("天津磁化电子有限公司"), value: "TJ532"),
+          PickerItem(text: Text("JH VINA CO LTD"), value: "JV532"),
+          PickerItem(text: Text("JAHWA INDIA"), value: "IN532"),
+          PickerItem(text: Text("주식회사나노테크"), value: "KO536"),
+          PickerItem(text: Text("NT VINA CO LTD"), value: "VN536"),
+          PickerItem(text: Text("NANOTECH VINA CO LTD"), value: "VN538"),
         ]),
         hideHeader: true,
         title: new Text("Please Select"),
         onConfirm: (Picker picker, List value) {
           //print(value.toString());
           //print();
-          String company = picker.getSelectedValues()[0]?? 'KO532';
+          String company = picker.getSelectedValues()[0] ?? 'KO532';
           $userRepository.changeConnectionCompany(company).then((_) {
             setState(() {
               debugPrint($userRepository.connectionInfo.company);
             });
           });
-          
-        }
-    ).showDialog(context);
+        }).showDialog(context);
   }
 
-  Widget newestVersion(){
+  Widget newestVersion() {
     return SettingsTile(
-        title: getTranslated(context, 'newest_app_version'),
-        subtitle: $userRepository.appInfo==null?'':$userRepository.appInfo.versionName??'',
-        leading: Icon(Icons.notifications_active),
-        onTap: () {},
-      );
+      title: getTranslated(context, 'newest_app_version'),
+      subtitle: $userRepository.appInfo == null
+          ? ''
+          : ($userRepository.appInfo.versionName ?? '') +
+              '+' +
+              ($userRepository.appInfo.versionCode.toString() ?? ''),
+      leading: Icon(Icons.notifications_active),
+      onTap: () {},
+    );
   }
-
 }
-

@@ -9,7 +9,6 @@ import 'package:jahwa_asset_management_system/util/localization/language_constan
 import 'package:jahwa_asset_management_system/widgets/custom_widget.dart';
 import 'package:provider/provider.dart';
 
-
 /*
 Flutter StatefulWidget Page Example
 StatefulWidget Lifecycle
@@ -28,27 +27,27 @@ StatefulWidget Lifecycle
 */
 
 class FacilityLocationInspactionSettingPage extends StatefulWidget {
-  
   //1. createState()
   //StatefulWidget이 빌드 되도록 createState() 호출
   //반드시 호출해야하며 아래 코드보다 더 복잡하거나 추가될 것이 없음
   //정상적으로 createState()호출되면 buildContext가 할당되면서 this.mounted 속성 true를 리턴(2. mounted == true)
   @override
-  _FacilityLocationInspactionSettingPageState createState() => new _FacilityLocationInspactionSettingPageState();
+  _FacilityLocationInspactionSettingPageState createState() =>
+      new _FacilityLocationInspactionSettingPageState();
 }
 
-class _FacilityLocationInspactionSettingPageState extends State<FacilityLocationInspactionSettingPage>{
-
+class _FacilityLocationInspactionSettingPageState
+    extends State<FacilityLocationInspactionSettingPage> {
   bool _showMaterialonIOS = true;
 
   final GlobalKey<ScaffoldState> scaffold1Key = GlobalKey<ScaffoldState>();
 
-  UserRepository $userRepository; 
+  UserRepository $userRepository;
   FacilityLocationRepository $facilityLocationRepository;
   FacilityTradeCommonRepository $facilityTradeCommonRepository;
-  
+
   //3. initState()
-  //위젯이 생성될때 처음 한번 호출되는 메서드 
+  //위젯이 생성될때 처음 한번 호출되는 메서드
   //initState에서 실행되면 좋은 것들
   //-.생성된 위젯 인스턴스의 BuildContext에 의존적인 것들의 데이터 초기화
   //-.동일 위젯트리내에 부모위젯에 의존하는 속성 초기화
@@ -59,8 +58,7 @@ class _FacilityLocationInspactionSettingPageState extends State<FacilityLocation
     super.initState();
 
     //Future 사용이 필요한 경우
-    new Future.delayed(Duration.zero,(){
-    });
+    new Future.delayed(Duration.zero, () {});
 
     // 스트림 리스너 추가
     //cartItemStream.listen((data) {
@@ -73,20 +71,22 @@ class _FacilityLocationInspactionSettingPageState extends State<FacilityLocation
   //위젯이 의존하는 데이터의 객체가 호출될때마다 호출된다. 예를 들면 업데이트되는 위젯을 상속한 경우.
   //공식문서 또한 상속한 위젯이 업데이트 될때 네트워크 호출(API 호출이 필요한 경우 유용)
   @override
-  void didChangeDependencies() {  
-    if($userRepository == null){
+  void didChangeDependencies() {
+    if ($userRepository == null) {
       $userRepository = Provider.of<UserRepository>(context, listen: true);
     }
 
-    if($facilityTradeCommonRepository == null){
-      $facilityTradeCommonRepository = Provider.of<FacilityTradeCommonRepository>(context, listen: true);
+    if ($facilityTradeCommonRepository == null) {
+      $facilityTradeCommonRepository =
+          Provider.of<FacilityTradeCommonRepository>(context, listen: true);
     }
 
-    if($facilityLocationRepository == null){
-      $facilityLocationRepository = Provider.of<FacilityLocationRepository>(context, listen: true);
+    if ($facilityLocationRepository == null) {
+      $facilityLocationRepository =
+          Provider.of<FacilityLocationRepository>(context, listen: true);
       //$facilityLocationRepository.searchCondtion.display = SearchResultDisplay.all;
     }
-    
+
     super.didChangeDependencies();
   }
 
@@ -107,9 +107,9 @@ class _FacilityLocationInspactionSettingPageState extends State<FacilityLocation
   //이 메서드는 자주 호출된다(fps + render라고 생각하면 됨)
   //반드시 Widget을 리턴해야 함
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Scaffold(
-      key:scaffold1Key,
+      key: scaffold1Key,
       appBar: AppBar(
         title: Text(getTranslated(context, 'setting_location')),
         backgroundColor: Colors.deepPurple,
@@ -119,19 +119,17 @@ class _FacilityLocationInspactionSettingPageState extends State<FacilityLocation
           //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Expanded(child: searchConditionBox(),),
-            Padding(
-              padding: const EdgeInsets.all(0.0),
-              child: Column()
+            Expanded(
+              child: searchConditionBox(),
             ),
-            
+            Padding(padding: const EdgeInsets.all(0.0), child: Column()),
+
             //SizedBox(height: 70,),
           ],
         ),
       ),
-    
     );
-  } 
+  }
 
   //6. deactivate()
   //이 메서드는 거의 사용되지 않는다.
@@ -140,132 +138,155 @@ class _FacilityLocationInspactionSettingPageState extends State<FacilityLocation
   //7. dispose()
   //영구적인 State Object가 삭제될때 호출된다. 이 함수는 주로 Stream 이나 애니메이션 을 해제시 사용된다.
   @override
-  void dispose(){
+  void dispose() {
     super.dispose();
   }
 
-
   //8. User Defined
   //조건 박스
-  Widget searchConditionBox(){
+  Widget searchConditionBox() {
     return CardSettings.sectioned(
-      showMaterialonIOS: _showMaterialonIOS,
-      labelWidth: 120,
-      children: <CardSettingsSection>[
-        CardSettingsSection(
-          showMaterialonIOS: _showMaterialonIOS,
-          // header: CardSettingsHeader(
-          //   label: getTranslated(context, 'setting_location'),
-          //   showMaterialonIOS: _showMaterialonIOS,
-          //   labelAlign: TextAlign.center,
-          //   color: Colors.deepPurple,
-          // ),
-          children: <Widget>[
-            buildCardSettingsPickerPlant(),
-            buildCardSettingsPickerLocation(),
-            buildCardSettingsPickerItemGroup(),
-            Column(
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    buildCardSettingsButtonReset(),
-                    buildCardSettingsButtonApply(),
-                    
-                  ],
-                )
-              ],
-            ),
-            //testSearch(),
-            SizedBox(height: 5,),
-            
-          ],
-        ),
-      ]
-    );
+        showMaterialonIOS: _showMaterialonIOS,
+        labelWidth: 120,
+        children: <CardSettingsSection>[
+          CardSettingsSection(
+            showMaterialonIOS: _showMaterialonIOS,
+            // header: CardSettingsHeader(
+            //   label: getTranslated(context, 'setting_location'),
+            //   showMaterialonIOS: _showMaterialonIOS,
+            //   labelAlign: TextAlign.center,
+            //   color: Colors.deepPurple,
+            // ),
+            children: <Widget>[
+              buildCardSettingsPickerPlant(),
+              buildCardSettingsPickerLocation(),
+              buildCardSettingsPickerItemGroup(),
+              Column(
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      buildCardSettingsButtonReset(),
+                      buildCardSettingsButtonApply(),
+                    ],
+                  )
+                ],
+              ),
+              //testSearch(),
+              SizedBox(
+                height: 5,
+              ),
+            ],
+          ),
+        ]);
   }
 
-  Widget buildCardSettingsPickerPlant(){
+  Widget buildCardSettingsPickerPlant() {
     return customCardField(
       label: getTranslated(context, 'plant'),
       content: customDropdown(
-        data: $facilityTradeCommonRepository.plantData,
-        value: $facilityLocationRepository.settingInspactionLocation==null?'':$facilityLocationRepository.settingInspactionLocation.plantCode,
-        onTap: (){
-          debugPrint("Grade onTap:");
-          Picker(
-            adapter: PickerDataAdapter(data: $facilityTradeCommonRepository.plantData),
-            hideHeader: true,
-            title: new Text("Please Select"),
-            onConfirm: (Picker picker, List value) {
-              print(picker.getSelectedValues()[0].toString());
-              $facilityLocationRepository.settingInspactionLocation.plantCode = picker.getSelectedValues()[0];
-              Text t = $facilityTradeCommonRepository.plantData[value[0]].text;
-              $facilityLocationRepository.settingInspactionLocation.plantName = t.data;
-              setState(() {
-                
-              });
-            }
-          ).showDialog(context);
-        }
-      ),
+          data: $facilityTradeCommonRepository.plantData,
+          value: $facilityLocationRepository.settingInspactionLocation == null
+              ? ''
+              : $facilityLocationRepository.settingInspactionLocation.plantCode,
+          onTap: () {
+            debugPrint("Grade onTap:");
+            Picker(
+                adapter: PickerDataAdapter(
+                    data: $facilityTradeCommonRepository.plantData),
+                hideHeader: true,
+                title: new Text("Please Select"),
+                onConfirm: (Picker picker, List value) {
+                  print(picker.getSelectedValues()[0].toString());
+                  $facilityLocationRepository.settingInspactionLocation
+                      .plantCode = picker.getSelectedValues()[0];
+                  Text t =
+                      $facilityTradeCommonRepository.plantData[value[0]].text;
+                  $facilityLocationRepository
+                      .settingInspactionLocation.plantName = t.data;
+                  setState(() {});
+                }).showDialog(context);
+          }),
     );
   }
 
-  Widget buildCardSettingsPickerLocation(){
+  Widget buildCardSettingsPickerLocation() {
     return customCardField(
       label: getTranslated(context, 'asset_info_label_setarea'),
       content: customDropdown(
-        data: $facilityTradeCommonRepository.getSetupLocationData($userRepository.connectionInfo==null?'':$userRepository.connectionInfo.company),
-        value: $facilityLocationRepository.settingInspactionLocation==null?'':$facilityLocationRepository.settingInspactionLocation.setupLocationCode,
-        onTap: (){
-          debugPrint("Grade onTap:");
-          Picker(
-            adapter: PickerDataAdapter(data: $facilityTradeCommonRepository.getSetupLocationData($userRepository.connectionInfo==null?'':$userRepository.connectionInfo.company)),
-            hideHeader: true,
-            textAlign: TextAlign.left,
-            title: new Text("Please Select"),
-            onConfirm: (Picker picker, List value) {
-              print(picker.getSelectedValues()[0].toString());
-              $facilityLocationRepository.settingInspactionLocation.setupLocationCode = picker.getSelectedValues()[0];
-              $facilityLocationRepository.settingInspactionLocation.setupLocation = $facilityTradeCommonRepository.getSetupLocationName($userRepository.connectionInfo==null?'':$userRepository.connectionInfo.company, picker.getSelectedValues()[0]);
-              setState(() {
-              });
-            }
-          ).showDialog(context);
-        }
-      ),
+          data: $facilityTradeCommonRepository.getSetupLocationData(
+              $userRepository.connectionInfo == null
+                  ? ''
+                  : $userRepository.connectionInfo.company),
+          value: $facilityLocationRepository.settingInspactionLocation == null
+              ? ''
+              : $facilityLocationRepository
+                  .settingInspactionLocation.setupLocationCode,
+          onTap: () {
+            debugPrint("Grade onTap:");
+            Picker(
+                adapter: PickerDataAdapter(
+                    data: $facilityTradeCommonRepository.getSetupLocationData(
+                        $userRepository.connectionInfo == null
+                            ? ''
+                            : $userRepository.connectionInfo.company)),
+                hideHeader: true,
+                textAlign: TextAlign.left,
+                title: new Text("Please Select"),
+                onConfirm: (Picker picker, List value) {
+                  print(picker.getSelectedValues()[0].toString());
+                  $facilityLocationRepository.settingInspactionLocation
+                      .setupLocationCode = picker.getSelectedValues()[0];
+                  $facilityLocationRepository
+                          .settingInspactionLocation.setupLocation =
+                      $facilityTradeCommonRepository.getSetupLocationName(
+                          $userRepository.connectionInfo == null
+                              ? ''
+                              : $userRepository.connectionInfo.company,
+                          picker.getSelectedValues()[0]);
+                  setState(() {});
+                }).showDialog(context);
+          }),
     );
   }
 
-  Widget buildCardSettingsPickerItemGroup(){
+  Widget buildCardSettingsPickerItemGroup() {
     return customCardField(
       label: getTranslated(context, 'item_group'),
       content: customDropdown(
-        data: $facilityTradeCommonRepository.itemGroupData,
-        value: $facilityLocationRepository.settingInspactionLocation==null?'':$facilityLocationRepository.settingInspactionLocation.itemGroupCode,
-        onTap: (){
-          debugPrint("Grade onTap:");
-          Picker(
-            adapter: PickerDataAdapter(data: $facilityTradeCommonRepository.itemGroupData
-              .toList()
-              .where((e)=>(e.value.toString().toLowerCase().substring(0,3).contains($facilityLocationRepository.settingInspactionLocation.plantCode.toLowerCase())))
-              .toList()
-            ),
-            hideHeader: true,
-            title: new Text("Please Select"),
-            onConfirm: (Picker picker, List value) {
-              print(picker.getSelectedValues()[0].toString());
-              $facilityLocationRepository.settingInspactionLocation.itemGroupCode = picker.getSelectedValues()[0];
-              setState(() {
-                
-              });
-            }
-          ).showDialog(context);
-        }
-      ),
+          data: $facilityTradeCommonRepository.itemGroupData,
+          value: $facilityLocationRepository.settingInspactionLocation == null
+              ? ''
+              : $facilityLocationRepository
+                  .settingInspactionLocation.itemGroupCode,
+          onTap: () {
+            debugPrint(
+                "Grade onTap: item_group${$facilityLocationRepository.settingInspactionLocation.plantCode}");
+            Picker(
+                adapter: PickerDataAdapter(
+                    data: $facilityTradeCommonRepository.itemGroupData
+                        .toList()
+                        //.where((e) => e.value.toString().length > 2)
+                        .where((e) => (e.value
+                            .toString()
+                            .toLowerCase()
+                            .substring(0, 2)
+                            .contains($facilityLocationRepository
+                                .settingInspactionLocation.plantCode
+                                .toLowerCase())))
+                        .toList()),
+                hideHeader: true,
+                title: new Text("Please Select"),
+                onConfirm: (Picker picker, List value) {
+                  print(picker.getSelectedValues()[0].toString());
+                  $facilityLocationRepository.settingInspactionLocation
+                      .itemGroupCode = picker.getSelectedValues()[0];
+                  setState(() {});
+                }).showDialog(context);
+          }),
     );
   }
+
   CardSettingsButton buildCardSettingsButtonReset() {
     return CardSettingsButton(
       showMaterialonIOS: _showMaterialonIOS,
@@ -286,12 +307,11 @@ class _FacilityLocationInspactionSettingPageState extends State<FacilityLocation
     );
   }
 
-  Future applyPressed() async{
+  Future applyPressed() async {
     Navigator.pop(context);
   }
 
-  Future resetPressed() async{
+  Future resetPressed() async {
     $facilityLocationRepository.resetSettingInspactionLocation(true);
   }
-
 }
