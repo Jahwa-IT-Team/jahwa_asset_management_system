@@ -49,13 +49,13 @@ dependencies:
   flutter_launcher_name: "^0.0.1"
   
   #Http API 통신
-  http: ^0.12.0+4
+  http: ^0.12.2
 
   #퍼센트 표시되는 프로그래스 바
   percent_indicator: "^2.1.1"
 
   #QR 바코드 스캔
-  barcode_scan: ^3.0.0
+  barcode_scan: ^3.0.1
 
   #프로그레스바 UI
   progress_dialog: ^1.2.2
@@ -67,10 +67,10 @@ dependencies:
   rflutter_alert: ^1.0.3
   
   #provider
-  provider: ^4.1.1
+  provider: ^4.3.2+3
 
   #데이터 팝업 창
-  flutter_picker: ^1.1.4
+  flutter_picker: ^1.1.5
 
   #Bluetooth LE
   #라이선스 BSD
