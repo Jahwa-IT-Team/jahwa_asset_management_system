@@ -599,13 +599,19 @@ class FacilityLocationRepository with ChangeNotifier {
 
   Future<void> saveFacilityInspAllList() async {
     _facilityInspScanList.forEach((e) {
-      e.plantCode = settingInspactionLocation.plantCode;
-      e.plantName = settingInspactionLocation.plantName;
-      e.setarea = settingInspactionLocation.setupLocationCode;
-      e.setareaName = settingInspactionLocation.setupLocation;
-      e.itemGroup = settingInspactionLocation.itemGroupCode;
 
-      saveFacilityInsp(e);
+      if(e.sendResult == 1 || e.id > 0) {
+        return;
+      }
+      else {
+        e.plantCode = settingInspactionLocation.plantCode;
+        e.plantName = settingInspactionLocation.plantName;
+        e.setarea = settingInspactionLocation.setupLocationCode;
+        e.setareaName = settingInspactionLocation.setupLocation;
+        e.itemGroup = settingInspactionLocation.itemGroupCode;
+
+        saveFacilityInsp(e);
+      }
     });
   }
 

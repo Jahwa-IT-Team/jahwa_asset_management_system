@@ -64,23 +64,25 @@ class _AssetDashbaordDeptDetailPageState extends State<AssetDashbaordDeptDetailP
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: TextField(
+               child: TextField(
+
                   onChanged: (value) {
                     filterSearchResults(value);
                   },
                   //controller: editingController,
                   decoration: InputDecoration(
-                      labelText: "Search",
-                      hintText: "Search",
-                      prefixIcon: Icon(Icons.search),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(0.0)))),
-                          cursorColor: Colors.green,  
+                    labelText: "Search",
+                    hintText: "Search",
+                    prefixIcon: Icon(Icons.search),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(0.0)))),
+                      cursorColor: Colors.green,
                 ),
               ),
               Expanded(
                 child: SingleChildScrollView(
                   scrollDirection: Axis.vertical,
+                  padding: EdgeInsets.all(1.0),
                   child:  getListView(),
                 ),
               ),
@@ -147,12 +149,46 @@ class _AssetDashbaordDeptDetailPageState extends State<AssetDashbaordDeptDetailP
             List<DataRow> rows = [];
 
             for(int i=0; i<snapshot.data.length; i++){
+              String sAsstNo = snapshot.data[i]['asst_no'].toString()??'';
+              String sAsstNm = snapshot.data[i]['asst_nm'].toString()??'';
+              String sInsectionYn = snapshot.data[i]['inspection_yn'].toString()??'';
+              double dMediaSize = MediaQuery.of(context).size.width;
               rows.addAll([
                 DataRow(
                   cells: [
-                    DataCell(Text(snapshot.data[i]['asst_no'].toString()??'')),
-                    DataCell(Text(snapshot.data[i]['asst_nm'].toString()??'')),
-                    DataCell(Text(snapshot.data[i]['inspection_yn'].toString()??'')),
+                    DataCell(
+                      Container(
+                        color: Colors.pink,
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxWidth: dMediaSize * 18 / 100,
+                            minWidth: 20,
+                          ),
+                        child: Text(
+                          sAsstNo,
+                          textAlign: TextAlign.left,
+                          ),
+                        ),
+                      ),
+                    ),
+                    DataCell(
+                      ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxWidth: dMediaSize * 40 / 100,
+                          minWidth: 20,
+                        ),
+                        child: Text(
+                          sAsstNm,
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                    ),
+                    DataCell(
+                      Text(
+                        sInsectionYn,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
                   ]
                 ),
               ]);
