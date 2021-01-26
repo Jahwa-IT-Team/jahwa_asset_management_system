@@ -10,10 +10,11 @@ import 'package:jahwa_asset_management_system/models/facility_locaion.dart';
 import 'package:jahwa_asset_management_system/provider/facility_location_repository.dart';
 import 'package:jahwa_asset_management_system/provider/facility_trade_common_repository.dart';
 import 'package:jahwa_asset_management_system/provider/user_repository.dart';
+import 'package:jahwa_asset_management_system/routes.dart';
 import 'package:jahwa_asset_management_system/util/localization/language_constants.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
-
+import 'package:flutter/foundation.dart' as Foundation;
 /*
 Flutter StatefulWidget Page Example
 StatefulWidget Lifecycle
@@ -193,16 +194,16 @@ class _FacilityLocationInspactionDetailPageState
   Widget buildLayout() {
     return Container(
         child: Column(
-      children: <Widget>[
-        setLocationBox(),
-        Expanded(
-          flex: 8,
-          child: getListView(),
-        ),
-        // Expanded(
-        //   child: buildQRScanLayout(),
-        // ),
-      ],
+              children: <Widget>[
+                setLocationBox(),
+                Expanded(
+                  flex: 8,
+                  child: getListView(),
+                ),
+                // Expanded(
+                //   child: buildQRScanLayout(),
+                // ),
+              ],
     ));
   }
 
@@ -261,7 +262,7 @@ class _FacilityLocationInspactionDetailPageState
                     ],
                   ),
                   onPressed: () =>
-                      {$facilityLocationRepository.saveFacilityInspAllList()},
+                      {saveFacilityInspAllList()},
                   color: Colors.deepPurple,
                   textColor: Colors.white,
                 )
@@ -286,75 +287,86 @@ class _FacilityLocationInspactionDetailPageState
     //Color colorDefaultTextColor = Colors.black;
     //Color colorSearchDisplayTextColro = Colors.red;
     var scanList = $facilityLocationRepository.facilityInspScanList;
+
     return ListView.builder(
         itemCount: scanList.length,
         itemBuilder: (context, index) {
-          return Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(0.0),
-              ),
-              elevation: 1,
-              child: Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: IconButton(
-                        icon: Icon(Icons.remove_circle),
-                        color: Colors.red,
-                        onPressed: () {
-                          $facilityLocationRepository
-                              .removeInspScanList(scanList[index]);
-                        },
-                      ),
+          return Visibility(
+              visible: cardVisiblility(index),
+              child : GestureDetector(
+                onTap: () => Navigator.pushNamed(
+                    context, facilitylocationInspactionDetailSettingRoute,arguments: index.toString()),
+                child : Card(
+
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(0.0),
+                  ),
+                  elevation: 1,
+
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: IconButton(
+                            icon: Icon(Icons.remove_circle),
+                            color: Colors.red,
+                            onPressed: () {
+                              $facilityLocationRepository
+                                  .removeInspScanList(scanList[index]);
+                            },
+                          ),
+                        ),
+                        Expanded(
+                          flex: 8,
+                          child: Column(
+                            children: [
+                              Row(
+                                children: <Widget>[
+                                  Text('[${scanList[index].asst_no}]'),
+                                  Flexible(
+                                      child: Text(
+                                    '${scanList[index].asst_nm}',
+                                    overflow: TextOverflow.ellipsis,
+                                  ))
+                                ],
+                              ),
+                              Row(
+                                children: <Widget>[
+                                  Text(
+                                      '${getTranslated(context, 'plant')} : [${scanList[index].plantCode}]${scanList[index].plantName}')
+                                ],
+                              ),
+                              Row(
+                                children: <Widget>[
+                                  Flexible(
+                                    child: Text(
+                                        '${getTranslated(context, 'location')} : [${scanList[index].setarea}]${scanList[index].setareaName}'),
+                                  )
+                                ],
+                              ),
+                              Row(
+                                children: <Widget>[
+                                  Flexible(
+                                    child: Text(
+                                        '${getTranslated(context, 'item_group')} : ${scanList[index].itemGroup}'),
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: resultIcon(index),
+                        ),
+                      ],
                     ),
-                    Expanded(
-                      flex: 8,
-                      child: Column(
-                        children: [
-                          Row(
-                            children: <Widget>[
-                              Text('[${scanList[index].asst_no}]'),
-                              Flexible(
-                                  child: Text(
-                                '${scanList[index].asst_nm}',
-                                overflow: TextOverflow.ellipsis,
-                              ))
-                            ],
-                          ),
-                          Row(
-                            children: <Widget>[
-                              Text(
-                                  '${getTranslated(context, 'plant')} : [${scanList[index].plantCode}]${scanList[index].plantName}')
-                            ],
-                          ),
-                          Row(
-                            children: <Widget>[
-                              Flexible(
-                                child: Text(
-                                    '${getTranslated(context, 'location')} : [${scanList[index].setarea}]${scanList[index].setareaName}'),
-                              )
-                            ],
-                          ),
-                          Row(
-                            children: <Widget>[
-                              Flexible(
-                                child: Text(
-                                    '${getTranslated(context, 'item_group')} : ${scanList[index].itemGroup}'),
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: resultIcon(index),
-                    ),
-                  ],
-                ),
-              ));
+                  )
+                )
+              )
+            );
         });
   }
 
@@ -466,6 +478,28 @@ class _FacilityLocationInspactionDetailPageState
   }
 
   Future qrBarcodeScan(bool repeat) async {
+
+      if (Foundation.kDebugMode) {
+        await pr.show();
+        var assetNo = "DZA5729V";
+        FacilityInspectionInfo data = await $facilityLocationRepository
+            .getFacilityInspectionInfo(masterId, 'qr', assetNo)
+            .then((value) {
+          pr.hide();
+          return value;
+        });
+        if (data != null) {
+          await $facilityLocationRepository.addInspScanList(data);
+          if (repeat) {
+            qrBarcodeScan(repeat);
+          }
+        } else {
+          pr.hide();
+        }
+        setState(() {
+        });
+        return;
+      }
     try {
       var options = ScanOptions();
 
@@ -519,6 +553,14 @@ class _FacilityLocationInspactionDetailPageState
     }
   }
 
+  Future saveFacilityInspAllList() async {
+    await pr.show();
+    setState(() {
+      $facilityLocationRepository.saveFacilityInspAllList();
+    });
+    pr.hide();
+  }
+
   void clearAll() {
     $facilityLocationRepository.clearInspScanList(true);
 
@@ -549,5 +591,14 @@ class _FacilityLocationInspactionDetailPageState
         );
       },
     );
+  }
+
+  bool cardVisiblility(int index){
+    var scanList = $facilityLocationRepository.facilityInspScanList;
+    if (scanList[index].sendResult == 1 || scanList[index].id > 0) {
+      return false;
+    } else {
+      return true;
+    }
   }
 }

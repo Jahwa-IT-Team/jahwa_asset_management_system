@@ -16,6 +16,7 @@ import 'package:jahwa_asset_management_system/screens/error/not_found_page.dart'
 import 'package:jahwa_asset_management_system/screens/asset_tabs/asset_tabs.dart';
 import 'package:jahwa_asset_management_system/screens/facility_location_tabs/facility_location_tabs.dart';
 import 'package:jahwa_asset_management_system/screens/facility_trade_tabs/facility_trade_tabs.dart';
+import 'package:jahwa_asset_management_system/screens/facility_location_tabs/facility_location_inspaction_detail_setting.dart';
 
 const String loginRoute = "login";
 const String homeRoute = "home";
@@ -42,6 +43,8 @@ const String facilityTradeBluetoothReaderRoute =
 const String bluetoothScanRoute = "bluetoothScanRoute";
 const String bluetoothScan2Route = "bluetoothScan2Route";
 const String bluetoothReaderRoute = "bluetoothReaderRoute";
+const String facilitylocationInspactionDetailSettingRoute =
+    "facilitylocationInspactionDetailSettingRoute";
 
 class CustomRouter {
   static Route<dynamic> generatedRoute(RouteSettings settings) {
@@ -102,6 +105,11 @@ class CustomRouter {
             builder: (_) => BluetoothReaderPage(
                   address: settings.arguments.toString(),
                 ));
+      case facilitylocationInspactionDetailSettingRoute:
+        return MaterialPageRoute(
+          builder: (_) => FacilityLocationInspactionDetailSettingPage(
+            index: settings.arguments.toString(),
+          ));
       default:
         return MaterialPageRoute(builder: (_) => NotFoundPage());
     }
