@@ -262,7 +262,9 @@ class _FacilityLocationInspactionDetailPageState
                     ],
                   ),
                   onPressed: () =>
-                      {saveFacilityInspAllList()},
+                      {
+                        _applyAlertDialog(context)
+                      },
                   color: Colors.deepPurple,
                   textColor: Colors.white,
                 )
@@ -481,9 +483,10 @@ class _FacilityLocationInspactionDetailPageState
 
       if (Foundation.kDebugMode) {
         await pr.show();
-        var assetNo = "DZA5729V";
+        //var assetNo = "DZA5729V";
+        var assetNo = "3000E2004000770A01832470199C";
         FacilityInspectionInfo data = await $facilityLocationRepository
-            .getFacilityInspectionInfo(masterId, 'qr', assetNo)
+            .getFacilityInspectionInfo(masterId, 'RFID', assetNo)
             .then((value) {
           pr.hide();
           return value;
@@ -555,10 +558,9 @@ class _FacilityLocationInspactionDetailPageState
 
   Future saveFacilityInspAllList() async {
     await pr.show();
-    setState(() {
-      $facilityLocationRepository.saveFacilityInspAllList();
-    });
+    $facilityLocationRepository.saveFacilityInspAllList();
     pr.hide();
+    showAlertDialog(context, getTranslated(context, 'save_successfully'));
   }
 
   void clearAll() {
@@ -584,7 +586,7 @@ class _FacilityLocationInspactionDetailPageState
             FlatButton(
               child: Text('OK'),
               onPressed: () {
-                Navigator.pop(context, "OK");
+                Navigator.pop(context ,"OK");
               },
             ),
           ],
@@ -596,9 +598,62 @@ class _FacilityLocationInspactionDetailPageState
   bool cardVisiblility(int index){
     var scanList = $facilityLocationRepository.facilityInspScanList;
     if (scanList[index].sendResult == 1 || scanList[index].id > 0) {
-      return false;
+      return true; // 이미 저장된 설비 Visible flag
     } else {
       return true;
     }
+  }
+
+  void _applyAlertDialog(BuildContext context) async {
+    var scanList = $facilityLocationRepository.facilityInspScanList;
+
+    int iCnt_AlreadySave = 0;
+    int iCnt_TargetSave  = 0;
+
+    for(var i = 0 ; i < scanList.length ; i ++)
+    {
+      if (scanList[i].sendResult == 1 || scanList[i].id > 0)
+      {
+        iCnt_AlreadySave++;
+      }
+      else
+      {
+        iCnt_TargetSave++;
+      }
+    }
+
+    await showDialog(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          //title: Text(''),
+          contentPadding: EdgeInsets.fromLTRB(0, 40, 0, 0),
+          content: Text(
+            '  ' + getTranslated(context, 'alert_count_target_faciliy') + '['+ iCnt_TargetSave.toString() + ']' + '\r\n'
+                + '  ' + getTranslated(context, 'alert_check_already_save_faciliy') + '['+ iCnt_AlreadySave.toString() + ']' + '\r\n'
+                + getTranslated(context, 'alert_check_already_save_faciliy_info')  ,
+            textAlign: TextAlign.left,
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(getTranslated(context, 'apply')),
+              onPressed: () {
+                Navigator.pop(context);
+                saveFacilityInspAllList();
+
+              },
+            ),
+            FlatButton(
+              child: Text(getTranslated(context, 'cancel')),
+              onPressed: () {
+                Navigator.pop(context);
+
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

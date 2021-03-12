@@ -208,6 +208,8 @@ class _FacilityTradeRequestDetailViewPageState extends State<FacilityTradeReques
           child: Icon(Icons.bluetooth_searching, color: Colors.white),
           backgroundColor: Colors.blue,
           onTap: () => {
+
+            
             if($userRepository.bluetoothDevice == null || $userRepository.bluetoothDevice.address == null || $userRepository.bluetoothDevice.address == ""){
               customAlertOK(context,getTranslated(context, 'device_not_found'), getTranslated(context, 'device_not_found_desc'))
                 .show()

@@ -201,6 +201,9 @@
     "device":"Thiết bị",
     "find_device_page_title":"Thiết bị tìm kiếm",
     "logout":"Thoát",
-    "alert_please_select_location_first":"위치를 먼저 선택하세요."
+    "alert_please_select_location_first":"위치를 먼저 선택하세요.",
+    "alert_count_target_faciliy":"Số lượng thiết bị sẽ lưu",
+    "alert_check_already_save_faciliy":"Số lượng thiết bị đã được lưu",
+    "alert_check_already_save_faciliy_info":"(Thiết bị này trùng với thiết bịđã được lưu nên không thể lưu được.)"
 
 }
