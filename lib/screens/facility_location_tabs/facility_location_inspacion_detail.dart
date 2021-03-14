@@ -609,12 +609,14 @@ class _FacilityLocationInspactionDetailPageState
 
     int iCnt_AlreadySave = 0;
     int iCnt_TargetSave  = 0;
+    String sFacilityList = "";
 
     for(var i = 0 ; i < scanList.length ; i ++)
     {
       if (scanList[i].sendResult == 1 || scanList[i].id > 0)
       {
         iCnt_AlreadySave++;
+        sFacilityList = sFacilityList + '[' +scanList[i].asst_no + ']\r\n';
       }
       else
       {
@@ -632,7 +634,8 @@ class _FacilityLocationInspactionDetailPageState
           content: Text(
             '  ' + getTranslated(context, 'alert_count_target_faciliy') + '['+ iCnt_TargetSave.toString() + ']' + '\r\n'
                 + '  ' + getTranslated(context, 'alert_check_already_save_faciliy') + '['+ iCnt_AlreadySave.toString() + ']' + '\r\n'
-                + getTranslated(context, 'alert_check_already_save_faciliy_info')  ,
+                + getTranslated(context, 'alert_check_already_save_faciliy_info')  + '\r\n'
+                + getTranslated(context, 'alert_check_already_save_faciliy_list') + ': \r\n ' + sFacilityList,
             textAlign: TextAlign.left,
           ),
           actions: <Widget>[
