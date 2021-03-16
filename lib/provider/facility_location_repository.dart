@@ -25,6 +25,8 @@ class FacilityLocationRepository with ChangeNotifier {
 
   SettingInspactionLocation _settingInspactionLocation;
 
+
+
   //위치내에 설비 총 수량
   int get facilityInfoListInLocationTotalCount =>
       _facilityInfoListInLocationTotalCount;
@@ -196,6 +198,11 @@ class FacilityLocationRepository with ChangeNotifier {
     _settingInspactionLocation.setupLocationCode = '';
     _settingInspactionLocation.setupLocation = '';
     _settingInspactionLocation.itemGroupCode = '';
+    _settingInspactionLocation.insertUserName = '';
+    _settingInspactionLocation.insertUserId = '';
+    _settingInspactionLocation.updateUserId = '';
+    _settingInspactionLocation.updateUserName = '';
+
 
     if (notify) {
       notifyListeners();
@@ -609,7 +616,6 @@ class FacilityLocationRepository with ChangeNotifier {
         e.setarea = settingInspactionLocation.setupLocationCode;
         e.setareaName = settingInspactionLocation.setupLocation;
         e.itemGroup = settingInspactionLocation.itemGroupCode;
-
         saveFacilityInsp(e);
       }
     });

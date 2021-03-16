@@ -431,6 +431,12 @@ class _FacilityLocationInspactionDetailPageState
               .getFacilityInspectionInfo(masterId, searchDiv, strScanData)
               .then((value) {
             if (value != null) {
+              value.updateUserId = $userRepository.user.empNo;
+              value.updateUserName = $userRepository.user.name;
+              value.insertUserId = $userRepository.user.empNo;
+              value.insertUserName = $userRepository.user.name;
+              value.dept_cd = $userRepository.user.deptCode;
+              value.dept_nm = $userRepository.user.deptName;
               $facilityLocationRepository.addInspScanList(value);
             }
           });
@@ -492,6 +498,12 @@ class _FacilityLocationInspactionDetailPageState
           return value;
         });
         if (data != null) {
+          data.updateUserId = $userRepository.user.empNo;
+          data.updateUserName = $userRepository.user.name;
+          data.insertUserId = $userRepository.user.empNo;
+          data.insertUserName = $userRepository.user.name;
+          data.dept_cd = $userRepository.user.deptCode;
+          data.dept_nm = $userRepository.user.deptName;
           await $facilityLocationRepository.addInspScanList(data);
           if (repeat) {
             qrBarcodeScan(repeat);
@@ -525,6 +537,12 @@ class _FacilityLocationInspactionDetailPageState
           return value;
         });
         if (data != null) {
+          data.updateUserId = $userRepository.user.empNo;
+          data.updateUserName = $userRepository.user.name;
+          data.insertUserId = $userRepository.user.empNo;
+          data.insertUserName = $userRepository.user.name;
+          data.dept_cd = $userRepository.user.deptCode;
+          data.dept_nm = $userRepository.user.deptName;
           await $facilityLocationRepository.addInspScanList(data);
           if (repeat) {
             qrBarcodeScan(repeat);

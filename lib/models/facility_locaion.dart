@@ -115,13 +115,21 @@ class SettingInspactionLocation {
   String setupLocationCode;
   String setupLocation;
   String itemGroupCode;
+  String insertUserId;
+  String insertUserName;
+  String updateUserId;
+  String updateUserName;
 
   SettingInspactionLocation(
       {this.plantCode,
       this.plantName,
       this.setupLocationCode,
       this.setupLocation,
-      this.itemGroupCode});
+      this.itemGroupCode,
+      this.insertUserId,
+      this.insertUserName,
+      this.updateUserId,
+      this.updateUserName});
 }
 
 class ResultMessage {
@@ -152,6 +160,8 @@ class ResultChageFacilityLocation {
 class FacilityInspectionInfo {
   int id;
   String company;
+  String dept_cd;
+  String dept_nm;
   // ignore: non_constant_identifier_names
   String asst_no;
   // ignore: non_constant_identifier_names
@@ -221,6 +231,8 @@ class FacilityInspectionInfo {
   FacilityInspectionInfo(
       {this.id,
       this.company,
+      this.dept_cd,
+      this.dept_nm,
       // ignore: non_constant_identifier_names
       this.asst_no,
       // ignore: non_constant_identifier_names
@@ -288,6 +300,8 @@ class FacilityInspectionInfo {
     return FacilityInspectionInfo(
         id: json['id'] as int,
         company: json['company'] as String,
+        dept_cd: json['dept_cd'] as String,
+        dept_nm: json['dept_nm'] as String,
         asst_no: json['asst_no'] as String,
         asst_nm: json['asst_nm'] as String,
         spec: json['spec'] as String,
@@ -331,6 +345,8 @@ class FacilityInspectionInfo {
   Map<String, dynamic> toJson() => {
         'id': id,
         'company': company,
+        'dept_cd':dept_cd,
+        'dept_nm':dept_nm,
         'asst_no': asst_no,
         'asst_nm': asst_nm,
         'spec': spec,
