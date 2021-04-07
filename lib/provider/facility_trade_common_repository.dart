@@ -22,6 +22,7 @@ class FacilityTradeCommonRepository with ChangeNotifier {
   List<ItemGroup> _searchItemGroup = [];
   List<SetupLocation> _searchSetupLocation =[];
 
+
   List<Manager> get searchManagerList => _searchManagerList;
   List<BizPartner> get searchBizPartnerList => _searchBizPartnerList;
   List<Plant> get searchPlant => _searchPlant;
@@ -78,6 +79,14 @@ class FacilityTradeCommonRepository with ChangeNotifier {
     return items;
   }
 
+  List<PickerItem> get locEntData {
+    List<PickerItem> items = [];
+    _searchSetupLocation.forEach((e){
+      items.add(PickerItem(text: Text("${e.entName}"),value: e.entCode));
+    });
+    return items;
+  }
+
   //설치 장소 Picker Data
   List<PickerItem> getSetupLocationData(String entCode) {
     List<PickerItem> items = [];
@@ -94,6 +103,12 @@ class FacilityTradeCommonRepository with ChangeNotifier {
   String getSetupLocationName(String entCode, String locationCode){
     return _searchSetupLocation.where((e) => e.entCode == entCode).first.setupLocation.where((e) => e.code == locationCode).first.name;
   }
+
+  String getSetupCompanyName(String entCode){
+    return _searchSetupLocation.where((e) => e.entCode == entCode).first.entName;
+  }
+
+
 
   Future<void> init() async{
     getSearchItemGroupList();

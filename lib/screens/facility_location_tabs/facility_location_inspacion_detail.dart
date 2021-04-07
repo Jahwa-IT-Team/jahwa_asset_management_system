@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:btprotocol/btprotocol.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -239,6 +240,8 @@ class _FacilityLocationInspactionDetailPageState
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
+                          '${getTranslated(context, 'company')} : ${$facilityLocationRepository.settingInspactionLocation.locEntCode == '' ? getTranslated(context, 'none') : $facilityLocationRepository.settingInspactionLocation.locEntName}'),
+                      Text(
                           '${getTranslated(context, 'plant')} : ${$facilityLocationRepository.settingInspactionLocation.plantCode == '' ? getTranslated(context, 'none') : $facilityLocationRepository.settingInspactionLocation.plantName}'),
                       Text(
                           '${getTranslated(context, 'location')} : ${$facilityLocationRepository.settingInspactionLocation.setupLocationCode == '' ? getTranslated(context, 'none') : $facilityLocationRepository.settingInspactionLocation.setupLocation}'),
@@ -337,6 +340,12 @@ class _FacilityLocationInspactionDetailPageState
                               Row(
                                 children: <Widget>[
                                   Text(
+                                      '${getTranslated(context, 'company')} : ${scanList[index].locEntName}')
+                                ],
+                              ),
+                              Row(
+                                children: <Widget>[
+                                  Text(
                                       '${getTranslated(context, 'plant')} : [${scanList[index].plantCode}]${scanList[index].plantName}')
                                 ],
                               ),
@@ -360,8 +369,18 @@ class _FacilityLocationInspactionDetailPageState
                           ),
                         ),
                         Expanded(
-                          flex: 1,
-                          child: resultIcon(index),
+                          flex: 2,
+                          child: Column(
+                            children: [
+                              Row (
+                                children: [resultIcon(index)],
+                              ),
+                              Row(
+                                  children: [reaseYN(index)]
+                              ),
+                            ],
+                          )
+                          //child: resultIcon(index),
                         ),
                       ],
                     ),
@@ -383,7 +402,7 @@ class _FacilityLocationInspactionDetailPageState
         onPressed: () {
           $facilityLocationRepository.updateChangeFacilityInfoInLocation(
               index,
-              '',
+              $facilityLocationRepository.settingInspactionLocation.locEntCode,
               $facilityLocationRepository.settingInspactionLocation.plantCode,
               $facilityLocationRepository
                   .settingInspactionLocation.itemGroupCode,
@@ -398,6 +417,28 @@ class _FacilityLocationInspactionDetailPageState
         icon: Icon(Icons.check),
         color: Colors.green,
         onPressed: () {},
+      );
+    } else {
+      return Container();
+    }
+  }
+
+  Widget reaseYN(int index) {
+    var scanList = $facilityLocationRepository.facilityInspScanList;
+
+    if (scanList[index].locEntCode == $userRepository.connectionInfo.company){
+      return Container();
+    } else if (scanList[index].locEntCode != $userRepository.connectionInfo.company) {
+      return Container(
+        decoration: BoxDecoration(
+          border: Border.all(width: 2, color: Colors.purple),
+          borderRadius: const BorderRadius.all(const Radius.circular(2))
+        ),
+        margin: const EdgeInsets.all(8),
+        child: Text(
+          getTranslated(context, 'lease'),
+          textAlign: TextAlign.center,
+        ),
       );
     } else {
       return Container();

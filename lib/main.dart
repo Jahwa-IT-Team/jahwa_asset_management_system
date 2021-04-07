@@ -13,7 +13,7 @@ import 'provider/facility_trade_send_repository.dart';
 import 'provider/facility_trade_receive_repository.dart';
 import "provider/user_repository.dart";
 import 'util/localization/language_constants.dart';
-
+import "provider/asst_repository.dart";
 //void main() => runApp(MyApp());
 void main() {
   FlutterError.onError = (FlutterErrorDetails details) {
@@ -42,6 +42,9 @@ void main() {
         ChangeNotifierProvider(
           create: (_) => FacilityLocationRepository(),
         ),
+        ChangeNotifierProvider(
+          create: (_) => asstRepository(),
+        )
       ],
       child: MyApp(),
     ),

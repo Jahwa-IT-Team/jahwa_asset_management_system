@@ -201,6 +201,8 @@
     "device":"장치",
     "find_device_page_title":"장치 검색",
     "logout":"로그아웃",
+    "company": "법인",
+    "lease": "임대",
 
     "newest_app_version":"최신버전",
     "newest_app_version_web_open_msg":"최신 버전이 아닙니다. 다운로드 웹사이트로 이동합니다.",
