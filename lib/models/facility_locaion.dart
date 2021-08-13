@@ -110,18 +110,31 @@ class SearchCondtion {
 }
 
 class SettingInspactionLocation {
+  String locEntCode;
+  String locEntName;
   String plantCode;
   String plantName;
   String setupLocationCode;
   String setupLocation;
   String itemGroupCode;
+  String insertUserId;
+  String insertUserName;
+  String updateUserId;
+  String updateUserName;
 
   SettingInspactionLocation(
-      {this.plantCode,
+      {
+      this.locEntCode,
+      this.locEntName,
+      this.plantCode,
       this.plantName,
       this.setupLocationCode,
       this.setupLocation,
-      this.itemGroupCode});
+      this.itemGroupCode,
+      this.insertUserId,
+      this.insertUserName,
+      this.updateUserId,
+      this.updateUserName});
 }
 
 class ResultMessage {
@@ -152,6 +165,8 @@ class ResultChageFacilityLocation {
 class FacilityInspectionInfo {
   int id;
   String company;
+  String dept_cd;
+  String dept_nm;
   // ignore: non_constant_identifier_names
   String asst_no;
   // ignore: non_constant_identifier_names
@@ -171,6 +186,8 @@ class FacilityInspectionInfo {
   String plantCode;
   String plantName;
   String itemGroup;
+  String locEntCode;
+  String locEntName;
   String insertUserId;
   String insertUserName;
   DateTime insertDate;
@@ -196,6 +213,8 @@ class FacilityInspectionInfo {
   // ignore: non_constant_identifier_names
   String before_ItemGroup;
   // ignore: non_constant_identifier_names
+  String before_locEntCode;
+  // ignore: non_constant_identifier_names
   bool is_spec;
   // ignore: non_constant_identifier_names
   bool is_maker;
@@ -211,6 +230,8 @@ class FacilityInspectionInfo {
   bool is_plantCode;
   // ignore: non_constant_identifier_names
   bool is_itemGroup;
+  // ignore: non_constant_identifier_names
+  bool is_locEntCode;
 
   bool inspFlag;
   int masterId;
@@ -221,6 +242,8 @@ class FacilityInspectionInfo {
   FacilityInspectionInfo(
       {this.id,
       this.company,
+      this.dept_cd,
+      this.dept_nm,
       // ignore: non_constant_identifier_names
       this.asst_no,
       // ignore: non_constant_identifier_names
@@ -240,6 +263,8 @@ class FacilityInspectionInfo {
       this.plantCode,
       this.plantName,
       this.itemGroup,
+      this.locEntCode,
+      this.locEntName,
       this.insertUserId,
       this.insertUserName,
       this.insertDate,
@@ -265,6 +290,8 @@ class FacilityInspectionInfo {
       // ignore: non_constant_identifier_names
       this.before_ItemGroup,
       // ignore: non_constant_identifier_names
+      this.before_locEntCode,
+      // ignore: non_constant_identifier_names
       this.is_spec,
       // ignore: non_constant_identifier_names
       this.is_maker,
@@ -280,6 +307,8 @@ class FacilityInspectionInfo {
       this.is_plantCode,
       // ignore: non_constant_identifier_names
       this.is_itemGroup,
+      // ignore: non_constant_identifier_names
+      this.is_locEntCode,
       this.inspFlag,
       this.masterId,
       this.sendResult});
@@ -288,6 +317,8 @@ class FacilityInspectionInfo {
     return FacilityInspectionInfo(
         id: json['id'] as int,
         company: json['company'] as String,
+        dept_cd: json['dept_cd'] as String,
+        dept_nm: json['dept_nm'] as String,
         asst_no: json['asst_no'] as String,
         asst_nm: json['asst_nm'] as String,
         spec: json['spec'] as String,
@@ -301,6 +332,8 @@ class FacilityInspectionInfo {
         plantCode: json['plantCode'] as String,
         plantName: json['plantName'] as String,
         itemGroup: json['itemGroup'] as String,
+        locEntCode: json['locEntCode'] as String,
+        locEntName: json['locEntName'] as String,
         insertUserId: json['insertUserId'] as String,
         insertUserName: json['insertUserName'] as String,
         insertDate: DateTime.parse(json['insertDate']),
@@ -316,6 +349,7 @@ class FacilityInspectionInfo {
         before_user_nm: json['before_user_nm'] as String,
         before_PlantCode: json['before_PlantCode'] as String,
         before_ItemGroup: json['before_ItemGroup'] as String,
+        before_locEntCode: json['before_locEntCode'] as String,
         is_spec: json['is_spec'] as bool,
         is_maker: json['is_maker'] as bool,
         is_asset_state: json['is_asset_state'] as bool,
@@ -324,6 +358,7 @@ class FacilityInspectionInfo {
         is_user_cd: json['is_user_cd'] as bool,
         is_plantCode: json['is_plantCode'] as bool,
         is_itemGroup: json['is_itemGroup'] as bool,
+        is_locEntCode: json['is_locEntCode'] as bool,
         inspFlag: json['inspFlag'] as bool,
         masterId: json['masterId'] as int);
   }
@@ -331,6 +366,8 @@ class FacilityInspectionInfo {
   Map<String, dynamic> toJson() => {
         'id': id,
         'company': company,
+        'dept_cd':dept_cd,
+        'dept_nm':dept_nm,
         'asst_no': asst_no,
         'asst_nm': asst_nm,
         'spec': spec,
@@ -344,6 +381,8 @@ class FacilityInspectionInfo {
         'plantCode': plantCode,
         'plantName': plantName,
         'itemGroup': itemGroup,
+        'locEntCode': locEntCode,
+        'locEntName': locEntName,
         'insertUserId': insertUserId,
         'insertUserName': insertUserName,
         'insertDate': insertDate.toIso8601String(),
@@ -359,6 +398,7 @@ class FacilityInspectionInfo {
         'before_user_nm': before_user_nm,
         'before_PlantCode': before_PlantCode,
         'before_ItemGroup': before_ItemGroup,
+        'before_locEntCode': before_locEntCode,
         'is_spec': is_spec,
         'is_maker': is_maker,
         'is_asset_state': is_asset_state,
@@ -367,6 +407,7 @@ class FacilityInspectionInfo {
         'is_user_cd': is_user_cd,
         'is_plantCode': is_plantCode,
         'is_itemGroup': is_itemGroup,
+        'is_locEntCode': is_locEntCode,
         'inspFlag': inspFlag,
         'masterId': masterId,
       };

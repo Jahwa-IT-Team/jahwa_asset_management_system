@@ -7,8 +7,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jahwa_asset_management_system/routes.dart';
 import 'package:jahwa_asset_management_system/util/localization/language_constants.dart';
-
-
+import 'package:jahwa_asset_management_system/provider/asst_repository.dart';
+import 'package:provider/provider.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 
 class AssetSearchPage extends StatefulWidget{
 
@@ -20,9 +21,36 @@ class AssetSearchPage extends StatefulWidget{
 class _AssetSearchPageState extends State<AssetSearchPage>{
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
   ScanResult scanResult;
-
+  asstRepository $asstRepository = asstRepository();
   TextEditingController textAssetNoController = TextEditingController();
-  
+  ProgressDialog pr;
+
+  @override
+  void initState() {
+    super.initState();
+    pr = ProgressDialog(
+      context,
+      type: ProgressDialogType.Normal,
+      isDismissible: false,
+    );
+    pr.style(
+      message: getTranslated(context, 'Receiving ....'),
+      borderRadius: 10.0,
+      backgroundColor: Colors.white,
+      elevation: 10.0,
+      insetAnimCurve: Curves.easeInOut,
+      progress: 0.0,
+      progressWidgetAlignment: Alignment.center,
+      maxProgress: 100.0,
+      progressTextStyle: TextStyle(
+          color: Colors.black, fontSize: 13.0, fontWeight: FontWeight.w400),
+      messageTextStyle: TextStyle(
+          color: Colors.black, fontSize: 19.0, fontWeight: FontWeight.w600),
+    );
+    //$asstRepository.searchData(widget.assetNo);
+  }
+
+
   String validateAssetNo(String value) { 
     if(value.isEmpty){
       return getTranslated(context, 'input_asset_no_hint');
@@ -30,11 +58,14 @@ class _AssetSearchPageState extends State<AssetSearchPage>{
     return null;
   }
   void validateSubmit() async {
+    await pr.show();
+    $asstRepository.searchData(textAssetNoController.text);
+    pr.hide();
     Navigator.pushNamed(context, assetInfoViewRoute, arguments: textAssetNoController.text);
   }
-
   @override
   Widget build(BuildContext context){
+    $asstRepository = Provider.of<asstRepository>(context, listen: true);
     return Container(
       child: Center( 
         child: Column(
@@ -133,6 +164,7 @@ class _AssetSearchPageState extends State<AssetSearchPage>{
         child: FlatButton(
           onPressed: () {
             if(_key.currentState.validate()){
+
               validateSubmit();
             }
           },

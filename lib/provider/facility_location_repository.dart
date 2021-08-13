@@ -3,10 +3,11 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:provider/provider.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jahwa_asset_management_system/models/facility_locaion.dart';
 //import 'package:jahwa_asset_management_system/util/localization/language_constants.dart';
+import 'package:jahwa_asset_management_system/provider/user_repository.dart';
 
 class FacilityLocationRepository with ChangeNotifier {
   //위치에 해당하는 설비 호출 관련
@@ -24,6 +25,7 @@ class FacilityLocationRepository with ChangeNotifier {
   List<FacilityInspectionInfo> _facilityInspScanList = [];
 
   SettingInspactionLocation _settingInspactionLocation;
+  UserRepository $userRepository;
 
   //위치내에 설비 총 수량
   int get facilityInfoListInLocationTotalCount =>
@@ -196,6 +198,12 @@ class FacilityLocationRepository with ChangeNotifier {
     _settingInspactionLocation.setupLocationCode = '';
     _settingInspactionLocation.setupLocation = '';
     _settingInspactionLocation.itemGroupCode = '';
+    _settingInspactionLocation.insertUserName = '';
+    _settingInspactionLocation.insertUserId = '';
+    _settingInspactionLocation.updateUserId = '';
+    _settingInspactionLocation.updateUserName = '';
+    _settingInspactionLocation.locEntCode = '';
+
 
     if (notify) {
       notifyListeners();
@@ -609,7 +617,8 @@ class FacilityLocationRepository with ChangeNotifier {
         e.setarea = settingInspactionLocation.setupLocationCode;
         e.setareaName = settingInspactionLocation.setupLocation;
         e.itemGroup = settingInspactionLocation.itemGroupCode;
-
+        e.locEntCode = settingInspactionLocation.locEntCode;
+        e.locEntName = settingInspactionLocation.locEntName;
         saveFacilityInsp(e);
       }
     });

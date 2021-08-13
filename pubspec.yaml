@@ -16,7 +16,7 @@ description: 자화전자 자산관리 시스템.
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.4+5
+version: 1.0.4+11
 
 #모바일에 표시될 앱이름
 flutter_launcher_name:
@@ -81,7 +81,7 @@ dependencies:
   #permission_handler: ^5.0.0+hotfix.3
   
   #설비관리 카드형태 리스트
-  card_settings: ^1.9.2
+  card_settings: 1.9.2
 
   font_awesome_flutter: ^8.8.1
 

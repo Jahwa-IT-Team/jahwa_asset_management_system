@@ -194,6 +194,8 @@ class _FacilityLocationInspactionPageState
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
+                          '${getTranslated(context, 'company')} : ${$facilityLocationRepository.settingInspactionLocation.locEntCode == '' ? getTranslated(context, 'none') : $facilityLocationRepository.settingInspactionLocation.locEntName}'),
+                      Text(
                           '${getTranslated(context, 'plant')} : ${$facilityLocationRepository.settingInspactionLocation.plantCode == '' ? getTranslated(context, 'none') : $facilityLocationRepository.settingInspactionLocation.plantName}'),
                       Text(
                           '${getTranslated(context, 'location')} : ${$facilityLocationRepository.settingInspactionLocation.setupLocationCode == '' ? getTranslated(context, 'none') : $facilityLocationRepository.settingInspactionLocation.setupLocation}'),

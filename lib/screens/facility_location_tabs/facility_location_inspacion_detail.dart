@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:btprotocol/btprotocol.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -239,6 +240,8 @@ class _FacilityLocationInspactionDetailPageState
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
+                          '${getTranslated(context, 'company')} : ${$facilityLocationRepository.settingInspactionLocation.locEntCode == '' ? getTranslated(context, 'none') : $facilityLocationRepository.settingInspactionLocation.locEntName}'),
+                      Text(
                           '${getTranslated(context, 'plant')} : ${$facilityLocationRepository.settingInspactionLocation.plantCode == '' ? getTranslated(context, 'none') : $facilityLocationRepository.settingInspactionLocation.plantName}'),
                       Text(
                           '${getTranslated(context, 'location')} : ${$facilityLocationRepository.settingInspactionLocation.setupLocationCode == '' ? getTranslated(context, 'none') : $facilityLocationRepository.settingInspactionLocation.setupLocation}'),
@@ -262,7 +265,9 @@ class _FacilityLocationInspactionDetailPageState
                     ],
                   ),
                   onPressed: () =>
-                      {saveFacilityInspAllList()},
+                      {
+                        _applyAlertDialog(context)
+                      },
                   color: Colors.deepPurple,
                   textColor: Colors.white,
                 )
@@ -335,6 +340,12 @@ class _FacilityLocationInspactionDetailPageState
                               Row(
                                 children: <Widget>[
                                   Text(
+                                      '${getTranslated(context, 'company')} : ${scanList[index].locEntName}')
+                                ],
+                              ),
+                              Row(
+                                children: <Widget>[
+                                  Text(
                                       '${getTranslated(context, 'plant')} : [${scanList[index].plantCode}]${scanList[index].plantName}')
                                 ],
                               ),
@@ -358,8 +369,18 @@ class _FacilityLocationInspactionDetailPageState
                           ),
                         ),
                         Expanded(
-                          flex: 1,
-                          child: resultIcon(index),
+                          flex: 2,
+                          child: Column(
+                            children: [
+                              Row (
+                                children: [resultIcon(index)],
+                              ),
+                              Row(
+                                  children: [reaseYN(index)]
+                              ),
+                            ],
+                          )
+                          //child: resultIcon(index),
                         ),
                       ],
                     ),
@@ -381,7 +402,7 @@ class _FacilityLocationInspactionDetailPageState
         onPressed: () {
           $facilityLocationRepository.updateChangeFacilityInfoInLocation(
               index,
-              '',
+              $facilityLocationRepository.settingInspactionLocation.locEntCode,
               $facilityLocationRepository.settingInspactionLocation.plantCode,
               $facilityLocationRepository
                   .settingInspactionLocation.itemGroupCode,
@@ -396,6 +417,28 @@ class _FacilityLocationInspactionDetailPageState
         icon: Icon(Icons.check),
         color: Colors.green,
         onPressed: () {},
+      );
+    } else {
+      return Container();
+    }
+  }
+
+  Widget reaseYN(int index) {
+    var scanList = $facilityLocationRepository.facilityInspScanList;
+
+    if (scanList[index].locEntCode == $userRepository.connectionInfo.company){
+      return Container();
+    } else if (scanList[index].locEntCode != $userRepository.connectionInfo.company) {
+      return Container(
+        decoration: BoxDecoration(
+          border: Border.all(width: 2, color: Colors.purple),
+          borderRadius: const BorderRadius.all(const Radius.circular(2))
+        ),
+        margin: const EdgeInsets.all(8),
+        child: Text(
+          getTranslated(context, 'lease'),
+          textAlign: TextAlign.center,
+        ),
       );
     } else {
       return Container();
@@ -429,6 +472,12 @@ class _FacilityLocationInspactionDetailPageState
               .getFacilityInspectionInfo(masterId, searchDiv, strScanData)
               .then((value) {
             if (value != null) {
+              value.updateUserId = $userRepository.user.empNo;
+              value.updateUserName = $userRepository.user.name;
+              value.insertUserId = $userRepository.user.empNo;
+              value.insertUserName = $userRepository.user.name;
+              value.dept_cd = $userRepository.user.deptCode;
+              value.dept_nm = $userRepository.user.deptName;
               $facilityLocationRepository.addInspScanList(value);
             }
           });
@@ -481,14 +530,21 @@ class _FacilityLocationInspactionDetailPageState
 
       if (Foundation.kDebugMode) {
         await pr.show();
-        var assetNo = "DZA5729V";
+        //var assetNo = "DZA5729V";
+        var assetNo = "3000E2004000770A01832470199C";
         FacilityInspectionInfo data = await $facilityLocationRepository
-            .getFacilityInspectionInfo(masterId, 'qr', assetNo)
+            .getFacilityInspectionInfo(masterId, 'RFID', assetNo)
             .then((value) {
           pr.hide();
           return value;
         });
         if (data != null) {
+          data.updateUserId = $userRepository.user.empNo;
+          data.updateUserName = $userRepository.user.name;
+          data.insertUserId = $userRepository.user.empNo;
+          data.insertUserName = $userRepository.user.name;
+          data.dept_cd = $userRepository.user.deptCode;
+          data.dept_nm = $userRepository.user.deptName;
           await $facilityLocationRepository.addInspScanList(data);
           if (repeat) {
             qrBarcodeScan(repeat);
@@ -522,6 +578,12 @@ class _FacilityLocationInspactionDetailPageState
           return value;
         });
         if (data != null) {
+          data.updateUserId = $userRepository.user.empNo;
+          data.updateUserName = $userRepository.user.name;
+          data.insertUserId = $userRepository.user.empNo;
+          data.insertUserName = $userRepository.user.name;
+          data.dept_cd = $userRepository.user.deptCode;
+          data.dept_nm = $userRepository.user.deptName;
           await $facilityLocationRepository.addInspScanList(data);
           if (repeat) {
             qrBarcodeScan(repeat);
@@ -555,10 +617,9 @@ class _FacilityLocationInspactionDetailPageState
 
   Future saveFacilityInspAllList() async {
     await pr.show();
-    setState(() {
-      $facilityLocationRepository.saveFacilityInspAllList();
-    });
+    $facilityLocationRepository.saveFacilityInspAllList();
     pr.hide();
+    showAlertDialog(context, getTranslated(context, 'save_successfully'));
   }
 
   void clearAll() {
@@ -584,7 +645,7 @@ class _FacilityLocationInspactionDetailPageState
             FlatButton(
               child: Text('OK'),
               onPressed: () {
-                Navigator.pop(context, "OK");
+                Navigator.pop(context ,"OK");
               },
             ),
           ],
@@ -596,9 +657,65 @@ class _FacilityLocationInspactionDetailPageState
   bool cardVisiblility(int index){
     var scanList = $facilityLocationRepository.facilityInspScanList;
     if (scanList[index].sendResult == 1 || scanList[index].id > 0) {
-      return false;
+      return true; // 이미 저장된 설비 Visible flag
     } else {
       return true;
     }
+  }
+
+  void _applyAlertDialog(BuildContext context) async {
+    var scanList = $facilityLocationRepository.facilityInspScanList;
+
+    int iCnt_AlreadySave = 0;
+    int iCnt_TargetSave  = 0;
+    String sFacilityList = "";
+
+    for(var i = 0 ; i < scanList.length ; i ++)
+    {
+      if (scanList[i].sendResult == 1 || scanList[i].id > 0)
+      {
+        iCnt_AlreadySave++;
+        sFacilityList = sFacilityList + '[' +scanList[i].asst_no + ']\r\n';
+      }
+      else
+      {
+        iCnt_TargetSave++;
+      }
+    }
+
+    await showDialog(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          //title: Text(''),
+          contentPadding: EdgeInsets.fromLTRB(0, 40, 0, 0),
+          content: Text(
+            '  ' + getTranslated(context, 'alert_count_target_faciliy') + '['+ iCnt_TargetSave.toString() + ']' + '\r\n'
+                + '  ' + getTranslated(context, 'alert_check_already_save_faciliy') + '['+ iCnt_AlreadySave.toString() + ']' + '\r\n'
+                + getTranslated(context, 'alert_check_already_save_faciliy_info')  + '\r\n'
+                + getTranslated(context, 'alert_check_already_save_faciliy_list') + ': \r\n ' + sFacilityList,
+            textAlign: TextAlign.left,
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(getTranslated(context, 'apply')),
+              onPressed: () {
+                Navigator.pop(context);
+                saveFacilityInspAllList();
+
+              },
+            ),
+            FlatButton(
+              child: Text(getTranslated(context, 'cancel')),
+              onPressed: () {
+                Navigator.pop(context);
+
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }
