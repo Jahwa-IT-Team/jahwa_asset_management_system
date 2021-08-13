@@ -12,7 +12,6 @@ class NotGiven {
   const NotGiven();
 }
 
-
 Widget prepareWidget(dynamic object,
     {dynamic parameter = const NotGiven(),
     BuildContext context,
@@ -80,11 +79,11 @@ class UserDropdownDialog<T> extends StatefulWidget {
     this.menuConstraints,
     this.callOnPop,
     this.menuBackgroundColor,
-  })  : super(key: key);
+  }) : super(key: key);
 
-  _UserDropdownDialogState<T> createState() => new _UserDropdownDialogState<T>();
+  _UserDropdownDialogState<T> createState() =>
+      new _UserDropdownDialogState<T>();
 }
-
 
 class _UserDropdownDialogState<T> extends State<UserDropdownDialog> {
   TextEditingController txtSearch = new TextEditingController();
@@ -98,10 +97,11 @@ class _UserDropdownDialogState<T> extends State<UserDropdownDialog> {
     return (widget.multipleSelection
         ? widget.selectedItems
         : widget.selectedItems?.isNotEmpty ?? false
-            ? $facilityTradeCommonRepository.searchManagerDropdownMenuItem[widget.selectedItems.first]?.value
+            ? $facilityTradeCommonRepository
+                .searchManagerDropdownMenuItem[widget.selectedItems.first]
+                ?.value
             : null);
   }
-
 
   @override
   void initState() {
@@ -110,11 +110,11 @@ class _UserDropdownDialogState<T> extends State<UserDropdownDialog> {
 
   @override
   Widget build(BuildContext context) {
-
-    if($facilityTradeCommonRepository == null){
-      $facilityTradeCommonRepository = Provider.of<FacilityTradeCommonRepository>(context, listen: true);
+    if ($facilityTradeCommonRepository == null) {
+      $facilityTradeCommonRepository =
+          Provider.of<FacilityTradeCommonRepository>(context, listen: true);
     }
-    
+
     return AnimatedContainer(
       padding: MediaQuery.of(context).viewInsets,
       duration: const Duration(milliseconds: 300),
@@ -169,11 +169,10 @@ class _UserDropdownDialogState<T> extends State<UserDropdownDialog> {
             ? prepareWidget(widget.doneButton,
                 parameter: selectedResult,
                 context: context, stringToWidgetFunction: (string) {
-                return (FlatButton.icon(
+                return (TextButton.icon(
                     onPressed: !valid
                         ? null
                         : () {
-                          
                             pop();
                             setState(() {});
                           },
@@ -275,9 +274,11 @@ class _UserDropdownDialogState<T> extends State<UserDropdownDialog> {
     return new Expanded(
       child: Scrollbar(
         child: new ListView.builder(
-          itemCount: $facilityTradeCommonRepository.searchManagerDropdownMenuItem.length,
+          itemCount: $facilityTradeCommonRepository
+              .searchManagerDropdownMenuItem.length,
           itemBuilder: (context, index) {
-            DropdownMenuItem item = $facilityTradeCommonRepository.searchManagerDropdownMenuItem[index];
+            DropdownMenuItem item = $facilityTradeCommonRepository
+                .searchManagerDropdownMenuItem[index];
             return new InkWell(
               onTap: () {
                 if (widget.multipleSelection) {
@@ -289,7 +290,6 @@ class _UserDropdownDialogState<T> extends State<UserDropdownDialog> {
                     }
                   });
                 } else {
-                  
                   widget.selectedItems.clear();
                   widget.selectedItems.add(index);
                   if (widget.doneButton == null) {
@@ -312,14 +312,13 @@ class _UserDropdownDialogState<T> extends State<UserDropdownDialog> {
                           ),
                           Flexible(child: item),
                         ]))
-                      : widget.displayItem(item,
-                          widget.selectedItems.contains(index))
+                      : widget.displayItem(
+                          item, widget.selectedItems.contains(index))
                   : widget.displayItem == null
                       ? item
                       : widget.displayItem(item, item.value == selectedResult),
             );
           },
-          
         ),
       ),
     );
@@ -333,9 +332,8 @@ class _UserDropdownDialogState<T> extends State<UserDropdownDialog> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                FlatButton(
+                TextButton(
                   onPressed: () {
-                    
                     pop();
                   },
                   child: Container(

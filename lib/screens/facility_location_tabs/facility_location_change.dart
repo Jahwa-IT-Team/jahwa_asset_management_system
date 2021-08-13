@@ -218,7 +218,7 @@ class _FacilityLocationChangePageState
                     ],
                   ),
                 ),
-                FlatButton(
+                TextButton(
                   child: Column(
                     children: <Widget>[
                       Row(
@@ -236,8 +236,9 @@ class _FacilityLocationChangePageState
                     Navigator.pushNamed(
                         context, facilityLocationInspactionSettingRoute)
                   },
-                  color: Colors.deepPurple,
-                  textColor: Colors.white,
+                  style: TextButton.styleFrom(
+                      primary: Colors.white,
+                      backgroundColor: Colors.deepPurple),
                 )
               ],
             ),
@@ -246,7 +247,7 @@ class _FacilityLocationChangePageState
             if ($facilityLocationRepository.facilityChangeList.length > 0)
               Padding(
                 padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
-                child: FlatButton(
+                child: TextButton(
                   child: Column(
                     children: <Widget>[
                       SizedBox(
@@ -279,8 +280,8 @@ class _FacilityLocationChangePageState
                         '',
                         $userRepository.user.empNo)
                   },
-                  color: Colors.red,
-                  textColor: Colors.white,
+                  style: TextButton.styleFrom(
+                      primary: Colors.white, backgroundColor: Colors.red),
                 ),
               ),
             SizedBox(
@@ -435,13 +436,11 @@ class _FacilityLocationChangePageState
 
   void showSnackBar(String label, dynamic value) {
     try {
-      scaffold1Key.currentState.removeCurrentSnackBar();
-      scaffold1Key.currentState.showSnackBar(
-        SnackBar(
-          duration: Duration(seconds: 3),
-          content: Text(label + ' = ' + value.toString()),
-        ),
-      );
+      ScaffoldMessenger.of(context).removeCurrentSnackBar();
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        duration: Duration(seconds: 3),
+        content: Text(label + ' = ' + value.toString()),
+      ));
     } catch (ex) {
       debugPrint("Error : showSnackBar()");
     }

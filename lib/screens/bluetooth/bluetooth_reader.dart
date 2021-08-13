@@ -17,23 +17,23 @@ class BluetoothReaderPage extends StatefulWidget {
   _BluetoothReaderPageState createState() => _BluetoothReaderPageState();
 }
 
-class _BluetoothReaderPageState extends State<BluetoothReaderPage>{
+class _BluetoothReaderPageState extends State<BluetoothReaderPage> {
   ScrollController scrollController;
   bool dialVisible = true;
-  UserRepository $userRepository; 
+  UserRepository $userRepository;
   int connected = 1;
   List<RFIDAssetInfo> rfidAssetInfos;
   int rfidPower = 0;
 
   @override
   void initState() {
-    Btprotocol.instance.disconnectDevice();  
+    Btprotocol.instance.disconnectDevice();
     Btprotocol.instance.connectDevice(widget.address).then((value) {
       Btprotocol.instance.clearData();
       setState(() {
-        if(value ==0){
+        if (value == 0) {
           connected = 0;
-        }else{
+        } else {
           connected = -1;
         }
 
@@ -44,18 +44,18 @@ class _BluetoothReaderPageState extends State<BluetoothReaderPage>{
   }
 
   @override
-  void dispose(){
-    Btprotocol.instance.disconnectDevice();  
+  void dispose() {
+    Btprotocol.instance.disconnectDevice();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    if($userRepository == null){
+    if ($userRepository == null) {
       $userRepository = Provider.of<UserRepository>(context, listen: true);
     }
 
-    if(connected==0){
+    if (connected == 0) {
       debugPrint("Bluetooth 연결 성공");
       Btprotocol.instance.clearData();
       return Scaffold(
@@ -63,10 +63,10 @@ class _BluetoothReaderPageState extends State<BluetoothReaderPage>{
           title: Text(getTranslated(context, 'bluetooth_reader_page_title')),
           backgroundColor: Colors.green,
         ),
-        body:getListView(),
+        body: getListView(),
         floatingActionButton: buildSpeedDial(),
       );
-    }else if(connected==1){
+    } else if (connected == 1) {
       debugPrint("Bluetooth 연결 중");
       return Scaffold(
         appBar: AppBar(
@@ -75,21 +75,20 @@ class _BluetoothReaderPageState extends State<BluetoothReaderPage>{
         ),
         //body:initStreamBuilder(),
         body: Center(
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 20.0),
-            child: SizedBox(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
-                //strokeWidth: 3.0,
-              ),
-              height: 30.0,
-              width: 30.0,
+            child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 20.0),
+          child: SizedBox(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
+              //strokeWidth: 3.0,
             ),
-          ) 
-        ),
+            height: 30.0,
+            width: 30.0,
+          ),
+        )),
         floatingActionButton: buildSpeedDial(),
       );
-    }else{
+    } else {
       debugPrint("Bluetooth 연결 실패");
       return Center();
     }
@@ -136,36 +135,37 @@ class _BluetoothReaderPageState extends State<BluetoothReaderPage>{
     );
   }
 
-  Widget initStreamBuilder(){
+  Widget initStreamBuilder() {
     return StreamBuilder<int>(
-      stream: Btprotocol.instance.connectDevice($userRepository.bluetoothDevice.address).asStream(),
+      stream: Btprotocol.instance
+          .connectDevice($userRepository.bluetoothDevice.address)
+          .asStream(),
       //initialData: 0,
-      builder: (c, snapshot){
+      builder: (c, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.waiting:
           case ConnectionState.none:
             return Center(
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 20.0),
-                child: SizedBox(
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
-                    //strokeWidth: 3.0,
-                  ),
-                  height: 30.0,
-                  width: 30.0,
+                child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 20.0),
+              child: SizedBox(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
+                  //strokeWidth: 3.0,
                 ),
-              ) 
-            );
+                height: 30.0,
+                width: 30.0,
+              ),
+            ));
             break;
           case ConnectionState.done:
-          case ConnectionState.active :
-            if(snapshot.data == 0){
+          case ConnectionState.active:
+            if (snapshot.data == 0) {
               //Bluetooth 연결
               connected = 0;
               debugPrint("Bluetooth 연결 성공 :" + snapshot.data.toString());
               return getListView();
-            }else{
+            } else {
               //Bluetooth 연결 실패
               connected = -1;
               debugPrint("Bluetooth 연결 실패 : " + snapshot.data.toString());
@@ -180,25 +180,25 @@ class _BluetoothReaderPageState extends State<BluetoothReaderPage>{
     );
   }
 
-  Widget getListView(){
+  Widget getListView() {
     return SingleChildScrollView(
       child: Column(
         children: <Widget>[
           StreamBuilder<List<RFIDAssetInfo>>(
             //stream: Stream.periodic(Duration(seconds: 1)).asyncMap((_) => dataRead()),
-            stream: Btprotocol.instance.onChangeState.asyncMap((_) => dataRead()),
+            stream:
+                Btprotocol.instance.onChangeState.asyncMap((_) => dataRead()),
             initialData: [],
-            builder: (context,snapshot){
+            builder: (context, snapshot) {
               switch (snapshot.connectionState) {
                 case ConnectionState.done:
-                case ConnectionState.active :
+                case ConnectionState.active:
                   return Column(
-                    children: rfidAssetInfos
-                      .map((d)=>ListTile(
-                        title: Text(d.tag),
-                      ))
-                      .toList()
-                  );
+                      children: rfidAssetInfos
+                          .map((d) => ListTile(
+                                title: Text(d.tag),
+                              ))
+                          .toList());
                   break;
                 default:
                   return Container();
@@ -206,17 +206,18 @@ class _BluetoothReaderPageState extends State<BluetoothReaderPage>{
               }
             },
           ),
-      ],),
+        ],
+      ),
     );
   }
 
-  List<RFIDAssetInfo> convertData(List<String> tagList){
-    List<RFIDAssetInfo> list = List();
+  List<RFIDAssetInfo> convertData(List<String> tagList) {
+    List<RFIDAssetInfo> list = [];
     debugPrint("tagList length : ${tagList.length.toString()}");
-    if(tagList.length > 0){
-      for(String tagId in tagList){
+    if (tagList.length > 0) {
+      for (String tagId in tagList) {
         //debugPrint("Tag Id(device) : $tagId");
-        var rfid = new RFIDAssetInfo(tag:tagId);
+        var rfid = new RFIDAssetInfo(tag: tagId);
         //debugPrint("Tag Id(mobile) : ${rfid.tag}");
         list.add(rfid);
       }
@@ -234,17 +235,16 @@ class _BluetoothReaderPageState extends State<BluetoothReaderPage>{
     Btprotocol.instance.setPower(rfidPower + 10);
   }
 
-  Future<int> getPower() async{
-    return await Btprotocol.instance.initPower().then((_){
+  Future<int> getPower() async {
+    return await Btprotocol.instance.initPower().then((_) {
       return Future.delayed(Duration(seconds: 2)).then((_) {
         return Btprotocol.instance.getPower;
       });
     });
   }
 
-
   Future<List<RFIDAssetInfo>> dataRead() async {
-    List<RFIDAssetInfo> list = List();
+    List<RFIDAssetInfo> list = [];
     List<SharkDataInfo> tagList = await Btprotocol.instance.getListTag;
     // List<SharkDataInfo> tagList = [];
     // deviceDataList.forEach((e) {
@@ -254,10 +254,10 @@ class _BluetoothReaderPageState extends State<BluetoothReaderPage>{
     rfidPower = await Btprotocol.instance.getPower;
 
     debugPrint("tagList length : ${tagList.length.toString()}");
-    if(tagList.length > 0){
-      for(SharkDataInfo data in tagList){
+    if (tagList.length > 0) {
+      for (SharkDataInfo data in tagList) {
         //debugPrint("Tag Id(device) : $tagId");
-        var rfid = new RFIDAssetInfo(tag:data.tagData);
+        var rfid = new RFIDAssetInfo(tag: data.tagData);
         //debugPrint("Tag Id(mobile) : ${rfid.tag}");
         list.add(rfid);
       }

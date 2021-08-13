@@ -88,11 +88,13 @@ class UserRepository with ChangeNotifier {
                   responseJson.map((e) => AppInfo.fromJson(e)).toList();
 
               if (Platform.isAndroid) {
-                _appInfo = svrVerList
+                var verInfo = svrVerList
                     .firstWhere((e) => e.platform.toUpperCase() == 'ANDROID');
+                _onChangeAppInfo(verInfo);
               } else if (Platform.isIOS) {
-                _appInfo = svrVerList
+                var verInfo = svrVerList
                     .firstWhere((e) => e.platform.toUpperCase() == 'IOS');
+                _onChangeAppInfo(verInfo);
               } else {
                 return 0;
               }

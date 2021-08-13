@@ -11,17 +11,15 @@ import 'package:jahwa_asset_management_system/provider/asst_repository.dart';
 import 'package:provider/provider.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 
-class AssetSearchPage extends StatefulWidget{
-
+class AssetSearchPage extends StatefulWidget {
   @override
   _AssetSearchPageState createState() => _AssetSearchPageState();
-
 }
 
-class _AssetSearchPageState extends State<AssetSearchPage>{
+class _AssetSearchPageState extends State<AssetSearchPage> {
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
   ScanResult scanResult;
-  asstRepository $asstRepository = asstRepository();
+  AsstRepository $asstRepository = AsstRepository();
   TextEditingController textAssetNoController = TextEditingController();
   ProgressDialog pr;
 
@@ -50,75 +48,75 @@ class _AssetSearchPageState extends State<AssetSearchPage>{
     //$asstRepository.searchData(widget.assetNo);
   }
 
-
-  String validateAssetNo(String value) { 
-    if(value.isEmpty){
+  String validateAssetNo(String value) {
+    if (value.isEmpty) {
       return getTranslated(context, 'input_asset_no_hint');
     }
     return null;
   }
+
   void validateSubmit() async {
-    await pr.show();
-    $asstRepository.searchData(textAssetNoController.text);
-    pr.hide();
-    Navigator.pushNamed(context, assetInfoViewRoute, arguments: textAssetNoController.text);
+    //await pr.show();
+    //await $asstRepository.searchData(textAssetNoController.text);
+    //await pr.hide();
+    Navigator.pushNamed(context, assetInfoViewRoute,
+        arguments: textAssetNoController.text);
   }
+
   @override
-  Widget build(BuildContext context){
-    $asstRepository = Provider.of<asstRepository>(context, listen: true);
+  Widget build(BuildContext context) {
+    $asstRepository = Provider.of<AsstRepository>(context, listen: true);
     return Container(
-      child: Center( 
+      child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Form(
-              key:_key,
-              child: Column(
-                children: <Widget>[
-                  inputAssetNo(),
-                  submitSearch(),
-                  Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: new Container(
-                            margin: const EdgeInsets.only(left: 10.0, right: 20.0),
-                            child: Divider(
-                              color: Colors.grey,
-                              height: 36,
-                            )),
-                      ),
-                      Text("OR"),
-                      Expanded(
-                        child: new Container(
-                            margin: const EdgeInsets.only(left: 20.0, right: 10.0),
-                            child: Divider(
-                              color: Colors.grey,
-                              height: 36,
-                            )),
-                      ),
-                    ],
-                  ),
-                  scanQRCode(),
-                ],
-              )
-            ),
-            Row(
-
-            ),
+                key: _key,
+                child: Column(
+                  children: <Widget>[
+                    inputAssetNo(),
+                    submitSearch(),
+                    Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: new Container(
+                              margin: const EdgeInsets.only(
+                                  left: 10.0, right: 20.0),
+                              child: Divider(
+                                color: Colors.grey,
+                                height: 36,
+                              )),
+                        ),
+                        Text("OR"),
+                        Expanded(
+                          child: new Container(
+                              margin: const EdgeInsets.only(
+                                  left: 20.0, right: 10.0),
+                              child: Divider(
+                                color: Colors.grey,
+                                height: 36,
+                              )),
+                        ),
+                      ],
+                    ),
+                    scanQRCode()
+                  ],
+                )),
+            Row(),
           ],
         ),
       ),
     );
-  } 
+  }
 
-  Widget inputAssetNo(){
-    return  Padding(
+  Widget inputAssetNo() {
+    return Padding(
       padding: const EdgeInsets.only(top: 0, left: 50, right: 50),
       child: Container(
         height: 80,
         width: MediaQuery.of(context).size.width,
         child: TextFormField(
-          
           style: TextStyle(
             color: Colors.blueGrey,
           ),
@@ -139,7 +137,7 @@ class _AssetSearchPageState extends State<AssetSearchPage>{
     );
   }
 
-  Widget submitSearch(){
+  Widget submitSearch() {
     return Padding(
       padding: const EdgeInsets.only(top: 5, right: 50, left: 50),
       child: Container(
@@ -161,10 +159,9 @@ class _AssetSearchPageState extends State<AssetSearchPage>{
           color: Colors.green,
           borderRadius: BorderRadius.circular(10),
         ),
-        child: FlatButton(
+        child: TextButton(
           onPressed: () {
-            if(_key.currentState.validate()){
-
+            if (_key.currentState.validate()) {
               validateSubmit();
             }
           },
@@ -190,7 +187,7 @@ class _AssetSearchPageState extends State<AssetSearchPage>{
     );
   }
 
-  Widget scanQRCode(){
+  Widget scanQRCode() {
     return Padding(
       padding: const EdgeInsets.only(top: 5, right: 50, left: 50),
       child: Container(
@@ -212,7 +209,7 @@ class _AssetSearchPageState extends State<AssetSearchPage>{
           color: Colors.blue[400],
           borderRadius: BorderRadius.circular(10),
         ),
-        child: FlatButton(
+        child: TextButton(
           onPressed: () {
             scan();
           },
@@ -241,32 +238,29 @@ class _AssetSearchPageState extends State<AssetSearchPage>{
   Future scan() async {
     try {
       var options = ScanOptions(
-        // strings: {
-        //   "cancel": _cancelController.text,
-        //   "flash_on": _flashOnController.text,
-        //   "flash_off": _flashOffController.text,
-        // },
-        // restrictFormat: selectedFormats,
-        // useCamera: _selectedCamera,
-        // autoEnableFlash: _autoEnableFlash,
-        // android: AndroidOptions(
-        //   aspectTolerance: _aspectTolerance,
-        //   useAutoFocus: _useAutoFocus,
-        // ),
-      );
+          // strings: {
+          //   "cancel": _cancelController.text,
+          //   "flash_on": _flashOnController.text,
+          //   "flash_off": _flashOffController.text,
+          // },
+          // restrictFormat: selectedFormats,
+          // useCamera: _selectedCamera,
+          // autoEnableFlash: _autoEnableFlash,
+          // android: AndroidOptions(
+          //   aspectTolerance: _aspectTolerance,
+          //   useAutoFocus: _useAutoFocus,
+          // ),
+          );
 
       var result = await BarcodeScanner.scan(options: options);
 
-      
-
       setState(() {
         scanResult = result;
-        if(scanResult.type != ResultType.Cancelled){
+        if (scanResult.type != ResultType.Cancelled) {
           textAssetNoController.text = scanResult.rawContent ?? "";
           validateSubmit();
         }
-        
-      } );
+      });
     } on PlatformException catch (e) {
       var result = ScanResult(
         type: ResultType.Error,
@@ -285,5 +279,4 @@ class _AssetSearchPageState extends State<AssetSearchPage>{
       });
     }
   }
-
 }

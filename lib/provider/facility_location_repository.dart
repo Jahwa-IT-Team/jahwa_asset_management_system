@@ -3,7 +3,6 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jahwa_asset_management_system/models/facility_locaion.dart';
 //import 'package:jahwa_asset_management_system/util/localization/language_constants.dart';
@@ -203,7 +202,6 @@ class FacilityLocationRepository with ChangeNotifier {
     _settingInspactionLocation.updateUserId = '';
     _settingInspactionLocation.updateUserName = '';
     _settingInspactionLocation.locEntCode = '';
-
 
     if (notify) {
       notifyListeners();
@@ -607,11 +605,9 @@ class FacilityLocationRepository with ChangeNotifier {
 
   Future<void> saveFacilityInspAllList() async {
     _facilityInspScanList.forEach((e) {
-
-      if(e.sendResult == 1 || e.id > 0) {
+      if (e.sendResult == 1 || e.id > 0) {
         return;
-      }
-      else {
+      } else {
         e.plantCode = settingInspactionLocation.plantCode;
         e.plantName = settingInspactionLocation.plantName;
         e.setarea = settingInspactionLocation.setupLocationCode;

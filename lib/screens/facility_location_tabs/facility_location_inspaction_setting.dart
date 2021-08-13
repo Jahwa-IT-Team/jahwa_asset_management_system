@@ -145,9 +145,14 @@ class _FacilityLocationInspactionSettingPageState
   //조건 박스
   Widget searchConditionBox() {
     String sCompany = $userRepository.connectionInfo.company;
-    if($facilityLocationRepository.settingInspactionLocation.locEntCode == '' || $facilityLocationRepository.settingInspactionLocation.locEntCode == null) {
-      $facilityLocationRepository.settingInspactionLocation.locEntCode = sCompany;
-      $facilityLocationRepository.settingInspactionLocation.locEntName = $facilityTradeCommonRepository.getSetupCompanyName(sCompany);
+    if ($facilityLocationRepository.settingInspactionLocation.locEntCode ==
+            '' ||
+        $facilityLocationRepository.settingInspactionLocation.locEntCode ==
+            null) {
+      $facilityLocationRepository.settingInspactionLocation.locEntCode =
+          sCompany;
+      $facilityLocationRepository.settingInspactionLocation.locEntName =
+          $facilityTradeCommonRepository.getSetupCompanyName(sCompany);
     }
     return CardSettings.sectioned(
         showMaterialonIOS: _showMaterialonIOS,
@@ -219,39 +224,48 @@ class _FacilityLocationInspactionSettingPageState
     return customCardField(
       label: getTranslated(context, 'asset_info_label_setarea'),
       content: customDropdown(
-        data: $facilityTradeCommonRepository.getSetupLocationData(
-            $facilityLocationRepository.settingInspactionLocation.locEntCode == null
-              ? ''
-              : $facilityLocationRepository.settingInspactionLocation.locEntCode),
-        value: $facilityLocationRepository.settingInspactionLocation == null
-          ? ''
-          : $facilityLocationRepository
-              .settingInspactionLocation.setupLocationCode,
-        onTap: () {
-          debugPrint("Grade onTap:");
-          Picker(
-            adapter: PickerDataAdapter(
-              data: $facilityTradeCommonRepository.getSetupLocationData(
-              $facilityLocationRepository.settingInspactionLocation.locEntCode == null
-              ? ''
-                  : $facilityLocationRepository.settingInspactionLocation.locEntCode)),
-            hideHeader: true,
-            textAlign: TextAlign.left,
-            title: new Text("Please Select"),
-            onConfirm: (Picker picker, List value) {
-              print(picker.getSelectedValues()[0].toString());
-              $facilityLocationRepository.settingInspactionLocation
-                .setupLocationCode = picker.getSelectedValues()[0];
+          data: $facilityTradeCommonRepository.getSetupLocationData(
               $facilityLocationRepository
-                .settingInspactionLocation.setupLocation =
-                  $facilityTradeCommonRepository.getSetupLocationName(
-                      $facilityLocationRepository.settingInspactionLocation.locEntCode == null
-                      ? ''
-                      : $facilityLocationRepository.settingInspactionLocation.locEntCode,
-                    picker.getSelectedValues()[0]);
-              setState(() {});
-            }).showDialog(context);
-        }),
+                          .settingInspactionLocation.locEntCode ==
+                      null
+                  ? ''
+                  : $facilityLocationRepository
+                      .settingInspactionLocation.locEntCode),
+          value: $facilityLocationRepository.settingInspactionLocation == null
+              ? ''
+              : $facilityLocationRepository
+                  .settingInspactionLocation.setupLocationCode,
+          onTap: () {
+            debugPrint("Grade onTap:");
+            Picker(
+                adapter: PickerDataAdapter(
+                    data: $facilityTradeCommonRepository.getSetupLocationData(
+                        $facilityLocationRepository
+                                    .settingInspactionLocation.locEntCode ==
+                                null
+                            ? ''
+                            : $facilityLocationRepository
+                                .settingInspactionLocation.locEntCode)),
+                hideHeader: true,
+                textAlign: TextAlign.left,
+                title: new Text("Please Select"),
+                onConfirm: (Picker picker, List value) {
+                  print(picker.getSelectedValues()[0].toString());
+                  $facilityLocationRepository.settingInspactionLocation
+                      .setupLocationCode = picker.getSelectedValues()[0];
+                  $facilityLocationRepository
+                          .settingInspactionLocation.setupLocation =
+                      $facilityTradeCommonRepository.getSetupLocationName(
+                          $facilityLocationRepository
+                                      .settingInspactionLocation.locEntCode ==
+                                  null
+                              ? ''
+                              : $facilityLocationRepository
+                                  .settingInspactionLocation.locEntCode,
+                          picker.getSelectedValues()[0]);
+                  setState(() {});
+                }).showDialog(context);
+          }),
     );
   }
 
@@ -292,33 +306,34 @@ class _FacilityLocationInspactionSettingPageState
     );
   }
 
-
   Widget buildCardSettingsPickerLocEnt() {
     return customCardField(
       label: getTranslated(context, 'company'),
       content: customDropdown(
           data: $facilityTradeCommonRepository.locEntData,
-          value: $facilityLocationRepository.settingInspactionLocation == ''
-              ? '' : $facilityLocationRepository.settingInspactionLocation.locEntCode,
+          value: $facilityLocationRepository.settingInspactionLocation == null
+              ? ''
+              : $facilityLocationRepository
+                  .settingInspactionLocation.locEntCode,
           onTap: () {
             debugPrint(
                 "Grade onTap: Loc_Ent${$facilityLocationRepository.settingInspactionLocation.locEntCode}");
             Picker(
                 adapter: PickerDataAdapter(
-                    data: $facilityTradeCommonRepository.locEntData
-                        .toList()),
+                    data: $facilityTradeCommonRepository.locEntData.toList()),
                 hideHeader: true,
                 title: new Text("Please Select"),
                 onConfirm: (Picker picker, List value) {
                   print(picker.getSelectedValues()[0].toString());
                   $facilityLocationRepository.settingInspactionLocation
                       .locEntCode = picker.getSelectedValues()[0];
-                  $facilityLocationRepository.settingInspactionLocation
-                      .locEntName = $facilityTradeCommonRepository.getSetupCompanyName(picker.getSelectedValues()[0]);
+                  $facilityLocationRepository
+                          .settingInspactionLocation.locEntName =
+                      $facilityTradeCommonRepository
+                          .getSetupCompanyName(picker.getSelectedValues()[0]);
                   setState(() {});
                 }).showDialog(context);
-          }
-        ),
+          }),
     );
   }
 
@@ -347,7 +362,6 @@ class _FacilityLocationInspactionSettingPageState
   }
 
   Future resetPressed() async {
-    String sCompany;
     $facilityLocationRepository.resetSettingInspactionLocation(true);
   }
 }

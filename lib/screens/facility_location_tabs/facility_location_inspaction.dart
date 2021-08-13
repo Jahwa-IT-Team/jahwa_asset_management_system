@@ -139,7 +139,7 @@ class _FacilityLocationInspactionPageState
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Text('공장 : 없음'),
-                FlatButton(
+                TextButton(
                   child: Column(
                     children: <Widget>[
                       Row(
@@ -157,8 +157,9 @@ class _FacilityLocationInspactionPageState
                     Navigator.pushNamed(
                         context, facilityLocationSearchFilterRoute)
                   },
-                  color: Colors.deepPurple,
-                  textColor: Colors.white,
+                  style: TextButton.styleFrom(
+                      primary: Colors.white,
+                      backgroundColor: Colors.deepPurple),
                 )
               ],
             ),
@@ -204,7 +205,7 @@ class _FacilityLocationInspactionPageState
                     ],
                   ),
                 ),
-                FlatButton(
+                TextButton(
                   child: Column(
                     children: <Widget>[
                       Row(
@@ -222,8 +223,9 @@ class _FacilityLocationInspactionPageState
                     Navigator.pushNamed(
                         context, facilityLocationInspactionSettingRoute)
                   },
-                  color: Colors.deepPurple,
-                  textColor: Colors.white,
+                  style: TextButton.styleFrom(
+                      primary: Colors.white,
+                      backgroundColor: Colors.deepPurple),
                 )
               ],
             ),
@@ -421,7 +423,7 @@ class _FacilityLocationInspactionPageState
             textAlign: TextAlign.center,
           ), //위치를 먼저 선택하세요.
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: Text('OK'),
               onPressed: () {
                 Navigator.pop(context, "OK");

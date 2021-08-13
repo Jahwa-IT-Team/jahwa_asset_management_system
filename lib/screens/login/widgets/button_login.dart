@@ -30,9 +30,8 @@ class _ButtonLoginState extends State<ButtonLogin> {
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
         ),
-        child: FlatButton(
-          onPressed: () {
-          },
+        child: TextButton(
+          onPressed: () {},
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[

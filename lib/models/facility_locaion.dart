@@ -123,8 +123,7 @@ class SettingInspactionLocation {
   String updateUserName;
 
   SettingInspactionLocation(
-      {
-      this.locEntCode,
+      {this.locEntCode,
       this.locEntName,
       this.plantCode,
       this.plantName,
@@ -165,7 +164,9 @@ class ResultChageFacilityLocation {
 class FacilityInspectionInfo {
   int id;
   String company;
+  // ignore: non_constant_identifier_names
   String dept_cd;
+  // ignore: non_constant_identifier_names
   String dept_nm;
   // ignore: non_constant_identifier_names
   String asst_no;
@@ -242,7 +243,9 @@ class FacilityInspectionInfo {
   FacilityInspectionInfo(
       {this.id,
       this.company,
+      // ignore: non_constant_identifier_names
       this.dept_cd,
+      // ignore: non_constant_identifier_names
       this.dept_nm,
       // ignore: non_constant_identifier_names
       this.asst_no,
@@ -366,8 +369,8 @@ class FacilityInspectionInfo {
   Map<String, dynamic> toJson() => {
         'id': id,
         'company': company,
-        'dept_cd':dept_cd,
-        'dept_nm':dept_nm,
+        'dept_cd': dept_cd,
+        'dept_nm': dept_nm,
         'asst_no': asst_no,
         'asst_nm': asst_nm,
         'spec': spec,

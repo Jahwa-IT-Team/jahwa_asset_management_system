@@ -172,7 +172,7 @@ class _AssetInspectionQRScanPageState extends State<AssetInspectionQRScanPage> {
       if (response.statusCode != 200 ||
           response.body == null ||
           response.body == '[]') {
-        return false;
+        return null;
       }
 
       if (response.statusCode == 200) {
@@ -204,13 +204,13 @@ class _AssetInspectionQRScanPageState extends State<AssetInspectionQRScanPage> {
       future: getData(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.none &&
-            snapshot.hasData == null) {
+            snapshot.hasData == false) {
           return Center(
               child: Text(getTranslated(
                   context, 'asset_info_empty_value')) //'자산 정보가 존재하지 않습니다.'
               );
         } else if (snapshot.connectionState == ConnectionState.done &&
-            snapshot.hasData != null &&
+            snapshot.hasData == true &&
             assetNo != "") {
           if (snapshot.data.length != null && snapshot.data.length > 0) {
             //페이지 다시 로드 시 스크롤 이전 위치로 이동
@@ -376,7 +376,7 @@ class _AssetInspectionQRScanPageState extends State<AssetInspectionQRScanPage> {
           borderRadius: BorderRadius.circular(0),
         ),
         child: Center(
-          child: FlatButton(
+          child: TextButton(
             onPressed: () {
               //scan();
               saveData(false);
@@ -488,7 +488,7 @@ class _AssetInspectionQRScanPageState extends State<AssetInspectionQRScanPage> {
           borderRadius: BorderRadius.circular(0),
         ),
         child: Center(
-          child: FlatButton(
+          child: TextButton(
             onPressed: () {
               saveData(true);
             },

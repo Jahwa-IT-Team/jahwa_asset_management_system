@@ -44,6 +44,7 @@
     "asset_info_label_acct_nm": "Tên tài khoản",
     "asset_info_label_maker": "Nhà sản xuất",
     "asset_info_label_asset_state": "Trạng thái",
+    "asset_info_label_setareacode": "Nơi lắp đặt(Code)",
     "asset_info_label_setarea": "Nơi lắp đặt",
     "asset_info_label_send_bp_nm": "Nơi thuê",
     "asset_info_label_project_no": "Mã dự án",

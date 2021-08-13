@@ -10,7 +10,6 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_cupertino_settings/flutter_cupertino_settings.dart';
 import 'package:flutter/cupertino.dart';
 
-
 /// This is a standard one line text entry  It's based on the [TextFormField] widget.
 class CardSettingsCustomSearchDropdwon extends FormField<String>
     implements CommonCardFieldAttributes {
@@ -26,7 +25,7 @@ class CardSettingsCustomSearchDropdwon extends FormField<String>
     this.controller,
     this.textCapitalization = TextCapitalization.none,
     this.keyboardType = TextInputType.text,
-    this.maxLengthEnforced = true,
+    this.maxLengthEnforced = MaxLengthEnforcement.enforced,
     this.inputMask,
     this.inputFormatters,
     this.onFieldSubmitted,
@@ -67,9 +66,12 @@ class CardSettingsCustomSearchDropdwon extends FormField<String>
           initialValue: initialValue,
           onSaved: onSaved,
           validator: validator,
-          autovalidate: autovalidate,
+          autovalidateMode: autovalidate
+              ? AutovalidateMode.always
+              : AutovalidateMode.disabled,
           builder: (FormFieldState<String> field) =>
-              (field as _CardSettingsCustomSearchDropdwonState)._build(field.context),
+              (field as _CardSettingsCustomSearchDropdwonState)
+                  ._build(field.context),
         );
   final bool readOnly;
   final ValueChanged<String> onChanged;
@@ -88,7 +90,7 @@ class CardSettingsCustomSearchDropdwon extends FormField<String>
 
   final TextStyle style;
 
-  final bool maxLengthEnforced;
+  final MaxLengthEnforcement maxLengthEnforced;
 
   final ValueChanged<String> onFieldSubmitted;
 
@@ -149,14 +151,16 @@ class CardSettingsCustomSearchDropdwon extends FormField<String>
   final OverlayVisibilityMode showClearButtonIOS;
 
   @override
-  _CardSettingsCustomSearchDropdwonState createState() => _CardSettingsCustomSearchDropdwonState();
+  _CardSettingsCustomSearchDropdwonState createState() =>
+      _CardSettingsCustomSearchDropdwonState();
 }
 
 class _CardSettingsCustomSearchDropdwonState extends FormFieldState<String> {
   TextEditingController _controller;
 
   @override
-  CardSettingsCustomSearchDropdwon get widget => super.widget as CardSettingsCustomSearchDropdwon;
+  CardSettingsCustomSearchDropdwon get widget =>
+      super.widget as CardSettingsCustomSearchDropdwon;
 
   @override
   void initState() {
@@ -279,7 +283,8 @@ class _CardSettingsCustomSearchDropdwonState extends FormFieldState<String> {
         autofocus: widget?.autofocus ?? false,
         obscureText: widget?.obscureText ?? false,
         autocorrect: widget?.autocorrect ?? true,
-        maxLengthEnforced: widget?.maxLengthEnforced ?? false,
+        maxLengthEnforcement:
+            widget?.maxLengthEnforced ?? MaxLengthEnforcement.none,
         maxLines: widget?.numberOfLines,
         maxLength: (widget?.showCounter ?? false)
             ? widget?.maxLength
@@ -410,7 +415,8 @@ class _CardSettingsCustomSearchDropdwonState extends FormFieldState<String> {
         autofocus: widget?.autofocus ?? false,
         obscureText: widget?.obscureText ?? false,
         autocorrect: widget?.autocorrect ?? true,
-        maxLengthEnforced: widget?.maxLengthEnforced ?? false,
+        maxLengthEnforcement:
+            widget?.maxLengthEnforced ?? MaxLengthEnforcement.none,
         maxLines: widget?.numberOfLines,
         maxLength: (widget?.showCounter ?? false)
             ? widget?.maxLength

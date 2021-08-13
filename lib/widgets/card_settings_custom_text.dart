@@ -10,7 +10,6 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_cupertino_settings/flutter_cupertino_settings.dart';
 import 'package:flutter/cupertino.dart';
 
-
 /// This is a standard one line text entry  It's based on the [TextFormField] widget.
 class CardSettingsCustomText extends FormField<String>
     implements CommonCardFieldAttributes {
@@ -26,7 +25,7 @@ class CardSettingsCustomText extends FormField<String>
     this.controller,
     this.textCapitalization = TextCapitalization.none,
     this.keyboardType = TextInputType.text,
-    this.maxLengthEnforced = true,
+    this.maxLengthEnforced = MaxLengthEnforcement.enforced,
     this.inputMask,
     this.inputFormatters,
     this.onFieldSubmitted,
@@ -67,7 +66,9 @@ class CardSettingsCustomText extends FormField<String>
           initialValue: initialValue,
           onSaved: onSaved,
           validator: validator,
-          autovalidate: autovalidate,
+          autovalidateMode: autovalidate
+              ? AutovalidateMode.always
+              : AutovalidateMode.disabled,
           builder: (FormFieldState<String> field) =>
               (field as _CardSettingsCustomTextState)._build(field.context),
         );
@@ -88,7 +89,7 @@ class CardSettingsCustomText extends FormField<String>
 
   final TextStyle style;
 
-  final bool maxLengthEnforced;
+  final MaxLengthEnforcement maxLengthEnforced;
 
   final ValueChanged<String> onFieldSubmitted;
 
@@ -279,7 +280,8 @@ class _CardSettingsCustomTextState extends FormFieldState<String> {
         autofocus: widget?.autofocus ?? false,
         obscureText: widget?.obscureText ?? false,
         autocorrect: widget?.autocorrect ?? true,
-        maxLengthEnforced: widget?.maxLengthEnforced ?? false,
+        maxLengthEnforcement:
+            widget?.maxLengthEnforced ?? MaxLengthEnforcement.none,
         maxLines: widget?.numberOfLines,
         maxLength: (widget?.showCounter ?? false)
             ? widget?.maxLength
@@ -410,7 +412,8 @@ class _CardSettingsCustomTextState extends FormFieldState<String> {
         autofocus: widget?.autofocus ?? false,
         obscureText: widget?.obscureText ?? false,
         autocorrect: widget?.autocorrect ?? true,
-        maxLengthEnforced: widget?.maxLengthEnforced ?? false,
+        maxLengthEnforcement:
+            widget?.maxLengthEnforced ?? MaxLengthEnforcement.none,
         maxLines: widget?.numberOfLines,
         maxLength: (widget?.showCounter ?? false)
             ? widget?.maxLength

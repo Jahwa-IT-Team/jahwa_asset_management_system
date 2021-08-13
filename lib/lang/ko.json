@@ -44,6 +44,7 @@
     "asset_info_label_acct_nm": "계정명",
     "asset_info_label_maker": "제조사",
     "asset_info_label_asset_state": "상태",
+    "asset_info_label_setareacode": "설치장소(코드)",
     "asset_info_label_setarea": "설치장소",
     "asset_info_label_send_bp_nm": "임대처",
     "asset_info_label_project_no": "프로젝트코드",

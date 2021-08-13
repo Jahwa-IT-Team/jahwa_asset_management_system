@@ -195,16 +195,16 @@ class _FacilityLocationInspactionDetailPageState
   Widget buildLayout() {
     return Container(
         child: Column(
-              children: <Widget>[
-                setLocationBox(),
-                Expanded(
-                  flex: 8,
-                  child: getListView(),
-                ),
-                // Expanded(
-                //   child: buildQRScanLayout(),
-                // ),
-              ],
+      children: <Widget>[
+        setLocationBox(),
+        Expanded(
+          flex: 8,
+          child: getListView(),
+        ),
+        // Expanded(
+        //   child: buildQRScanLayout(),
+        // ),
+      ],
     ));
   }
 
@@ -250,27 +250,24 @@ class _FacilityLocationInspactionDetailPageState
                     ],
                   ),
                 ),
-                FlatButton(
-                  child: Column(
-                    children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Icon(Icons.save),
-                          Padding(
-                            padding: EdgeInsets.all(2),
-                          ),
-                          Text(getTranslated(context, 'apply'))
-                        ],
-                      )
-                    ],
-                  ),
-                  onPressed: () =>
-                      {
-                        _applyAlertDialog(context)
-                      },
-                  color: Colors.deepPurple,
-                  textColor: Colors.white,
-                )
+                TextButton(
+                    child: Column(
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Icon(Icons.save),
+                            Padding(
+                              padding: EdgeInsets.all(2),
+                            ),
+                            Text(getTranslated(context, 'apply'))
+                          ],
+                        )
+                      ],
+                    ),
+                    onPressed: () => {_applyAlertDialog(context)},
+                    style: TextButton.styleFrom(
+                        primary: Colors.white,
+                        backgroundColor: Colors.deepPurple))
               ],
             ),
             SizedBox(
@@ -298,96 +295,90 @@ class _FacilityLocationInspactionDetailPageState
         itemBuilder: (context, index) {
           return Visibility(
               visible: cardVisiblility(index),
-              child : GestureDetector(
-                onTap: () => Navigator.pushNamed(
-                    context, facilitylocationInspactionDetailSettingRoute,arguments: index.toString()),
-                child : Card(
-
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(0.0),
-                  ),
-                  elevation: 1,
-
-                  child: Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: IconButton(
-                            icon: Icon(Icons.remove_circle),
-                            color: Colors.red,
-                            onPressed: () {
-                              $facilityLocationRepository
-                                  .removeInspScanList(scanList[index]);
-                            },
-                          ),
+              child: GestureDetector(
+                  onTap: () => Navigator.pushNamed(
+                      context, facilitylocationInspactionDetailSettingRoute,
+                      arguments: index.toString()),
+                  child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(0.0),
+                      ),
+                      elevation: 1,
+                      child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              flex: 1,
+                              child: IconButton(
+                                icon: Icon(Icons.remove_circle),
+                                color: Colors.red,
+                                onPressed: () {
+                                  $facilityLocationRepository
+                                      .removeInspScanList(scanList[index]);
+                                },
+                              ),
+                            ),
+                            Expanded(
+                              flex: 8,
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: <Widget>[
+                                      Text('[${scanList[index].asst_no}]'),
+                                      Flexible(
+                                          child: Text(
+                                        '${scanList[index].asst_nm}',
+                                        overflow: TextOverflow.ellipsis,
+                                      ))
+                                    ],
+                                  ),
+                                  Row(
+                                    children: <Widget>[
+                                      Text(
+                                          '${getTranslated(context, 'company')} : ${scanList[index].locEntName}')
+                                    ],
+                                  ),
+                                  Row(
+                                    children: <Widget>[
+                                      Text(
+                                          '${getTranslated(context, 'plant')} : [${scanList[index].plantCode}]${scanList[index].plantName}')
+                                    ],
+                                  ),
+                                  Row(
+                                    children: <Widget>[
+                                      Flexible(
+                                        child: Text(
+                                            '${getTranslated(context, 'location')} : [${scanList[index].setarea}]${scanList[index].setareaName}'),
+                                      )
+                                    ],
+                                  ),
+                                  Row(
+                                    children: <Widget>[
+                                      Flexible(
+                                        child: Text(
+                                            '${getTranslated(context, 'item_group')} : ${scanList[index].itemGroup}'),
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Expanded(
+                                flex: 2,
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      children: [resultIcon(index)],
+                                    ),
+                                    Row(children: [reaseYN(index)]),
+                                  ],
+                                )
+                                //child: resultIcon(index),
+                                ),
+                          ],
                         ),
-                        Expanded(
-                          flex: 8,
-                          child: Column(
-                            children: [
-                              Row(
-                                children: <Widget>[
-                                  Text('[${scanList[index].asst_no}]'),
-                                  Flexible(
-                                      child: Text(
-                                    '${scanList[index].asst_nm}',
-                                    overflow: TextOverflow.ellipsis,
-                                  ))
-                                ],
-                              ),
-                              Row(
-                                children: <Widget>[
-                                  Text(
-                                      '${getTranslated(context, 'company')} : ${scanList[index].locEntName}')
-                                ],
-                              ),
-                              Row(
-                                children: <Widget>[
-                                  Text(
-                                      '${getTranslated(context, 'plant')} : [${scanList[index].plantCode}]${scanList[index].plantName}')
-                                ],
-                              ),
-                              Row(
-                                children: <Widget>[
-                                  Flexible(
-                                    child: Text(
-                                        '${getTranslated(context, 'location')} : [${scanList[index].setarea}]${scanList[index].setareaName}'),
-                                  )
-                                ],
-                              ),
-                              Row(
-                                children: <Widget>[
-                                  Flexible(
-                                    child: Text(
-                                        '${getTranslated(context, 'item_group')} : ${scanList[index].itemGroup}'),
-                                  )
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Column(
-                            children: [
-                              Row (
-                                children: [resultIcon(index)],
-                              ),
-                              Row(
-                                  children: [reaseYN(index)]
-                              ),
-                            ],
-                          )
-                          //child: resultIcon(index),
-                        ),
-                      ],
-                    ),
-                  )
-                )
-              )
-            );
+                      ))));
         });
   }
 
@@ -426,14 +417,14 @@ class _FacilityLocationInspactionDetailPageState
   Widget reaseYN(int index) {
     var scanList = $facilityLocationRepository.facilityInspScanList;
 
-    if (scanList[index].locEntCode == $userRepository.connectionInfo.company){
+    if (scanList[index].locEntCode == $userRepository.connectionInfo.company) {
       return Container();
-    } else if (scanList[index].locEntCode != $userRepository.connectionInfo.company) {
+    } else if (scanList[index].locEntCode !=
+        $userRepository.connectionInfo.company) {
       return Container(
         decoration: BoxDecoration(
-          border: Border.all(width: 2, color: Colors.purple),
-          borderRadius: const BorderRadius.all(const Radius.circular(2))
-        ),
+            border: Border.all(width: 2, color: Colors.purple),
+            borderRadius: const BorderRadius.all(const Radius.circular(2))),
         margin: const EdgeInsets.all(8),
         child: Text(
           getTranslated(context, 'lease'),
@@ -527,35 +518,33 @@ class _FacilityLocationInspactionDetailPageState
   }
 
   Future qrBarcodeScan(bool repeat) async {
-
-      if (Foundation.kDebugMode) {
-        await pr.show();
-        //var assetNo = "DZA5729V";
-        var assetNo = "3000E2004000770A01832470199C";
-        FacilityInspectionInfo data = await $facilityLocationRepository
-            .getFacilityInspectionInfo(masterId, 'RFID', assetNo)
-            .then((value) {
-          pr.hide();
-          return value;
-        });
-        if (data != null) {
-          data.updateUserId = $userRepository.user.empNo;
-          data.updateUserName = $userRepository.user.name;
-          data.insertUserId = $userRepository.user.empNo;
-          data.insertUserName = $userRepository.user.name;
-          data.dept_cd = $userRepository.user.deptCode;
-          data.dept_nm = $userRepository.user.deptName;
-          await $facilityLocationRepository.addInspScanList(data);
-          if (repeat) {
-            qrBarcodeScan(repeat);
-          }
-        } else {
-          pr.hide();
+    if (Foundation.kDebugMode) {
+      await pr.show();
+      //var assetNo = "DZA5729V";
+      var assetNo = "3000E2004000770A01832470199C";
+      FacilityInspectionInfo data = await $facilityLocationRepository
+          .getFacilityInspectionInfo(masterId, 'RFID', assetNo)
+          .then((value) {
+        pr.hide();
+        return value;
+      });
+      if (data != null) {
+        data.updateUserId = $userRepository.user.empNo;
+        data.updateUserName = $userRepository.user.name;
+        data.insertUserId = $userRepository.user.empNo;
+        data.insertUserName = $userRepository.user.name;
+        data.dept_cd = $userRepository.user.deptCode;
+        data.dept_nm = $userRepository.user.deptName;
+        await $facilityLocationRepository.addInspScanList(data);
+        if (repeat) {
+          qrBarcodeScan(repeat);
         }
-        setState(() {
-        });
-        return;
+      } else {
+        pr.hide();
       }
+      setState(() {});
+      return;
+    }
     try {
       var options = ScanOptions();
 
@@ -642,10 +631,10 @@ class _FacilityLocationInspactionDetailPageState
             textAlign: TextAlign.center,
           ), //위치를 먼저 선택하세요.
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: Text('OK'),
               onPressed: () {
-                Navigator.pop(context ,"OK");
+                Navigator.pop(context, "OK");
               },
             ),
           ],
@@ -654,7 +643,7 @@ class _FacilityLocationInspactionDetailPageState
     );
   }
 
-  bool cardVisiblility(int index){
+  bool cardVisiblility(int index) {
     var scanList = $facilityLocationRepository.facilityInspScanList;
     if (scanList[index].sendResult == 1 || scanList[index].id > 0) {
       return true; // 이미 저장된 설비 Visible flag
@@ -666,20 +655,16 @@ class _FacilityLocationInspactionDetailPageState
   void _applyAlertDialog(BuildContext context) async {
     var scanList = $facilityLocationRepository.facilityInspScanList;
 
-    int iCnt_AlreadySave = 0;
-    int iCnt_TargetSave  = 0;
+    int iCntAlreadySave = 0;
+    int iCntTargetSave = 0;
     String sFacilityList = "";
 
-    for(var i = 0 ; i < scanList.length ; i ++)
-    {
-      if (scanList[i].sendResult == 1 || scanList[i].id > 0)
-      {
-        iCnt_AlreadySave++;
-        sFacilityList = sFacilityList + '[' +scanList[i].asst_no + ']\r\n';
-      }
-      else
-      {
-        iCnt_TargetSave++;
+    for (var i = 0; i < scanList.length; i++) {
+      if (scanList[i].sendResult == 1 || scanList[i].id > 0) {
+        iCntAlreadySave++;
+        sFacilityList = sFacilityList + '[' + scanList[i].asst_no + ']\r\n';
+      } else {
+        iCntTargetSave++;
       }
     }
 
@@ -691,26 +676,39 @@ class _FacilityLocationInspactionDetailPageState
           //title: Text(''),
           contentPadding: EdgeInsets.fromLTRB(0, 40, 0, 0),
           content: Text(
-            '  ' + getTranslated(context, 'alert_count_target_faciliy') + '['+ iCnt_TargetSave.toString() + ']' + '\r\n'
-                + '  ' + getTranslated(context, 'alert_check_already_save_faciliy') + '['+ iCnt_AlreadySave.toString() + ']' + '\r\n'
-                + getTranslated(context, 'alert_check_already_save_faciliy_info')  + '\r\n'
-                + getTranslated(context, 'alert_check_already_save_faciliy_list') + ': \r\n ' + sFacilityList,
+            '  ' +
+                getTranslated(context, 'alert_count_target_faciliy') +
+                '[' +
+                iCntTargetSave.toString() +
+                ']' +
+                '\r\n' +
+                '  ' +
+                getTranslated(context, 'alert_check_already_save_faciliy') +
+                '[' +
+                iCntAlreadySave.toString() +
+                ']' +
+                '\r\n' +
+                getTranslated(
+                    context, 'alert_check_already_save_faciliy_info') +
+                '\r\n' +
+                getTranslated(
+                    context, 'alert_check_already_save_faciliy_list') +
+                ': \r\n ' +
+                sFacilityList,
             textAlign: TextAlign.left,
           ),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: Text(getTranslated(context, 'apply')),
               onPressed: () {
                 Navigator.pop(context);
                 saveFacilityInspAllList();
-
               },
             ),
-            FlatButton(
+            TextButton(
               child: Text(getTranslated(context, 'cancel')),
               onPressed: () {
                 Navigator.pop(context);
-
               },
             ),
           ],

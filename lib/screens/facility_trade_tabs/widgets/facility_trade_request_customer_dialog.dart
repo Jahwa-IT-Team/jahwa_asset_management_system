@@ -12,7 +12,6 @@ class NotGiven {
   const NotGiven();
 }
 
-
 Widget prepareWidget(dynamic object,
     {dynamic parameter = const NotGiven(),
     BuildContext context,
@@ -80,11 +79,11 @@ class CustomerDropdownDialog<T> extends StatefulWidget {
     this.menuConstraints,
     this.callOnPop,
     this.menuBackgroundColor,
-  })  : super(key: key);
+  }) : super(key: key);
 
-  _CustomerDropdownDialogState<T> createState() => new _CustomerDropdownDialogState<T>();
+  _CustomerDropdownDialogState<T> createState() =>
+      new _CustomerDropdownDialogState<T>();
 }
-
 
 class _CustomerDropdownDialogState<T> extends State<CustomerDropdownDialog> {
   TextEditingController txtSearch = new TextEditingController();
@@ -98,10 +97,11 @@ class _CustomerDropdownDialogState<T> extends State<CustomerDropdownDialog> {
     return (widget.multipleSelection
         ? widget.selectedItems
         : widget.selectedItems?.isNotEmpty ?? false
-            ? $facilityTradeCommonRepository.searchBizPartnerDropdownMenuItem[widget.selectedItems.first]?.value
+            ? $facilityTradeCommonRepository
+                .searchBizPartnerDropdownMenuItem[widget.selectedItems.first]
+                ?.value
             : null);
   }
-
 
   @override
   void initState() {
@@ -110,11 +110,11 @@ class _CustomerDropdownDialogState<T> extends State<CustomerDropdownDialog> {
 
   @override
   Widget build(BuildContext context) {
-
-    if($facilityTradeCommonRepository == null){
-      $facilityTradeCommonRepository = Provider.of<FacilityTradeCommonRepository>(context, listen: true);
+    if ($facilityTradeCommonRepository == null) {
+      $facilityTradeCommonRepository =
+          Provider.of<FacilityTradeCommonRepository>(context, listen: true);
     }
-    
+
     return AnimatedContainer(
       padding: MediaQuery.of(context).viewInsets,
       duration: const Duration(milliseconds: 300),
@@ -169,11 +169,10 @@ class _CustomerDropdownDialogState<T> extends State<CustomerDropdownDialog> {
             ? prepareWidget(widget.doneButton,
                 parameter: selectedResult,
                 context: context, stringToWidgetFunction: (string) {
-                return (FlatButton.icon(
+                return (TextButton.icon(
                     onPressed: !valid
                         ? null
                         : () {
-                          
                             pop();
                             setState(() {});
                           },
@@ -275,9 +274,11 @@ class _CustomerDropdownDialogState<T> extends State<CustomerDropdownDialog> {
     return new Expanded(
       child: Scrollbar(
         child: new ListView.builder(
-          itemCount: $facilityTradeCommonRepository.searchBizPartnerDropdownMenuItem.length,
+          itemCount: $facilityTradeCommonRepository
+              .searchBizPartnerDropdownMenuItem.length,
           itemBuilder: (context, index) {
-            DropdownMenuItem item = $facilityTradeCommonRepository.searchBizPartnerDropdownMenuItem[index];
+            DropdownMenuItem item = $facilityTradeCommonRepository
+                .searchBizPartnerDropdownMenuItem[index];
             return new InkWell(
               onTap: () {
                 if (widget.multipleSelection) {
@@ -289,7 +290,6 @@ class _CustomerDropdownDialogState<T> extends State<CustomerDropdownDialog> {
                     }
                   });
                 } else {
-                  
                   widget.selectedItems.clear();
                   widget.selectedItems.add(index);
                   if (widget.doneButton == null) {
@@ -312,14 +312,13 @@ class _CustomerDropdownDialogState<T> extends State<CustomerDropdownDialog> {
                           ),
                           Flexible(child: item),
                         ]))
-                      : widget.displayItem(item,
-                          widget.selectedItems.contains(index))
+                      : widget.displayItem(
+                          item, widget.selectedItems.contains(index))
                   : widget.displayItem == null
                       ? item
                       : widget.displayItem(item, item.value == selectedResult),
             );
           },
-          
         ),
       ),
     );
@@ -333,9 +332,8 @@ class _CustomerDropdownDialogState<T> extends State<CustomerDropdownDialog> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                FlatButton(
+                TextButton(
                   onPressed: () {
-                    
                     pop();
                   },
                   child: Container(

@@ -575,8 +575,8 @@ class _FacilityTradeRFIDRegistrationPageState
   }
 
   void _showSnackBar(String label, dynamic value) {
-    _scaffoldKey.currentState.removeCurrentSnackBar();
-    _scaffoldKey.currentState.showSnackBar(
+    ScaffoldMessenger.of(context).removeCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         duration: Duration(seconds: 1),
         content: Text(label + ' = ' + value.toString()),

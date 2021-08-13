@@ -194,7 +194,7 @@ class _FacilityLocationSearchPageState
                       },
                       color: Colors.deepPurple,
                     ),
-                    FlatButton(
+                    TextButton(
                       child: Column(
                         children: <Widget>[
                           Row(
@@ -209,8 +209,9 @@ class _FacilityLocationSearchPageState
                         Navigator.pushNamed(
                             context, facilityLocationSearchFilterRoute)
                       },
-                      color: Colors.deepPurple,
-                      textColor: Colors.white,
+                      style: TextButton.styleFrom(
+                          primary: Colors.white,
+                          backgroundColor: Colors.deepPurple),
                     )
                   ],
                 ),
@@ -450,7 +451,7 @@ class _FacilityLocationSearchPageState
                               color: Colors.transparent,
                               borderRadius: BorderRadius.circular(0),
                               border: Border.all(color: Colors.black45)),
-                          child: FlatButton(
+                          child: TextButton(
                             onPressed: () {
                               $facilityLocationRepository
                                   .getMoreFacilityListInLocation();
@@ -819,8 +820,8 @@ class _FacilityLocationSearchPageState
 
   void showSnackBar(String label, dynamic value) {
     try {
-      scaffold1Key.currentState.removeCurrentSnackBar();
-      scaffold1Key.currentState.showSnackBar(
+      ScaffoldMessenger.of(context).removeCurrentSnackBar();
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           duration: Duration(seconds: 3),
           content: Text(label + ' = ' + value.toString()),

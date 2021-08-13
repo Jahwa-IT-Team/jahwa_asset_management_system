@@ -1,5 +1,5 @@
 // import 'dart:convert';
-// import 'dart:async'; 
+// import 'dart:async';
 // import 'package:http/http.dart' as http;
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
@@ -16,14 +16,13 @@ import 'package:jahwa_asset_management_system/models/language.dart';
 
 import '../../main.dart';
 
-
-class LoginPage extends StatefulWidget{
+class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
 
   @override
   _LoginPageState createState() => _LoginPageState();
 }
-  
+
 class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
   // Getting value from TextField widget.
@@ -32,23 +31,20 @@ class _LoginPageState extends State<LoginPage> {
   ProgressDialog pr;
   String _langCode = "";
 
-  
-
-  String validateEmail(String value) { 
-    if (!value.contains('@')) { 
+  String validateEmail(String value) {
+    if (!value.contains('@')) {
       return getTranslated(context, 'login_validateEmail');
-    } 
-    return null; 
-  }
-
-  String validatePasswrd(String value) { 
-    if (value.length < 6) { 
-      return getTranslated(context, 'login_validatePassword');
-    } 
+    }
     return null;
   }
 
-  
+  String validatePasswrd(String value) {
+    if (value.length < 6) {
+      return getTranslated(context, 'login_validatePassword');
+    }
+    return null;
+  }
+
   void changeLanguage(String languageCode) async {
     await setLocale(languageCode).then((_locale) {
       MyApp.setLocale(context, _locale);
@@ -62,7 +58,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     pr = ProgressDialog(
       context,
       type: ProgressDialogType.Normal,
@@ -91,7 +87,6 @@ class _LoginPageState extends State<LoginPage> {
               end: Alignment.bottomLeft,
               colors: [Colors.white, Colors.white]),
         ),
-        
         child: ListView(
           children: <Widget>[
             Column(
@@ -101,14 +96,15 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
                     PopupMenuButton<String>(
-                    // overflow menu
+                      // overflow menu
                       onSelected: changeLanguage,
                       icon: new Icon(Icons.language, color: Colors.black45),
                       itemBuilder: (BuildContext context) {
-                        return Language.languageList().map<PopupMenuItem<String>>((Language choice) {
+                        return Language.languageList()
+                            .map<PopupMenuItem<String>>((Language choice) {
                           return PopupMenuItem<String>(
                             value: choice.languageCode,
-                            child: Text(choice.flag+" "+choice.name),
+                            child: Text(choice.flag + " " + choice.name),
                           );
                         }).toList();
                       },
@@ -123,7 +119,7 @@ class _LoginPageState extends State<LoginPage> {
                   height: 20,
                 ),
                 Form(
-                  key:_key,
+                  key: _key,
                   child: Column(
                     children: <Widget>[
                       inputEmail(),
@@ -138,13 +134,13 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ],
         ),
-        
       ),
     );
   }
+
   //로그인 E-Mail 주소 텍스트 박스
-  Widget inputEmail(){
-    return  Padding(
+  Widget inputEmail() {
+    return Padding(
       padding: const EdgeInsets.only(top: 10, left: 50, right: 50),
       child: Container(
         height: 80,
@@ -163,7 +159,8 @@ class _LoginPageState extends State<LoginPage> {
             hintText: getTranslated(context, 'login_email_hint'),
             labelStyle: TextStyle(
               color: Colors.black54,
-            ),hintStyle: TextStyle(
+            ),
+            hintStyle: TextStyle(
               color: Colors.green[300],
             ),
           ),
@@ -173,7 +170,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   //로그인 패스워드 텍스트 박스
-  Widget inputPassword(){
+  Widget inputPassword() {
     return Padding(
       padding: const EdgeInsets.only(top: 5, left: 50, right: 50),
       child: Container(
@@ -202,7 +199,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget submitLogin(){
+  Widget submitLogin() {
     return Padding(
       padding: const EdgeInsets.only(top: 5, right: 50, left: 50),
       child: Container(
@@ -224,39 +221,43 @@ class _LoginPageState extends State<LoginPage> {
           color: Colors.blue,
           borderRadius: BorderRadius.circular(3),
         ),
-        child: FlatButton(
+        child: TextButton(
           onPressed: () {
-            if(_key.currentState.validate()){
+            if (_key.currentState.validate()) {
               pr.show();
-              print("Email : ${emailController.text}, Password : ${passwordController.text}");
-              UserRepository $userRepository = Provider.of<UserRepository>(_key.currentContext, listen: false);
-              $userRepository.signIn(emailController.text, passwordController.text)
-                .then((value) {
-                  pr.hide();
-                  if(value){
-                    //Login Success
-                    print("Login Success");
-                    Navigator.popAndPushNamed(context, homeRoute);
-                  }else{
-                    //Login Fail
-                    print("Login Fail");
-                    Alert(
-                      context: context,
-                      type: AlertType.error,
-                      title: "Error",
-                      desc: "Login Fail.",
-                      buttons: [
-                        DialogButton(
-                          child: Text(
-                            "OK",
-                            style: TextStyle(color: Colors.white, fontSize: 20),
-                          ),
-                          onPressed: () => Navigator.pop(context),
-                          width: 120,
-                        )
-                      ],
-                    ).show();
-                  }
+              print(
+                  "Email : ${emailController.text}, Password : ${passwordController.text}");
+              UserRepository $userRepository = Provider.of<UserRepository>(
+                  _key.currentContext,
+                  listen: false);
+              $userRepository
+                  .signIn(emailController.text, passwordController.text)
+                  .then((value) {
+                pr.hide();
+                if (value) {
+                  //Login Success
+                  print("Login Success");
+                  Navigator.popAndPushNamed(context, homeRoute);
+                } else {
+                  //Login Fail
+                  print("Login Fail");
+                  Alert(
+                    context: context,
+                    type: AlertType.error,
+                    title: "Error",
+                    desc: "Login Fail.",
+                    buttons: [
+                      DialogButton(
+                        child: Text(
+                          "OK",
+                          style: TextStyle(color: Colors.white, fontSize: 20),
+                        ),
+                        onPressed: () => Navigator.pop(context),
+                        width: 120,
+                      )
+                    ],
+                  ).show();
+                }
               });
             }
           },
@@ -281,5 +282,4 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
-
 }

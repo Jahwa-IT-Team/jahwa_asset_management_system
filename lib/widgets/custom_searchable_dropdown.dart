@@ -363,21 +363,22 @@ class CustomSearchableDropdown<T> extends StatefulWidget {
         super(key: key);
 
   @override
-  _CustomSearchableDropdownState<T> createState() => new _CustomSearchableDropdownState();
+  _CustomSearchableDropdownState<T> createState() =>
+      new _CustomSearchableDropdownState();
 }
 
-class _CustomSearchableDropdownState<T> extends State<CustomSearchableDropdown<T>> {
+class _CustomSearchableDropdownState<T>
+    extends State<CustomSearchableDropdown<T>> {
   List<int> selectedItems;
   PointerThisPlease<bool> displayMenu = PointerThisPlease<bool>(false);
 
   TextStyle get _textStyle =>
       widget.style ??
       (_enabled && !(widget.readOnly ?? false)
-          ? Theme.of(context).textTheme//.subhead
-          : Theme.of(context)
-              .textTheme);
-              //.subhead
-              //.copyWith(color: _disabledIconColor));
+          ? Theme.of(context).textTheme //.subhead
+          : Theme.of(context).textTheme);
+  //.subhead
+  //.copyWith(color: _disabledIconColor));
   bool get _enabled =>
       widget.items != null &&
       widget.items.isNotEmpty &&
@@ -518,7 +519,7 @@ class _CustomSearchableDropdownState<T> extends State<CustomSearchableDropdown<T
       ));
     }
     Widget innerItemsWidget;
-    List<Widget> list = List<Widget>();
+    List<Widget> list = [];
     selectedItems?.forEach((item) {
       list.add(widget.selectedValueWidgetFn != null
           ? widget.selectedValueWidgetFn(widget.items[item].value)
@@ -834,7 +835,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
             ? prepareWidget(widget.doneButton,
                 parameter: selectedResult,
                 context: context, stringToWidgetFunction: (string) {
-                return (FlatButton.icon(
+                return (TextButton.icon(
                     onPressed: !valid
                         ? null
                         : () {
@@ -995,7 +996,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                FlatButton(
+                TextButton(
                   onPressed: () {
                     pop();
                   },

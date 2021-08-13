@@ -1,14 +1,11 @@
 import 'package:card_settings/card_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_picker/flutter_picker.dart';
-import 'package:jahwa_asset_management_system/models/facility_locaion.dart';
 import 'package:jahwa_asset_management_system/provider/facility_location_repository.dart';
 import 'package:jahwa_asset_management_system/provider/facility_trade_common_repository.dart';
 import 'package:jahwa_asset_management_system/provider/user_repository.dart';
 import 'package:jahwa_asset_management_system/util/localization/language_constants.dart';
 import 'package:jahwa_asset_management_system/widgets/card_settings_custom_text.dart';
-import 'package:jahwa_asset_management_system/widgets/custom_widget.dart';
 import 'package:provider/provider.dart';
 
 /*
@@ -31,7 +28,8 @@ StatefulWidget Lifecycle
 class FacilityLocationInspactionDetailSettingPage extends StatefulWidget {
   final String index;
 
-  FacilityLocationInspactionDetailSettingPage({Key key, @required this.index}) : super(key: key);
+  FacilityLocationInspactionDetailSettingPage({Key key, @required this.index})
+      : super(key: key);
   //1. createState()
   //StatefulWidget이 빌드 되도록 createState() 호출
   //반드시 호출해야하며 아래 코드보다 더 복잡하거나 추가될 것이 없음
@@ -53,7 +51,6 @@ class _FacilityLocationInspactionDetailSettingPage
   String sSerialNo;
   String sMaker;
   String sSpec;
-
 
   //3. initState()
   //위젯이 생성될때 처음 한번 호출되는 메서드
@@ -117,14 +114,16 @@ class _FacilityLocationInspactionDetailSettingPage
   //반드시 Widget을 리턴해야 함
   @override
   Widget build(BuildContext context) {
-    var _FacilityInspectionInfo = $facilityLocationRepository.facilityInspScanList;
-    sSerialNo = _FacilityInspectionInfo[int.parse(widget.index)].serial_no;
-    sMaker = _FacilityInspectionInfo[int.parse(widget.index)].maker;
-    sSpec = _FacilityInspectionInfo[int.parse(widget.index)].spec;
+    var _facilityInspectionInfo =
+        $facilityLocationRepository.facilityInspScanList;
+    sSerialNo = _facilityInspectionInfo[int.parse(widget.index)].serial_no;
+    sMaker = _facilityInspectionInfo[int.parse(widget.index)].maker;
+    sSpec = _facilityInspectionInfo[int.parse(widget.index)].spec;
     return Scaffold(
       key: scaffold1Key,
       appBar: AppBar(
-        title: Text($facilityLocationRepository.facilityInspScanList[int.parse(widget.index)].asst_no),
+        title: Text($facilityLocationRepository
+            .facilityInspScanList[int.parse(widget.index)].asst_no),
         backgroundColor: Colors.deepPurple,
       ),
       body: Container(
@@ -191,53 +190,44 @@ class _FacilityLocationInspactionDetailSettingPage
               ),
             ],
           ),
-        ]
-    );
+        ]);
   }
-  Widget buildcardTextSettingsSerial(){
 
+  Widget buildcardTextSettingsSerial() {
     return CardSettingsCustomText(
-      showMaterialonIOS: true,
-      label: getTranslated(context, 'asset_info_label_serial_no'),
-      initialValue: sSerialNo,
-      onChanged: (String newKey) {
-        /* todo handle change */
+        showMaterialonIOS: true,
+        label: getTranslated(context, 'asset_info_label_serial_no'),
+        initialValue: sSerialNo,
+        onChanged: (String newKey) {
+          /* todo handle change */
           sSerialNo = newKey;
           //print(newKey);
-      }
-    );
+        });
   }
 
-  Widget buildcardTextSettingsMaker(){
-    var _FacilityInspectionInfo = $facilityLocationRepository.facilityInspScanList;
-
+  Widget buildcardTextSettingsMaker() {
     return CardSettingsCustomText(
-      showMaterialonIOS: true,
-      label: getTranslated(context, 'asset_info_label_maker'),
-      initialValue: sMaker,
-      onChanged: (String newKey) {
-        /* todo handle change */
+        showMaterialonIOS: true,
+        label: getTranslated(context, 'asset_info_label_maker'),
+        initialValue: sMaker,
+        onChanged: (String newKey) {
+          /* todo handle change */
           sMaker = newKey;
           //print(newKey);
-      }
-    );
+        });
   }
 
-  Widget buildcardTextSettingsModel(){
-    var _FacilityInspectionInfo = $facilityLocationRepository.facilityInspScanList;
-
+  Widget buildcardTextSettingsModel() {
     return CardSettingsCustomText(
-      showMaterialonIOS: true,
-      label: getTranslated(context, 'asset_info_label_spec'),
-      initialValue: sSpec,
-      onChanged: (String newKey) {
-        /* todo handle change */
+        showMaterialonIOS: true,
+        label: getTranslated(context, 'asset_info_label_spec'),
+        initialValue: sSpec,
+        onChanged: (String newKey) {
+          /* todo handle change */
           sSpec = newKey;
           //print(newKey);
-      }
-    );
+        });
   }
-
 
   CardSettingsButton buildCardSettingsButtonReset() {
     return CardSettingsButton(
@@ -260,21 +250,23 @@ class _FacilityLocationInspactionDetailSettingPage
   }
 
   Future applyPressed() async {
-    $facilityLocationRepository.facilityInspScanList[int.parse(widget.index)].serial_no = sSerialNo;
-    $facilityLocationRepository.facilityInspScanList[int.parse(widget.index)].maker = sMaker;
-    $facilityLocationRepository.facilityInspScanList[int.parse(widget.index)].spec = sSpec;
+    $facilityLocationRepository
+        .facilityInspScanList[int.parse(widget.index)].serial_no = sSerialNo;
+    $facilityLocationRepository
+        .facilityInspScanList[int.parse(widget.index)].maker = sMaker;
+    $facilityLocationRepository
+        .facilityInspScanList[int.parse(widget.index)].spec = sSpec;
     Navigator.pop(context);
   }
 
-
   Future resetPressed() async {
     setState(() {
-      sSerialNo = $facilityLocationRepository.facilityInspScanList[int.parse(widget.index)].serial_no;
-      sMaker = $facilityLocationRepository.facilityInspScanList[int.parse(widget.index)].maker;
-      sSpec = $facilityLocationRepository.facilityInspScanList[int.parse(widget.index)].spec;
+      sSerialNo = $facilityLocationRepository
+          .facilityInspScanList[int.parse(widget.index)].serial_no;
+      sMaker = $facilityLocationRepository
+          .facilityInspScanList[int.parse(widget.index)].maker;
+      sSpec = $facilityLocationRepository
+          .facilityInspScanList[int.parse(widget.index)].spec;
     });
-
   }
-
-
 }
