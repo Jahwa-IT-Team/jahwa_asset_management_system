@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:barcode_scan/model/scan_result.dart';
 import 'package:btprotocol/btprotocol.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -512,6 +513,30 @@ class _FacilityLocationChangePageState
   }
 
   Future qrBarcodeScan(bool repeat) async {
+    if (kDebugMode) {
+      String debugScanData = "DZA2048K";
+      FacilityInfo debugData = await $facilityLocationRepository
+          .getFacilityList("Asset", debugScanData, "")
+          .then((value) {
+        pr.hide();
+        return value;
+      });
+
+      if (debugData != null) {
+        await $facilityLocationRepository.addChangeList(debugData);
+        showSnackBar("QR Barcode[" + debugScanData + "]",
+            getTranslated(context, 'additional_completion'));
+        if (repeat) {
+          qrBarcodeScan(repeat);
+        }
+      } else {
+        showSnackBar("QR Barcode[" + debugScanData + "]",
+            getTranslated(context, 'empty_value'));
+      }
+
+      pr.hide();
+      return;
+    }
     try {
       var options = ScanOptions(
           // strings: {

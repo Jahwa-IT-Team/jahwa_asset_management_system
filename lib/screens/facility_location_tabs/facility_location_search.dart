@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:barcode_scan/platform_wrapper.dart';
 import 'package:btprotocol/btprotocol.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:card_settings/card_settings.dart';
 import 'package:flutter/services.dart';
@@ -520,12 +521,15 @@ class _FacilityLocationSearchPageState
               ListViewDisplayType.table) {
             String detailInfo = "" +
                 "${getTranslated(context, 'plant')} : [${$facilityLocationRepository.facilitySearchList[index].plantCode}]${$facilityLocationRepository.facilitySearchList[index].plantName},    " +
+                "${getTranslated(context, 'item_group')} : ${$facilityLocationRepository.facilitySearchList[index].itemGroup}  " +
                 "${getTranslated(context, 'asset_info_label_setarea')} : ${$facilityLocationRepository.facilitySearchList[index].setupLocation}  " +
                 "\n" +
                 "${getTranslated(context, 'facility_grade')} : ${$facilityLocationRepository.facilitySearchList[index].facilityGrade},  " +
-                "${getTranslated(context, 'asset_info_label_spec')} : ${$facilityLocationRepository.facilitySearchList[index].facilitySpec},  " +
+                "${getTranslated(context, 'asset_info_label_spec')} : ${$facilityLocationRepository.facilitySearchList[index].facilitySpec}  " +
                 "\n" +
-                "${getTranslated(context, 'item_group')} : ${$facilityLocationRepository.facilitySearchList[index].itemGroup}  ";
+                "${getTranslated(context, 'asset_info_label_maker')} : ${$facilityLocationRepository.facilitySearchList[index].manufactureName},  " +
+                "${getTranslated(context, 'asset_info_label_manufacturing_date')} : ${$facilityLocationRepository.facilitySearchList[index].manufactureDate},  " +
+                "${getTranslated(context, 'asset_info_label_serial_no')} : ${$facilityLocationRepository.facilitySearchList[index].serialNo}  ";
 
             return Card(
                 elevation: 0.0,
@@ -601,6 +605,23 @@ class _FacilityLocationSearchPageState
                                       context, 'asset_info_label_spec'),
                                   content: Text($facilityLocationRepository
                                       .facilitySearchList[index].facilitySpec)),
+                              customCardField(
+                                  label: getTranslated(
+                                      context, 'asset_info_label_serial_no'),
+                                  content: Text($facilityLocationRepository
+                                      .facilitySearchList[index].serialNo)),
+                              customCardField(
+                                  label: getTranslated(context,
+                                      'asset_info_label_manufacturing_date'),
+                                  content: Text($facilityLocationRepository
+                                      .facilitySearchList[index]
+                                      .manufactureDate)),
+                              customCardField(
+                                  label: getTranslated(
+                                      context, 'asset_info_label_maker'),
+                                  content: Text($facilityLocationRepository
+                                      .facilitySearchList[index]
+                                      .manufactureName)),
                               customCardField(
                                   label: getTranslated(
                                       context, 'asset_info_label_asst_no'),
@@ -751,6 +772,31 @@ class _FacilityLocationSearchPageState
   }
 
   Future qrBarcodeScan(bool repeat) async {
+    if (kDebugMode) {
+      String debugScanData = "FAB8282K";
+      FacilityInfo debugData = await $facilityLocationRepository
+          .getFacilityList("Asset", debugScanData, "")
+          .then((value) {
+        pr.hide();
+        return value;
+      });
+
+      if (debugData != null) {
+        await $facilityLocationRepository.addInfoList(debugData);
+        showSnackBar("QR Barcode[" + debugScanData + "]",
+            getTranslated(context, 'additional_completion'));
+        if (repeat) {
+          qrBarcodeScan(repeat);
+        }
+      } else {
+        showSnackBar("QR Barcode[" + debugScanData + "]",
+            getTranslated(context, 'empty_value'));
+      }
+
+      pr.hide();
+      return;
+    }
+
     try {
       var options = ScanOptions(
           // strings: {

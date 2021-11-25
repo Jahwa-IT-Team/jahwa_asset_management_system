@@ -23,6 +23,8 @@ class FacilityInfo {
   String facilityNameCN;
   String facilitySpec;
   String serialNo;
+  String manufactureDate;
+  String manufactureName;
   String facilityGrade;
   String assetCode;
   String plantCode;
@@ -48,6 +50,8 @@ class FacilityInfo {
       this.facilityNameVN,
       this.facilitySpec,
       this.serialNo,
+      this.manufactureDate,
+      this.manufactureName,
       this.facilityGrade,
       this.assetCode,
       this.plantCode,
@@ -74,6 +78,8 @@ class FacilityInfo {
         facilityNameVN: json['facilityNameVN'] as String,
         facilitySpec: json['facilitySpec'] as String,
         serialNo: json['serialNo'] as String,
+        manufactureDate: json['manufactureDate'] as String,
+        manufactureName: json['manufactureName'] as String,
         facilityGrade: json['facilityGrade'] as String,
         assetCode: json['assetCode'] as String,
         plantCode: json['plantCode'] as String,
