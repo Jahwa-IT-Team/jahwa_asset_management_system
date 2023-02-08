@@ -62,10 +62,10 @@
     "asset_info_label_user_cd": "Mã nhân viên người sử dụng",
     "asset_info_label_user_nm": "Tên người sử dụng",
     "asset_info_label_mac_add": "MAC Address",
-    "asset_info_state_label_aa":"AA : Có tài sản, có sổ sách",
-    "asset_info_state_label_ab":"AB : Có tài sản, không sổ sách",
-    "asset_info_state_label_ba":"BA : Không tài sản, có sổ sách",
-    "asset_info_state_label_bb":"BB : Không tài sản, không sổ sách",
+    "asset_info_state_label_aa":"AA : Có sổ sách, Có tài sản",
+    "asset_info_state_label_ab":"AB : Có sổ sách, Không tài sản",
+    "asset_info_state_label_ba":"BA : Không sổ sách,Có tài sản",
+    "asset_info_state_label_bb":"BB : Không sổ sách, Không tài sản",
 
 
     "asset_dashboard_dept_title":"Hạng mục thực hiện theo từng bộ phận",

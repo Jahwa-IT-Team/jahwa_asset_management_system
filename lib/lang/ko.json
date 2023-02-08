@@ -62,10 +62,10 @@
     "asset_info_label_user_cd": "사용자 사번",
     "asset_info_label_user_nm": "사용자명",
     "asset_info_label_mac_add": "MAC Address",
-    "asset_info_state_label_aa":"AA : 자산유,장부유",
-    "asset_info_state_label_ab":"AB : 자산유,장부무",
-    "asset_info_state_label_ba":"BA : 자산무,장부유",
-    "asset_info_state_label_bb":"BB : 자산무,장부무",
+    "asset_info_state_label_aa":"AA : 장부유,실물유",
+    "asset_info_state_label_ab":"AB : 장부유,실물무",
+    "asset_info_state_label_ba":"BA : 장부무,실물유",
+    "asset_info_state_label_bb":"BB : 장부무,실물무",
 
 
     "asset_dashboard_dept_title":"부서별 진행 사항",
